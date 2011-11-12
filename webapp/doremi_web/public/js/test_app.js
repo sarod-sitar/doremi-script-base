@@ -20,7 +20,9 @@
           $('#test_results').append("<h4>Rendered html</h4><div class='rendered_html'>" + h + "</div>");
           return renderer.adjust_slurs_in_dom();
         } catch (err) {
-          return console.log(err);
+          if ((typeof console !== "undefined" && console !== null) && (console.log != null)) {
+            return console.log(err);
+          }
         }
       })());
     }

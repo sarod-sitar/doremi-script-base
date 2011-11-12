@@ -1,8 +1,9 @@
 (function() {
-  var aux1, debug, first_logical_line, first_sargam_line, log, my_inspect, parse_without_reporting_error, parser, root, should_not_parse, sys, test_parses;
+  var aux1, debug, first_logical_line, first_sargam_line, log, my_inspect, parse_without_reporting_error, parser, root, should_not_parse, sys, test_parses, utils;
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   debug = false;
   sys = require('sys');
+  utils = require('./tree_iterators.js');
   log = function(x) {
     if (!console) {
       return;
@@ -20,7 +21,7 @@
       return;
     }
     log("Result of parsing <<" + str + ">> is");
-    return log(sys.inspect(result, false, null));
+    return log(sys.inspect(result, true, null));
   };
   should_not_parse = function(str, test, msg) {
     log(str);
@@ -68,8 +69,8 @@
     if (!sys) {
       return;
     }
-    log(sys.inspect(obj, true, null));
-    return log(sys.inspect(obj2, true, null));
+    JSON.stringify(obj);
+    return JSON.stringify(obj2);
   };
   exports.test_bad_input = function(test) {
     var str;
@@ -133,7 +134,7 @@
     return test.done();
   };
   exports.test_dashes_inside_beat = function(test) {
-    var composition, line, measure, second_item, str, third_item;
+    var composition, line, measure, second_item, str, x;
     str = '|S--R|';
     composition = test_parses(str, test);
     line = first_sargam_line(composition);
@@ -141,8 +142,7 @@
     second_item = measure.items[1];
     my_inspect(second_item);
     test.equal(second_item.my_type, "beat", "second item of " + str + " should be a beat containing S--R");
-    test.equal(second_item.items.length, 4, "the beat's length should be 4");
-    third_item = line.items[2];
+    test.equal(second_item.subdivisions, x = 4, "subdivisions of beat " + str + " should be " + x);
     return test.done();
   };
   exports.test_logical_lines = function(test) {
@@ -577,6 +577,16 @@
     composition = test_parses(str, test);
     line = first_sargam_line(composition);
     x = sys.inspect(line, true, null);
+    return test.done();
+  };
+  exports.test_measure_pitch_durations = function(test) {
+    var composition, line, my_pitch, str;
+    str = '--S- ---- --r-';
+    composition = test_parses(str, test);
+    line = first_sargam_line(composition);
+    my_pitch = utils.tree_find(line, function(item) {
+      return item.source === "S";
+    });
     return test.done();
   };
   exports.test_zzz = function(test) {

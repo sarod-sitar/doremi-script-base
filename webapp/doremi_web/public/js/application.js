@@ -226,23 +226,12 @@
         $('#rendered_sargam').html(to_html(composition_data));
         $('#lilypond_source').html(composition_data.lilypond);
         adjust_slurs_in_dom();
-        if (false) {
-          $('span[data-begin-slur-id]').each(function(index) {
-            var attr, pos1, pos2, slur;
-            pos2 = $(this).offset();
-            attr = $(this).attr("data-begin-slur-id");
-            slur = $("#" + attr);
-            pos1 = $(slur).offset();
-            return $(slur).css({
-              width: pos2.left - pos1.left + $(this).width()
-            });
-          });
-        }
         return canvas = $("#rendered_in_staff_notation")[0];
       } catch (err) {
         window.parse_errors = window.parse_errors + "\n" + err;
         $('#parse_tree').text(window.parse_errors);
-        return $('#parse_tree').show();
+        $('#parse_tree').show();
+        throw err;
       } finally {
         window.last_val = $('#entry_area').val();
         parser.is_parsing = false;

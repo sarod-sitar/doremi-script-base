@@ -6,6 +6,8 @@
     sys = require('sys');
     _ = require("underscore")._;
     ParserHelper= require("./parser_helper.js").ParserHelper
+    Fraction=require('./third_party/fraction.js').Fraction
+    console.log ("*******Fraction is",Fraction)
   }
   Helper =ParserHelper
   if (debug) {
@@ -36,6 +38,11 @@
   map_nodes = Helper.map_nodes
   my_inspect = Helper.my_inspect
   check_semantics=Helper.check_semantics
+  measure_pitch_durations=Helper.measure_pitch_durations
+  if (typeof require !== 'undefined') {
+    x=require('./tree_iterators.js')
+    all_items=x.all_items
+  }
   log = Helper.log
   // end of mixin section
   warnings=[]
@@ -416,8 +423,22 @@ ABC_BEAT_UNDELIMITED_ITEM "C--D--E-"
 DEVANAGRI_BEAT_UNDELIMITED_ITEM "inside of a simple beat, ie S--R--G-"
   = DEVANAGRI_SARGAM_PITCH / RHYTHMICAL_DASH / BEGIN_SLUR / END_SLUR
 
-BEAT_UNDELIMITED_ITEM "inside of a simple beat, ie S--R--G-"
-  = SARGAM_PITCH / RHYTHMICAL_DASH / BEGIN_SLUR / END_SLUR
+
+
+UNDELIMITED_SARGAM_PITCH_WITH_DASHES "for example S--"
+  = pitch:SARGAM_PITCH dashes:RHYTHMICAL_DASH+
+      {
+         pitch.numerator=dashes.length+1
+         return([pitch].concat(dashes))
+      }
+
+
+BEAT_UNDELIMITED_ITEM "inside of a simple beat, ie S--R--G- Note that undelimited beats cannot contain spaces"
+  = UNDELIMITED_SARGAM_PITCH_WITH_DASHES /
+    SARGAM_PITCH /
+    RHYTHMICAL_DASH / 
+    BEGIN_SLUR / 
+    END_SLUR
   
 ABC_BEAT_DELIMITED "ie <C D E F> ."
   = begin_symbol:BEGIN_BEAT_SYMBOL beat_items:ABC_BEAT_DELIMITED_ITEM+ end_symbol:END_BEAT_SYMBOL

@@ -45,11 +45,13 @@
         items: beat_items
       };
       my_beat.subdivisions = this.count_beat_subdivisions(my_beat);
+      this.log("count_beat_subdivisions returned", my_beat.subdivisions, "my beat was", my_beat);
       this.measure_note_durations(my_beat);
       return my_beat;
     },
     parse_beat_undelimited: function(beat_items) {
       var my_beat;
+      beat_items = _.flatten(beat_items);
       my_beat = {
         my_type: "beat",
         source: this.get_source_for_items(beat_items),
@@ -77,6 +79,7 @@
         this.log("unbalanced parens");
       }
       this.measure_dashes_at_beginning_of_beats(my_line);
+      this.measure_pitch_durations(my_line);
       return my_line;
     },
     parse_measure: function(start_obs, items, end_obs) {
@@ -114,7 +117,7 @@
       _ref = this.composition_data.logical_lines;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         logical_line = _ref[_i];
-        _ref2 = this.all_items_in_line(logical_line.sargam_line, []);
+        _ref2 = this.all_items(logical_line.sargam_line, []);
         for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
           item = _ref2[_j];
           this.log("extract_lyrics-item is", item);
@@ -172,22 +175,26 @@
       }
       return _results;
     },
-    all_items_in_line: function(line_or_item, items) {
-      var an_item, _fn, _i, _len, _ref;
-      if (!line_or_item.items) {
-        return [line_or_item];
-      }
-      _ref = line_or_item.items;
-      _fn = __bind(function(an_item) {
-        items.push(an_item);
-        return items.concat(this.all_items_in_line(an_item, items));
-      }, this);
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        an_item = _ref[_i];
-        _fn(an_item);
-      }
-      this.log('all_items_in_line returns', items);
-      return [line_or_item].concat(items);
+    measure_pitch_durations: function(line) {
+      var last_pitch;
+      this.log("measure_pitch_durations line is", line);
+      last_pitch = null;
+      return _.each(all_items(line), __bind(function(item) {
+        var frac;
+        if (item.my_type === "pitch") {
+          if (!(item.fraction_array != null)) {
+            item.fraction_array = [];
+          }
+          frac = new Fraction(item.numerator, item.denominator);
+          item.fraction_array.push(frac);
+          last_pitch = item;
+          this.my_inspect(item);
+        }
+        if (item.my_type === "dash" && item.dash_to_tie) {
+          frac = new Fraction(item.numerator, item.denominator);
+          return last_pitch.fraction_array.push(frac);
+        }
+      }, this));
     },
     measure_dashes_at_beginning_of_beats: function(line) {
       var all, beats, beats_with_dashes_at_start_of_beat, item, last_pitch, measures, _i, _len, _ref;
@@ -271,7 +278,7 @@
       this.log("looping through items");
       last_pitch = null;
       all = [];
-      _ref = this.all_items_in_line(line, all);
+      _ref = this.all_items(line, all);
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         item = _ref[_i];
         this.log("in loop,item is", item);
@@ -291,7 +298,6 @@
     },
     measure_note_durations: function(beat) {
       var ctr, denominator, len, microbeats, _results;
-      this.log("entering measure_note_durations for beat:" + beat.source);
       denominator = beat.subdivisions;
       microbeats = 0;
       len = beat.items.length;
@@ -339,7 +345,8 @@
       return _results;
     },
     count_beat_subdivisions: function(beat) {
-      return (_.select(beat.items, function(item) {
+      this.log("all_items", all_items(beat));
+      return (_.select(all_items(beat), function(item) {
         return item.my_type === "pitch" || item.my_type === "dash";
       })).length;
     },
