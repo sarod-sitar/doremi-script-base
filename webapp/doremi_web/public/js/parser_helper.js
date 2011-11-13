@@ -14,24 +14,23 @@
     },
     parse_sargam_pitch: function(slur, musical_char, end_slur) {
       var attributes, source;
-      source = musical_char.source;
+      source = '';
       attributes = [];
       if (slur !== '') {
-        source = slur.source + source;
         attributes.push(slur);
+        source = source + slur.source;
       }
+      source = source + musical_char.source;
       if (end_slur !== '') {
-        source = source + end_slur.source;
         attributes.push(end_slur);
+        source = source + end_slur.source;
       }
       return {
         my_type: "pitch",
         normalized_pitch: musical_char.normalized_pitch,
         attributes: attributes,
-        source: source,
         pitch_source: musical_char.source,
-        begin_slur: slur !== '',
-        end_slur: end_slur !== '',
+        source: source,
         octave: 0
       };
     },
@@ -61,7 +60,7 @@
       this.measure_note_durations(my_beat);
       return my_beat;
     },
-    parse_sargam_line: function(line_number, items) {
+    parse_sargam_line: function(line_number, items, kind) {
       var my_items, my_line, source;
       if (line_number !== '') {
         items.unshift(line_number);
@@ -73,7 +72,7 @@
         my_type: "sargam_line",
         source: source,
         items: my_items,
-        kind: "latin_sargam"
+        kind: kind
       };
       if (this.parens_unbalanced(my_line)) {
         this.log("unbalanced parens");
@@ -362,19 +361,29 @@
         return item.my_type === "pitch" || item.my_type === "dash";
       })).length;
     },
+    item_has_attribute: function(item, attr_name) {
+      if (!(item.attributes != null)) {
+        return false;
+      }
+      return _.detect(item.attributes, function(attr) {
+        if (!(attr.my_type != null)) {
+          return false;
+        }
+        return attr.my_type === "begin_slur";
+      });
+    },
     parens_unbalanced: function(line) {
       var ary, x, y;
       this.log("entering parens_unbalanced");
-      ary = [];
-      ary = this.collect_nodes(line, ary);
+      ary = this.collect_nodes(line, []);
       this.log("ary is");
       this.my_inspect(ary);
-      x = _.select(ary, __bind(function(item) {
-        return (item.begin_slur != null) && item.begin_slur === true;
-      }, this));
-      y = _.select(ary, __bind(function(item) {
-        return (item.end_slur != null) && item.end_slur === true;
-      }, this));
+      x = _.select(ary, function(item) {
+        return this.item_has_attribute(item, 'begin_slur');
+      });
+      y = _.select(ary, function(item) {
+        return item_has_attribute(item, 'end_slur');
+      });
       if (x.length !== y.length) {
         this.warnings.push("Error on line ? unbalanced parens, line was " + line.source + " Note that parens are used for slurs and should bracket pitches as so (S--- R)--- and NOT  (S--) ");
         return true;

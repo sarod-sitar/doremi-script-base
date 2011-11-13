@@ -17,6 +17,7 @@
   // didn't work. _.extend(this, Helper) 
   //
   sa_helper=Helper.sa_helper
+  item_has_attribute=Helper.item_has_attribute
   parse_sargam_pitch=Helper.parse_sargam_pitch
   parse_beat_delimited=Helper.parse_beat_delimited
   parse_beat_undelimited=Helper.parse_beat_undelimited
@@ -374,24 +375,20 @@ SARGAM_LINE_ITEM  "an item in the main line"
 ABC_SARGAM_LINE "consists of optional line# at beginning of line, followed by 1 or more measures followed by line end"
   = line_number:LINE_NUMBER?  items:ABC_MEASURE+ LINE_END
     {
-       x= parse_sargam_line(line_number,items)
-       x.kind="abc"
-       return x
+       return parse_sargam_line(line_number,items,"ABC")
     }
 
 
 DEVANAGRI_SARGAM_LINE "consists of optional line# at beginning of line, followed by 1 or more measures followed by line end"
   = line_number:LINE_NUMBER?  items:DEVANAGRI_MEASURE+ LINE_END
     {
-       x= parse_sargam_line(line_number,items)
-       x.kind="devanagri"
-       return x
+       return parse_sargam_line(line_number,items,"devanagri")
     }
 
 SARGAM_LINE "consists of optional line# at beginning of line, followed by 1 or more measures followed by line end"
   = line_number:LINE_NUMBER?  items:MEASURE+ LINE_END
     {
-       return parse_sargam_line(line_number,items)
+       return parse_sargam_line(line_number,items,"latin_sargam")
       }
 
 ABC_BEAT_UNDELIMITED "beats can be indicated by a group of pitches that consist only of pitches and dashes such as S--R--G-"

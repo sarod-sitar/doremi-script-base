@@ -350,7 +350,6 @@
             obj = {
               source: orig.source,
               normalized_pitch: orig.normalized_pitch,
-              pitch_source: orig.pitch_source,
               octave: orig.octave,
               numerator: item.numerator,
               denominator: item.denominator,
