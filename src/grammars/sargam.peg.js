@@ -7,7 +7,6 @@
     _ = require("underscore")._;
     ParserHelper= require("./parser_helper.js").ParserHelper
     Fraction=require('./third_party/fraction.js').Fraction
-    console.log ("*******Fraction is",Fraction)
   }
   Helper =ParserHelper
   if (debug) {
@@ -173,11 +172,6 @@ CHORD_SYMBOL "I IV V. TODO: review"
 ALTERNATE_ENDING_INDICATOR "1._______ 2.___ etc. The period is optional. Must have either dot or underscores. TODO: accepts 1_.___ which is not exactly what I want."
 = num:[1-3] underscores:[\._]+
     {
-            if (false) {
-              console.log("underscores is",underscores)
-              console.log('typeof dot is ', typeof(dot))
-              console.log('typeof underscores is ', typeof(underscores))
-            } 
             if (typeof(dot) == 'undefined') {
               dot=''
             }
