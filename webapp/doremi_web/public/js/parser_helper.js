@@ -180,9 +180,9 @@
       last_pitch = null;
       return _.each(all_items(line), __bind(function(item) {
         var frac, my_funct;
-        console.log("***measure_pitch_durations:item.my_type is", item.my_type);
+        this.log("***measure_pitch_durations:item.my_type is", item.my_type);
         if (item.my_type === "measure") {
-          console.log("***going into measure");
+          this.log("***going into measure");
         }
         if (item.my_type === "pitch") {
           if (!(item.fraction_array != null)) {
@@ -369,7 +369,7 @@
         if (!(attr.my_type != null)) {
           return false;
         }
-        return attr.my_type === "begin_slur";
+        return attr.my_type === attr_name;
       });
     },
     parens_unbalanced: function(line) {
@@ -378,12 +378,13 @@
       ary = this.collect_nodes(line, []);
       this.log("ary is");
       this.my_inspect(ary);
-      x = _.select(ary, function(item) {
+      x = _.select(ary, __bind(function(item) {
         return this.item_has_attribute(item, 'begin_slur');
-      });
-      y = _.select(ary, function(item) {
-        return item_has_attribute(item, 'end_slur');
-      });
+      }, this));
+      y = _.select(ary, __bind(function(item) {
+        return this.item_has_attribute(item, 'end_slur');
+      }, this));
+      console.log('in parens_unbalanced,x,y', x, y);
       if (x.length !== y.length) {
         this.warnings.push("Error on line ? unbalanced parens, line was " + line.source + " Note that parens are used for slurs and should bracket pitches as so (S--- R)--- and NOT  (S--) ");
         return true;
