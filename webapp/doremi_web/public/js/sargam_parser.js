@@ -520,7 +520,7 @@ SargamParser = (function(){
                              title:title,
                              filename: "untitled",
                              attributes: attributes,
-                             logical_lines: _.flatten(lines),
+                             lines: _.flatten(lines),
                              warnings:this.warnings,
                              source:"" // can't get input source here, put it in later
                             }

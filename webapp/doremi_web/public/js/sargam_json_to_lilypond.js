@@ -11,7 +11,7 @@
   extract_lyrics = function(composition_data) {
     var ary, item, sargam_line, _i, _j, _len, _len2, _ref, _ref2;
     ary = [];
-    _ref = composition_data.logical_lines;
+    _ref = composition_data.lines;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       sargam_line = _ref[_i];
       _ref2 = all_items_in_line(sargam_line, []);
@@ -268,7 +268,7 @@
   };
   notation_is_in_sargam = function(composition_data) {
     this.log("in notation_is_in_sargam");
-    return _.detect(composition_data.logical_lines, function(line) {
+    return _.detect(composition_data.lines, function(line) {
       return is_sargam_line(line);
     });
   };
@@ -279,7 +279,7 @@
     at_beginning_of_first_measure_of_line = false;
     dashes_at_beginning_of_line_array = [];
     tied_array = [];
-    _ref = composition_data.logical_lines;
+    _ref = composition_data.lines;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       logical_line = _ref[_i];
       at_beginning_of_first_measure_of_line = false;
