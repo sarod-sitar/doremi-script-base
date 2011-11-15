@@ -397,6 +397,7 @@
     if ((key_is_valid = is_valid_key(composition_data.key))) {
       transpose_snip = "\\transpose c' " + composition_data.key + "'";
     } else {
+      composition_data.warnings.push("Invalid key. Valid keys are cdefgab etc. See the lilypond documentation for more");
       this.log("" + composition_data.key + " is invalid");
       transpose_snip = "";
     }
