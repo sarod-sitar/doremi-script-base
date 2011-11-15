@@ -1,5 +1,5 @@
 (function() {
-  var aux1, debug, first_logical_line, first_sargam_line, log, my_inspect, parse_without_reporting_error, parser, root, should_not_parse, sys, test_parses, utils;
+  var aux1, debug, first_line, first_sargam_line, log, my_inspect, parse_without_reporting_error, parser, root, should_not_parse, sys, test_parses, utils;
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   debug = false;
   sys = require('sys');
@@ -42,7 +42,7 @@
   first_sargam_line = function(composition_data) {
     return composition_data.lines[0];
   };
-  first_logical_line = function(composition_data) {
+  first_line = function(composition_data) {
     return composition_data.lines[0];
   };
   test_parses = function(str, test, msg) {
@@ -145,7 +145,7 @@
     test.equal(second_item.subdivisions, x = 4, "subdivisions of beat " + str + " should be " + x);
     return test.done();
   };
-  exports.test_logical_lines = function(test) {
+  exports.test_lines = function(test) {
     var composition, second_item, str, third_item;
     str = '| S- |\n\n';
     composition = test_parses(str, test);
@@ -226,7 +226,7 @@
     composition = test_parses(str, test);
     return test.done();
   };
-  exports.test_logical_line_can_come_right_after_header_line = function(test) {
+  exports.test_line_can_come_right_after_header_line = function(test) {
     var composition, str;
     str = 'Rag:Kafi\nS';
     composition = test_parses(str, test);
@@ -400,9 +400,9 @@
                    { my_type: 'whitespace', source: '   ' } ] 
        */
     composition = test_parses(str, test);
-    test.ok(composition.lines != null, "parsed composition should have a logical_lines attribute");
-    test.equal(composition.lines.length, 1, "<<\n" + str + "\n>> should have 1 logical lines");
-    first = first_logical_line(composition);
+    test.ok(composition.lines != null, "parsed composition should have a lines attribute");
+    test.equal(composition.lines.length, 1, "<<\n" + str + "\n>> should have 1 line");
+    first = first_line(composition);
     return test.done();
   };
   exports.test_position_counting = function(test) {
@@ -417,8 +417,8 @@
     str = 'S\n\nR';
     composition = test_parses(str, test);
     my_inspect(composition);
-    test.ok(composition.lines != null, "parsed composition should have a logical_lines attribute");
-    test.equal(composition.lines.length, 2, "Should have 2 logical lines");
+    test.ok(composition.lines != null, "parsed composition should have a lines attribute");
+    test.equal(composition.lines.length, 2, "Should have 2 lines");
     aux1(str, composition);
     return test.done();
   };

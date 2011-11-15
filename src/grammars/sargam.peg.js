@@ -53,18 +53,18 @@ START "Grammar for AACM/Bhatkande style sargam/letter notation by John Rothfield
   = COMPOSITION
 
 EMPTY_LINE ""
-= "\n" (" "* "\n")* { return {my_type: "logical_line_end"}
+= "\n" (" "* "\n")* { return {my_type: "line_end"}
            }
 
-HEADER_SECTION "Headers followed by blank lines or a logical line"
-= attributes:ATTRIBUTE_LINE+ (EMPTY_LINE / EOF / "/n" / &LOGICAL_LINE )
+HEADER_SECTION "Headers followed by blank lines or a line"
+= attributes:ATTRIBUTE_LINE+ (EMPTY_LINE / EOF / "/n" / &LINE )
      { return { my_type:"attributes",
                 items: attributes,
                 source: "TODO"
                 }}
 
-COMPOSITION "a musical piece  lines:LOGICAL_LINE+ "
-= "\n"* EMPTY_LINE* attributes:HEADER_SECTION? lines:LOGICAL_LINE*  (EOF / EMPTY_LINE)
+COMPOSITION "a musical piece  lines:LINE+ "
+= "\n"* EMPTY_LINE* attributes:HEADER_SECTION? lines:LINE*  (EOF / EMPTY_LINE)
        { 
           if (attributes=="") {
              attributes=null
@@ -105,18 +105,18 @@ ATTRIBUTE_LINE "ie Author: John Rothfield"
                 source: "todo"
                 }}
 
-LOGICAL_LINE_END "ss"
+LINE_END "ss"
   = EMPTY_LINE+ / EOF
 
 
-LOGICAL_LINE "multiple lines including syllables etc,delimited by empty line. There is an order, optional upper octave lines followed by main line of sargam followed by optional lyrics line"
+LINE "main line of music. multiple lines including syllables etc,delimited by empty line. There is an order, optional upper octave lines followed by main line of sargam followed by optional lyrics line"
 
   =
     uppers:UPPER_OCTAVE_LINE*
     sargam:(sargam:DEVANAGRI_SARGAM_LINE / sargam:SARGAM_LINE / sargam:ABC_SARGAM_LINE)
     lowers:LOWER_OCTAVE_LINE*
     lyrics:LYRICS_LINE?
-    LOGICAL_LINE_END  { 
+    LINE_END  { 
           if (lyrics.length==0) {
             lyrics='' 
           }
@@ -127,17 +127,6 @@ LOGICAL_LINE "multiple lines including syllables etc,delimited by empty line. Th
             uppers='' 
           }
           my_items = _.flatten(_.compact([uppers,sargam,lowers,lyrics])),
-           
-          obj = { my_type: "logical_line",
-                   sargam_line:sargam,
-                   lyrics:lyrics,
-                   warnings:[]
-                 } 
-          obj2 = { my_type: "logical_line",
-                   sargam_line:sargam,
-                   lyrics:lyrics,
-                   warnings:[]
-                 } 
           sargam.warnings=[]
           _.each(my_items,function(my_line) {
             this.measure_columns(my_line.items,0);
