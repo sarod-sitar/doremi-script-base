@@ -133,16 +133,20 @@ LOGICAL_LINE "multiple lines including syllables etc,delimited by empty line. Th
                    lyrics:lyrics,
                    warnings:[]
                  } 
-
+          obj2 = { my_type: "logical_line",
+                   sargam_line:sargam,
+                   lyrics:lyrics,
+                   warnings:[]
+                 } 
+          sargam.warnings=[]
           _.each(my_items,function(my_line) {
             this.measure_columns(my_line.items,0);
                     });
           my_uppers=_.flatten(_.compact([uppers]))
           my_lowers=_.flatten(_.compact([lowers]))
           attribute_lines=_.flatten(_.compact([uppers,lowers,lyrics]))
-          this.assign_attributes(obj.sargam_line,attribute_lines)
-          // var x= this.assign_from_lyrics(obj)
-          return obj;
+          this.assign_attributes(sargam,attribute_lines)
+          return sargam;
         }
 
 UPPER_OCTAVE_LINE "can put upper octave dots or semicolons for upper upper octave (. or :). Also tala symbols +203"

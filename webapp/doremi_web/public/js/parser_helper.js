@@ -111,12 +111,12 @@
       return att.value;
     },
     extract_lyrics: function() {
-      var ary, item, logical_line, _i, _j, _len, _len2, _ref, _ref2;
+      var ary, item, sargam_line, _i, _j, _len, _len2, _ref, _ref2;
       ary = [];
       _ref = this.composition_data.logical_lines;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        logical_line = _ref[_i];
-        _ref2 = this.all_items(logical_line.sargam_line, []);
+        sargam_line = _ref[_i];
+        _ref2 = this.all_items(sargam_line, []);
         for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
           item = _ref2[_j];
           this.log("extract_lyrics-item is", item);
@@ -128,15 +128,15 @@
       return ary;
     },
     mark_partial_measures: function() {
-      var beats, item, logical_line, measure, measures, _i, _len, _ref, _results;
+      var beats, item, measure, measures, sargam_line, _i, _len, _ref, _results;
       _ref = this.composition_data.logical_lines;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        logical_line = _ref[_i];
-        this.log("processing " + logical_line.sargam_line.source);
+        sargam_line = _ref[_i];
+        this.log("processing " + sargam_line.source);
         measures = (function() {
           var _j, _len2, _ref2, _results2;
-          _ref2 = logical_line.sargam_line.items;
+          _ref2 = sargam_line.items;
           _results2 = [];
           for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
             item = _ref2[_j];
@@ -384,7 +384,6 @@
       y = _.select(ary, __bind(function(item) {
         return this.item_has_attribute(item, 'end_slur');
       }, this));
-      console.log('in parens_unbalanced,x,y', x, y);
       if (x.length !== y.length) {
         this.warnings.push("Error on line ? unbalanced parens, line was " + line.source + " Note that parens are used for slurs and should bracket pitches as so (S--- R)--- and NOT  (S--) ");
         return true;

@@ -37,7 +37,7 @@
     var item, x;
     x = ((function() {
       var _i, _len, _ref, _results;
-      _ref = logical_line.sargam_line.items;
+      _ref = logical_line.items;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         item = _ref[_i];

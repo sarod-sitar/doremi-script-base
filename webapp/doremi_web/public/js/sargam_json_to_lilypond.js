@@ -1,7 +1,7 @@
 (function() {
   var all_items_in_line, calculate_lilypond_duration, debug, emit_tied_array, extract_lyrics, fraction_to_lilypond, get_attribute, is_sargam_line, is_valid_key, lilypond_barline_map, lilypond_octave_map, lilypond_pitch_map, log, my_inspect, normalized_pitch_to_lilypond, notation_is_in_sargam, root, running_under_node, to_lilypond;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-  debug = false;
+  debug = true;
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   is_valid_key = function(str) {
     var ary;
@@ -9,12 +9,12 @@
     return _.indexOf(ary, str) > -1;
   };
   extract_lyrics = function(composition_data) {
-    var ary, item, logical_line, _i, _j, _len, _len2, _ref, _ref2;
+    var ary, item, sargam_line, _i, _j, _len, _len2, _ref, _ref2;
     ary = [];
     _ref = composition_data.logical_lines;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      logical_line = _ref[_i];
-      _ref2 = all_items_in_line(logical_line.sargam_line, []);
+      sargam_line = _ref[_i];
+      _ref2 = all_items_in_line(sargam_line, []);
       for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
         item = _ref2[_j];
         this.log("extract_lyrics-item is", item);
@@ -46,7 +46,7 @@
       return;
     }
     if (console) {
-      return console.log(x);
+      return console.log.apply(console, arguments);
     }
   };
   running_under_node = function() {
@@ -253,7 +253,7 @@
     obj.numerator = fraction_total.numerator;
     obj.denominator = fraction_total.denominator;
     obj.fraction_array = null;
-    console.log("emit_tied_array-last is", last);
+    this.log("emit_tied_array-last is", last);
     last = tied_array[tied_array.length - 1];
     obj.tied = last.tied;
     this.log("leaving emit_tied_array");
@@ -267,9 +267,9 @@
     return line.kind.indexOf('sargam') > -1;
   };
   notation_is_in_sargam = function(composition_data) {
-    console.log("in notation_is_in_sargam");
+    this.log("in notation_is_in_sargam");
     return _.detect(composition_data.logical_lines, function(line) {
-      return is_sargam_line(line.sargam_line);
+      return is_sargam_line(line);
     });
   };
   to_lilypond = function(composition_data) {
@@ -284,9 +284,9 @@
       logical_line = _ref[_i];
       at_beginning_of_first_measure_of_line = false;
       in_times = false;
-      this.log("processing " + logical_line.sargam_line.source);
+      this.log("processing " + logical_line.source);
       all = [];
-      x = all_items_in_line(logical_line.sargam_line, all);
+      x = all_items_in_line(logical_line, all);
       this.log("in to_lilypond, all_items_in_line x=", x);
       last_pitch = null;
       for (_j = 0, _len2 = all.length; _j < _len2; _j++) {
@@ -341,7 +341,7 @@
         }
         if (item.my_type === "dash") {
           if (!item.dash_to_tie && (item.numerator != null)) {
-            console.log("pushing item onto dashes_at_beginning_of_line_array");
+            this.log("pushing item onto dashes_at_beginning_of_line_array");
             dashes_at_beginning_of_line_array.push(item);
           }
         }
@@ -397,9 +397,11 @@
     if ((key_is_valid = is_valid_key(composition_data.key))) {
       transpose_snip = "\\transpose c' " + composition_data.key + "'";
     } else {
-      composition_data.warnings.push("Invalid key. Valid keys are cdefgab etc. See the lilypond documentation for more");
-      this.log("" + composition_data.key + " is invalid");
       transpose_snip = "";
+      if (composition_data.key != null) {
+        this.log("" + composition_data.key + " is invalid");
+        composition_data.warnings.push("Invalid key. Valid keys are cdefgab etc. Use a Mode: directive to set the mode(major,minor,aeolian, etc). See the lilypond documentation for more info");
+      }
     }
     if (!notation_is_in_sargam(composition_data)) {
       transpose_snip = "";
@@ -408,7 +410,6 @@
       time = "4/4";
     }
     key_snippet = "\\key c \\" + mode;
-    console.log("break here");
     if (!notation_is_in_sargam(composition_data) && key_is_valid) {
       key_snippet = "\\key " + composition_data.key + " \\" + mode;
     }
