@@ -81,8 +81,8 @@ COMPOSITION "a musical piece  lines:LINE+ "
                    attributes: attributes,
                    lines: _.flatten(lines),
                    warnings:this.warnings,
-                   source:"", // can't get input source here, put it in later
-                   toString:to_string
+                   source:"" // can't get input source here, put it in later
+                   // toString:to_string
                   }
               
           // Certain attributes get set on the data object
