@@ -72,14 +72,19 @@ COMPOSITION "a musical piece  lines:LINE+ "
           title="Untitled";
           this.log("in composition, attributes is")
           this.my_inspect(attributes);
+          to_string= function (arg) {
+                  JSON.stringify(arg,null," ")
+          }
           this.composition_data = { my_type:"composition",
                    title:title,
                    filename: "untitled",
                    attributes: attributes,
                    lines: _.flatten(lines),
                    warnings:this.warnings,
-                   source:"" // can't get input source here, put it in later
+                   source:"", // can't get input source here, put it in later
+                   toString:to_string
                   }
+              
           // Certain attributes get set on the data object
           // TODO: dry
           x=get_attribute("Key");
@@ -127,7 +132,6 @@ LINE "main line of music. multiple lines including syllables etc,delimited by em
             uppers='' 
           }
           my_items = _.flatten(_.compact([uppers,sargam,lowers,lyrics])),
-          sargam.warnings=[]
           _.each(my_items,function(my_line) {
             this.measure_columns(my_line.items,0);
                     });
@@ -250,11 +254,6 @@ TALA "tala markings. ie +203 for tintal. 012 for rupak"
                 source:char
      }
              }
-BEGIN_SLUR "symbol for beginning a slur - we use left-paren ("
-  = char:"(" { return { my_type: "begin_slur",
-                        source:char
-                        }
-             }
 
 END_SLUR "symbol for end of a slur - a right paren"
   = char:")" { return { my_type: "end_slur",
@@ -305,8 +304,6 @@ ABC_NON_BARLINE
     x:ABC_BEAT_UNDELIMITED / 
     x:ABC_SARGAM_PITCH / 
     x:RHYTHMICAL_DASH / 
-    x:BEGIN_SLUR / 
-    x:END_SLUR /
     x:REPEAT_SYMBOL {
             x.attributes=[];
             return x;
@@ -319,8 +316,6 @@ DEVANAGRI_NON_BARLINE
     x:DEVANAGRI_BEAT_UNDELIMITED / 
     x:DEVANAGRI_SARGAM_PITCH / 
     x:RHYTHMICAL_DASH / 
-    x:BEGIN_SLUR / 
-    x:END_SLUR /
     x:REPEAT_SYMBOL {
             x.attributes=[];
             return x;
@@ -332,8 +327,6 @@ NON_BARLINE
     x:BEAT_UNDELIMITED / 
     x:SARGAM_PITCH / 
     x:RHYTHMICAL_DASH / 
-    x:BEGIN_SLUR / 
-    x:END_SLUR /
     x:REPEAT_SYMBOL {
             x.attributes=[];
             return x;
@@ -347,8 +340,6 @@ SARGAM_LINE_ITEM  "an item in the main line"
     x:SARGAM_PITCH / 
     x:RHYTHMICAL_DASH / 
     x:BARLINE / 
-    x:BEGIN_SLUR / 
-    x:END_SLUR /
     x:REPEAT_SYMBOL {
             x.attributes=[];
             return x;
@@ -402,10 +393,10 @@ DEVANAGRI_BEAT_UNDELIMITED "beats can be indicated by a group of pitches that co
     }
 
 ABC_BEAT_UNDELIMITED_ITEM "C--D--E-"
-  = ABC_SARGAM_PITCH / RHYTHMICAL_DASH / BEGIN_SLUR / END_SLUR
+  = ABC_SARGAM_PITCH / RHYTHMICAL_DASH 
 
 DEVANAGRI_BEAT_UNDELIMITED_ITEM "inside of a simple beat, ie S--R--G-"
-  = DEVANAGRI_SARGAM_PITCH / RHYTHMICAL_DASH / BEGIN_SLUR / END_SLUR
+  = DEVANAGRI_SARGAM_PITCH / RHYTHMICAL_DASH
 
 
 
@@ -420,9 +411,7 @@ UNDELIMITED_SARGAM_PITCH_WITH_DASHES "for example S--"
 BEAT_UNDELIMITED_ITEM "inside of a simple beat, ie S--R--G- Note that undelimited beats cannot contain spaces"
   = UNDELIMITED_SARGAM_PITCH_WITH_DASHES /
     SARGAM_PITCH /
-    RHYTHMICAL_DASH / 
-    BEGIN_SLUR / 
-    END_SLUR
+    RHYTHMICAL_DASH 
   
 ABC_BEAT_DELIMITED "ie <C D E F> ."
   = begin_symbol:BEGIN_BEAT_SYMBOL beat_items:ABC_BEAT_DELIMITED_ITEM+ end_symbol:END_BEAT_SYMBOL
@@ -458,15 +447,13 @@ ABC_BEAT_DELIMITED_ITEM "inside of a delimited beat, ie C--D--E-"
   = 
   ABC_SARGAM_PITCH /
   RHYTHMICAL_DASH /
-  BEGIN_SLUR /
-  END_SLUR /
   WHITE_SPACE
 
 DEVANAGRI_BEAT_DELIMITED_ITEM "inside of a delimited beat, ie S--R--G-"
-  = DEVANAGRI_SARGAM_PITCH / RHYTHMICAL_DASH / BEGIN_SLUR / END_SLUR / WHITE_SPACE
+  = DEVANAGRI_SARGAM_PITCH / RHYTHMICAL_DASH / WHITE_SPACE
 
 BEAT_DELIMITED_ITEM "inside of a delimited beat, ie S--R--G-"
-  = SARGAM_PITCH / RHYTHMICAL_DASH / BEGIN_SLUR / END_SLUR / WHITE_SPACE
+  = SARGAM_PITCH / RHYTHMICAL_DASH / WHITE_SPACE
 
 
 WORD "a non-syllable like john"

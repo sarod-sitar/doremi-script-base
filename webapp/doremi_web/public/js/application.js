@@ -3,11 +3,13 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   $(document).ready(function() {
-    var debug, generate_html_page_aux, get_css, get_zepto, handleFileSelect, long_composition, my_url, params_for_download_lilypond, params_for_download_sargam, parser, str, str1, str_simple, zlong_composition;
+    var Logger, debug, generate_html_page_aux, get_css, get_zepto, handleFileSelect, long_composition, my_url, params_for_download_lilypond, params_for_download_sargam, parser, str, str1, str_simple, zlong_composition;
+    $('.generated_by_lilypond').hide();
+    Logger = _console.constructor;
+    _console.level = Logger.WARN;
+    _.mixin(_console.toObject());
     if (typeof Zepto !== "undefined" && Zepto !== null) {
-      if (typeof console !== "undefined" && console !== null) {
-        console.log("***Using zepto.js instead of jQuery***");
-      }
+      _.debug("***Using zepto.js instead of jQuery***");
     }
     debug = false;
     handleFileSelect = __bind(function(evt) {
@@ -38,12 +40,12 @@
         return window.timed_count();
       }
     }, this);
-    long_composition = '\nRag:Bhairavi\nTal:Tintal\nTitle:Bansuri\nAuthor:Traditional\nSource:AAK\nMode: phrygian\nFilename: bansuri.sargam\nTime: 4/4\nKey: d\n\n\n          \n                            i            IV\n         3                  +            2          .\n1)|: (Sr | n) S   (gm Pd) | P - P  P   | P - D  <(nDSn)>) |\n           .\n      ban-    su-  ri       ba- ja ra-   hi  dhu- na\n\n  0  ~                3            ~       +  .     *  *   \n| P  d   P    d    |  (Pm   PmnP) (g m) | (PdnS) -- g  S |\n  ma-dhu-ra   kan-     nai-        ya      khe-     la-ta\n\n   2               0     \n                   ~\n| (d-Pm  g) P  m | r - S :|\n   ga-      wa-ta  ho- ri';
+    long_composition = '\nRag:Bhairavi\nTal:Tintal\nTitle:Bansuri\nAuthor:Traditional\nSource:AAK\nMode: phrygian\nFilename: bansuri.sargam\nTime: 4/4\nKey: d\n\n\n          \n                            i            IV\n         3                  +            2          .\n1)|: (Sr | n) S   (gm Pd) | P - P  P   | P - D  <(nDSn)> |\n           .\n      ban-    su-  ri       ba- ja ra-   hi  dhu- na\n\n  0  ~                3            ~       +  .     *  *   \n| P  d   P    d    |  (Pm   PmnP) (g m) | (PdnS) -- g  S |\n  ma-dhu-ra   kan-     nai-        ya      khe-     la-ta\n\n   2               0     \n                   ~\n| (d-Pm  g) P  m | r - S :|\n   ga-      wa-ta  ho- ri';
     zlong_composition = 'Rag:Bhairavi\nTal:Tintal\nTitle:Bansuri\nSource:AAK\nMode: phrygian\n           . .\n[| Srgm PdnS SndP mgrS |]\n\n           I  IV            V   V7 ii    iii7 \n               3                  +            2          .\n1)|: S S S (Sr | n) S   (gm Pd) | P - P  P   | P - D  <(nDSn)>) |\n                 .\n            ban-    su-  ri       ba- ja ra-   hi  dhu- na\n\n  0  ~                3               ~       +  .     *  *   \n| P  d   P       d    |  (Pm   PmnP) (g m) | (PdnS) -- g  S |\n     ma- dhu-ra  kan-     nai-        ya      khe-     la-ta\n\n    2              0     \n                   ~\n| (d-Pm  g) P  m | r - S :|\n   ga-      wa-ta  ho- ri\n';
     str = "S";
     str1 = '                          I   IV       V   V7 ii  iii7 \n       3                  +            2          .\n|: (Sr | n) S   (gm Pd) | P - P  P   | P - D  (<nDSn>) |\n         .\n    ban-    su-  ri       ba- ja ra-   hi  dhu- na\n\n  0  ~                3           ~       +  .     *  .\n| P  d   P   d    |  (Pm   PmnP) (g m) | (PdnS) -- g  S |\n  ma-dhu-ra  kan-     nai-        ya      khe-     la-ta';
     str = '    I                       IV             V\n                 .  .   .    . ..\n|: (SNRSNS) N    S--S --S- | SNRS N D P || mm GG RR S-SS :|  \n    .   .   .\n    he-     llo';
-    str = 'Rag:Bhairavi\nTal:Tintal\nTitle:Bansuri\nSource:AAK\n\n          3             ~    +            2         .\n1) |: (Sr | n) S   (gm Pd)|| P - P  P   | P - D  (<nDSn>) |\n            .\n       ban-    su-  ri       ba- ja ra-   hi  dhu- na\n\n0                 3                    +     .    *  .\n| P  d   P   d    | <(Pm>   PmnP) (g m)|| PdnS -- g  S |\n  ma-dhu-ra  kan-     nai-         ya     khe-    la-ta\n\n2              0     ~\n|  d-Pm g P  m | r - S :|\n   ga-    wa-ta  ho- ri\n\n      I                     IV\n              . .                   . .\n2)  [| Srgm PdnS SndP mgrS | Srgm PdnS SndP mgrS | % | % |]';
+    str = 'Rag:Bhairavi\nTal:Tintal\nTitle:Bansuri\nSource:AAK\n\n          3             ~    +            2         .\n1) |: (Sr | n) S   (gm Pd)|| P - P  P   | P - D  <(nDSn)> |\n            .\n       ban-    su-  ri       ba- ja ra-   hi  dhu- na\n\n0                 3                       +  .    *  .\n| P  d   P   d    | <(Pm>   PmnP) (g m)|| PdnS -- g  S |\n  ma-dhu-ra  kan-     nai-         ya     khe-    la-ta\n\n2              0 ~\n|  d-Pm g P  m | r - S :|\n   ga-    wa-ta  ho- ri\n\n      I                     IV\n              . .                   . .\n2)  [| Srgm PdnS SndP mgrS | Srgm PdnS SndP mgrS | % | % |]';
     str_simple = '   + \n   .                        .\n|<(S--  r)>  (r---  g-m) | (Sn-d    Pmg rS) - - |\n   test-ing   looped-       melisma-';
     str = str1;
     str = "S--R --G- | -m-- P";
@@ -91,6 +93,7 @@
     $('#generate_staff_notation').click(__bind(function() {
       var my_data, obj;
       $('#lilypond_png').attr('src', "");
+      $('.generated_by_lilypond').hide();
       my_data = {
         fname: window.the_composition.filename,
         data: window.the_composition.lilypond,
@@ -105,18 +108,20 @@
           return $('#lilypond_png').attr('src', 'none.jpg');
         },
         success: function(some_data, text_status) {
-          var snip, typ, _i, _len, _ref;
-          $('#play_midi').attr('src', some_data.midi);
-          window.the_composition.midi = some_data.midi;
-          _ref = ["png", "pdf", "midi", "ly", "txt"];
+          var snip, typ, x, _i, _len, _ref;
+          _ref = ["png", "pdf", "mid", "ly", "txt"];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             typ = _ref[_i];
             snip = "window.open('compositions/" + some_data.fname + "." + typ + "'); return false; ";
-            $("#download_" + typ).attr('href', "compositions/" + some_data.fname + "." + typ);
+            $("#download_" + typ).attr('href', x = "compositions/" + some_data.fname + "." + typ);
+            if (typ === 'png') {
+              console.log("typ is png");
+              $('#lilypond_png').attr('src', x);
+            }
             $("#download_" + typ).attr('onclick', snip);
           }
-          $('#lilypond_png').attr('src', some_data.png);
           window.location = String(window.location).replace(/\#.*$/, "") + "#staff_notation";
+          $('.generated_by_lilypond').show();
           $('#lilypond_output').html(some_data.lilypond_output);
           if (some_data.error) {
             return $('#lilypond_output').toggle();

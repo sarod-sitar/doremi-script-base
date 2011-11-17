@@ -1,42 +1,69 @@
 (function() {
-  var aux1, debug, first_line, first_sargam_line, log, my_inspect, parse_without_reporting_error, parser, root, should_not_parse, sys, test_parses, utils;
+  var Logger, aux1, debug, first_line, first_sargam_line, my_inspect, parse_without_reporting_error, parser, root, should_not_parse, sys, test_parses, utils, _;
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
-  debug = false;
+  debug = true;
+  if (typeof global !== "undefined" && global !== null) {
+    global._console || (global._console = require('./underscore.logger.js'));
+  }
+  Logger = global._console.constructor;
+  _console.level = Logger.DEBUG;
+  _console.level = Logger.WARN;
+  if (typeof require !== "undefined" && require !== null) {
+    _ = require("underscore")._;
+  }
+  require('./sargam_parser.js');
   sys = require('sys');
   utils = require('./tree_iterators.js');
-  log = function(x) {
-    if (!console) {
+  _.mixin(_console.toObject());
+  my_inspect = function(x) {
+    var arg, _i, _len, _results;
+    if (!(debug != null)) {
       return;
     }
-    if (debug) {
-      return console.log(x);
+    console.log("debug is " + debug);
+    if (!debug) {
+      return;
     }
+    if (!(typeof JSON !== "undefined" && JSON !== null)) {
+      return;
+    }
+    _results = [];
+    for (_i = 0, _len = arguments.length; _i < _len; _i++) {
+      arg = arguments[_i];
+      _results.push(console.log(JSON.stringify(arg, null, " ")));
+    }
+    return _results;
   };
-  require('./sargam_parser.js');
-  log('SargamParser is', SargamParser);
+  _.mixin({
+    my_inspect: my_inspect
+  });
+  _.my_inspect({
+    1: 2
+  });
+  _.debug('SargamParser is', SargamParser);
   parser = SargamParser;
-  log('parser is', parser);
+  _.debug('parser is', parser);
   aux1 = function(str, result) {
     if (!sys) {
       return;
     }
-    log("Result of parsing <<" + str + ">> is");
-    return log(sys.inspect(result, true, null));
+    _.debug("Result of parsing <<" + str + ">> is");
+    return _.debug(sys.inspect(result, true, null));
   };
   should_not_parse = function(str, test, msg) {
-    log(str);
-    log("Testing that <<" + str + ">> does NOT parse");
+    _.debug(str);
+    _.debug("Testing that <<" + str + ">> does NOT parse");
     return test.throws((function() {
       return parser.parse(str);
     }), "<<\n" + str + "\n>> should not parse!. " + msg);
   };
   parse_without_reporting_error = function(str) {
-    log("Entering parse_without_reporting_error");
+    _.debug("Entering parse_without_reporting_error");
     log("Parsing <<\n" + str + ">>");
     try {
       return parser.parse(str);
     } catch (error) {
-      return log("Didn't parse");
+      return _.debug("Didn't parse");
     }
   };
   first_sargam_line = function(composition_data) {
@@ -51,26 +78,14 @@
       msg = "";
     }
     composition = parser.parse(str);
-    if (composition != null) {
-      my_inspect(composition);
-    }
+    _.debug("test_parses", composition);
     test.ok(composition != null, "" + str + " didn't parse!!. " + msg);
     return composition;
     /*
       test.doesNotThrow(-> result=parser.parse(str))
       test.ok(result?,"didn't parse")
-      log(sys.inspect(result,false,null))
+      _.debug(sys.inspect(result,false,null))
       */
-  };
-  my_inspect = function(obj, obj2) {
-    if (obj2 == null) {
-      obj2 = "";
-    }
-    if (!sys) {
-      return;
-    }
-    JSON.stringify(obj);
-    return JSON.stringify(obj2);
   };
   exports.test_bad_input = function(test) {
     var str;
@@ -112,11 +127,11 @@
     var composition, line, measure, second_item, str;
     str = '|SR';
     composition = test_parses(str, test);
-    my_inspect(composition);
+    log(composition);
     line = first_sargam_line(composition);
     measure = line.items[0];
     second_item = measure.items[1];
-    my_inspect(second_item);
+    _.debug(second_item);
     test.equal(second_item.my_type, "beat", "second item of " + str + " should be a beat containing SR");
     test.equal(second_item.subdivisions, 2);
     return test.done();
@@ -128,7 +143,7 @@
     line = first_sargam_line(composition);
     measure = line.items[0];
     second_item = measure.items[1];
-    my_inspect(second_item);
+    _.debug(second_item);
     test.equal(second_item.my_type, "beat", "second item of " + str + " should be a beat containing SR");
     test.equal(second_item.subdivisions, 2);
     return test.done();
@@ -140,7 +155,7 @@
     line = first_sargam_line(composition);
     measure = line.items[0];
     second_item = measure.items[1];
-    my_inspect(second_item);
+    _.debug(second_item);
     test.equal(second_item.my_type, "beat", "second item of " + str + " should be a beat containing S--R");
     test.equal(second_item.subdivisions, x = 4, "subdivisions of beat " + str + " should be " + x);
     return test.done();
@@ -149,16 +164,16 @@
     var composition, second_item, str, third_item;
     str = '| S- |\n\n';
     composition = test_parses(str, test);
-    my_inspect(composition);
+    _.debug(composition);
     test.done();
     return;
     second_item = composition.lines[0].items[1];
-    my_inspect(second_item);
+    _.debug(second_item);
     test.equal(second_item.my_type, "beat", "second item of " + str + " should be a beat");
     test.equal(second_item.items.length, 2, "the beat's length should be 2");
     test.equal(second_item.items[0].my_type, "dash", "dash should be first item");
     third_item = composition.lines[0].items[2];
-    my_inspect(third_item);
+    _.debug(third_item);
     test.equal(third_item.my_type, "barline", "third item of " + str + " should be a barline");
     return test.done();
   };
@@ -169,7 +184,7 @@
     line = first_sargam_line(composition);
     measure = line.items[0];
     second_item = measure.items[1];
-    my_inspect(second_item);
+    _.debug(second_item);
     test.equal(second_item.my_type, "beat", "second item of " + str + " should be a beat");
     test.equal(second_item.items.length, 2, "the beat's length should be 2");
     test.equal(second_item.items[0].my_type, "dash", "dash should be first item");
@@ -197,21 +212,21 @@
     var composition, str;
     str = '| <SR>\n';
     composition = test_parses(str, test);
-    my_inspect(composition);
+    _.debug(composition);
     return test.done();
   };
   exports.test_accepts_spaces_in_delimited_beat = function(test) {
     var composition, str;
     str = '| <S R>\n';
     composition = test_parses(str, test);
-    my_inspect(composition);
+    _.debug(composition);
     return test.done();
   };
   exports.test_accepts_delimited_beat = function(test) {
     var composition, str;
     str = '| <SR>\n';
     composition = test_parses(str, test);
-    my_inspect(composition);
+    _.debug(composition);
     return test.done();
   };
   exports.test_recognizes_ornament_symbol = function(test) {
@@ -302,14 +317,14 @@
     str = '.*::\nSrgm';
     composition = test_parses(str, test);
     line = first_sargam_line(composition);
-    my_inspect(line);
+    log(line);
     measure = line.items[0];
-    my_inspect("measure is", measure);
+    log("measure is", measure);
     beat = measure.items[0];
-    my_inspect("beat is", beat);
+    log("beat is", beat);
     test.equal("beat", beat.my_type);
     pitch = beat.items[0];
-    my_inspect("pitch is", pitch);
+    log("pitch is", pitch);
     test.equal("pitch", pitch.my_type);
     test.equal(beat.items[0].octave, 1, "" + str + " should have octave 1 for S");
     test.equal(beat.items[1].octave, 1, "" + str + " should have octave 1 for r");
@@ -329,7 +344,7 @@
     test.equal("beat", beat.my_type);
     pitch = beat.items[0];
     test.equal("pitch", pitch.my_type);
-    my_inspect(line);
+    log(line);
     test.equal(beat.items[0].octave, -1, "" + str + " should have octave -1 for S");
     test.equal(beat.items[1].octave, -1, "" + str + " should have octave -1 for r");
     test.equal(beat.items[2].octave, -2, "" + str + " should have octave -2 for g");
@@ -340,7 +355,7 @@
     var composition, first_sargam_source, line, str, x;
     x = 'dog';
     log("x=" + x);
-    str = 'Rag:Bhairavi\nTal:Tintal\nTitle:Bansuri\nSource:AAK\n\n          3                   +            2         .\n1) |: (Sr | n) S   (gm Pd) || P - P  P   | P - D  (<nDSn>) |\n            .\n       ban-    su-  ri        ba- ja ra-   hi  dhu- na\n\n0                 3                     +     .    *  .\n| P  d   P   d    | <(Pm>   PmnP) (g m) || PdnS -- g  S |\n  ma-dhu-ra  kan-     nai-         ya      khe-    la-ta\n\n2              0     ~\n|  d-Pm g P  m | r - S :| %\n   ga-    wa-ta  ho- ri\n\n     +                     2    0     3     \n2)  [| Srgm PdnS SndP mgrS | %    | %   | S--S --S- ---- R-G-     |]\n';
+    str = 'Rag:Bhairavi\nTal:Tintal\nTitle:Bansuri\nSource:AAK\n\n          3                   +            2         .\n1) |: (Sr | n) S   (gm Pd) || P - P  P   | P - D  <(nDSn)> |\n            .\n       ban-    su-  ri        ba- ja ra-   hi  dhu- na\n\n0                 3                     +     .    *  .\n| P  d   P   d    | <(Pm>   PmnP) (g m) || PdnS -- g  S |\n  ma-dhu-ra  kan-     nai-         ya      khe-    la-ta\n\n2              0     ~\n|  d-Pm g P  m | r - S :| %\n   ga-    wa-ta  ho- ri\n\n     +                     2    0     3\n2)  [| Srgm PdnS SndP mgrS | %    | %   | S--S --S- ---- R-G-     |]\n';
     composition = test_parses(str, test);
     first_sargam_source = str.split('\n')[6];
     line = first_sargam_line(composition);
@@ -416,7 +431,9 @@
     var composition, str;
     str = 'S\n\nR';
     composition = test_parses(str, test);
-    my_inspect(composition);
+    _.log("test_parses_lines, after test_parses");
+    _.debug(composition.toString());
+    _.log("z");
     test.ok(composition.lines != null, "parsed composition should have a lines attribute");
     test.equal(composition.lines.length, 2, "Should have 2 lines");
     aux1(str, composition);
@@ -476,7 +493,6 @@
   };
   exports.test_parses_one_as_tala = function(test) {
     var composition, line, str, x;
-    debug = true;
     str = '1 \nS';
     composition = test_parses(str, test);
     line = first_sargam_line(composition);
@@ -486,7 +502,6 @@
   };
   exports.test_ending_one_dot = function(test) {
     var composition, line, str, x;
-    debug = true;
     str = '1.\nS';
     composition = test_parses(str, test);
     line = first_sargam_line(composition);
@@ -496,7 +511,6 @@
   };
   exports.test_chord_iv = function(test) {
     var composition, line, str, x;
-    debug = true;
     str = 'iv\nS';
     composition = test_parses(str, test);
     line = first_sargam_line(composition);
@@ -524,7 +538,6 @@
   };
   exports.test_tivra_ma_devanagri = function(test) {
     var composition, line, str, x;
-    debug = true;
     str = 'म\'\ntivrama';
     composition = test_parses(str, test);
     line = first_sargam_line(composition);
@@ -534,14 +547,12 @@
   };
   exports.test_devanagri_and_latin_sargam_together_should_fail = function(test) {
     var composition, str;
-    debug = true;
     str = '       .\nसरग़मपधऩस SrRgGmMPdDnN\nSRGmPDNS';
     composition = should_not_parse(str, test);
     return test.done();
   };
   exports.test_devanagri = function(test) {
     var composition, line, str, x, z;
-    debug = true;
     str = '       .\nसरग़मपधऩस\nSRGmPDNS';
     composition = test_parses(str, test);
     line = first_sargam_line(composition);
