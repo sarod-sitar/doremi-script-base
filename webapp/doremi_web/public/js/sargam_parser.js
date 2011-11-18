@@ -138,6 +138,7 @@ SargamParser = (function(){
         "SARGAM_NI": parse_SARGAM_NI,
         "SARGAM_NI_FLAT": parse_SARGAM_NI_FLAT,
         "SARGAM_NI_SHARP": parse_SARGAM_NI_SHARP,
+        "SARGAM_ORNAMENT": parse_SARGAM_ORNAMENT,
         "SARGAM_PA": parse_SARGAM_PA,
         "SARGAM_PA_FLAT": parse_SARGAM_PA_FLAT,
         "SARGAM_PA_SHARP": parse_SARGAM_PA_SHARP,
@@ -851,6 +852,43 @@ SargamParser = (function(){
         return result0;
       }
       
+      function parse_SARGAM_ORNAMENT() {
+        var cacheKey = 'SARGAM_ORNAMENT@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        var savedReportMatchFailures = reportMatchFailures;
+        reportMatchFailures = false;
+        var result2 = parse_SARGAM_PITCH();
+        if (result2 !== null) {
+          var result1 = [];
+          while (result2 !== null) {
+            result1.push(result2);
+            var result2 = parse_SARGAM_PITCH();
+          }
+        } else {
+          var result1 = null;
+        }
+        var result0 = result1 !== null
+          ? (function(items) { 
+                      return parse_ornament(items)
+                   })(result1)
+          : null;
+        reportMatchFailures = savedReportMatchFailures;
+        if (reportMatchFailures && result0 === null) {
+          matchFailed("in upper line NRSNS");
+        }
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
       function parse_UPPER_OCTAVE_LINE() {
         var cacheKey = 'UPPER_OCTAVE_LINE@' + pos;
         var cachedResult = cache[cacheKey];
@@ -1092,35 +1130,40 @@ SargamParser = (function(){
         
         var savedReportMatchFailures = reportMatchFailures;
         reportMatchFailures = false;
-        var result7 = parse_WHITE_SPACE();
-        if (result7 !== null) {
-          var result0 = result7;
+        var result8 = parse_SARGAM_ORNAMENT();
+        if (result8 !== null) {
+          var result0 = result8;
         } else {
-          var result6 = parse_UPPER_OCTAVE_DOT();
-          if (result6 !== null) {
-            var result0 = result6;
+          var result7 = parse_WHITE_SPACE();
+          if (result7 !== null) {
+            var result0 = result7;
           } else {
-            var result5 = parse_ALTERNATE_ENDING_INDICATOR();
-            if (result5 !== null) {
-              var result0 = result5;
+            var result6 = parse_UPPER_OCTAVE_DOT();
+            if (result6 !== null) {
+              var result0 = result6;
             } else {
-              var result4 = parse_TALA();
-              if (result4 !== null) {
-                var result0 = result4;
+              var result5 = parse_ALTERNATE_ENDING_INDICATOR();
+              if (result5 !== null) {
+                var result0 = result5;
               } else {
-                var result3 = parse_MORDENT();
-                if (result3 !== null) {
-                  var result0 = result3;
+                var result4 = parse_TALA();
+                if (result4 !== null) {
+                  var result0 = result4;
                 } else {
-                  var result2 = parse_UPPER_UPPER_OCTAVE_SYMBOL();
-                  if (result2 !== null) {
-                    var result0 = result2;
+                  var result3 = parse_MORDENT();
+                  if (result3 !== null) {
+                    var result0 = result3;
                   } else {
-                    var result1 = parse_CHORD_SYMBOL();
-                    if (result1 !== null) {
-                      var result0 = result1;
+                    var result2 = parse_UPPER_UPPER_OCTAVE_SYMBOL();
+                    if (result2 !== null) {
+                      var result0 = result2;
                     } else {
-                      var result0 = null;;
+                      var result1 = parse_CHORD_SYMBOL();
+                      if (result1 !== null) {
+                        var result0 = result1;
+                      } else {
+                        var result0 = null;;
+                      };
                     };
                   };
                 };
@@ -7020,6 +7063,10 @@ SargamParser = (function(){
     item_has_attribute=Helper.item_has_attribute
       
     trim=Helper.trim
+      
+    handle_ornament=Helper.handle_ornament
+      
+    parse_ornament=Helper.parse_ornament
       
     parse_composition=Helper.parse_composition
       

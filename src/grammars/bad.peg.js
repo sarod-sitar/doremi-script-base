@@ -19,7 +19,6 @@
   sa_helper=Helper.sa_helper
   item_has_attribute=Helper.item_has_attribute
   trim=Helper.trim
-  handle_ornament=Helper.handle_ornament
   parse_ornament=Helper.parse_ornament
   parse_composition=Helper.parse_composition
   parse_sargam_pitch=Helper.parse_sargam_pitch
@@ -55,7 +54,6 @@
 
 START "Grammar for AACM/Bhatkande style sargam/letter notation by John Rothfield 707 538-5133, cell 707 331-2700  john@rothfield.com"
   = COMPOSITION
-  //= UPPER_OCTAVE_LINE
 
 EMPTY_LINE ""
 = " "* LINE_END_CHAR (" "* LINE_END_CHAR)* { return {my_type: "line_end"}
@@ -81,8 +79,12 @@ ATTRIBUTE_LINE "ie Author: John Rothfield"
                 source: "todo"
                 }}
 
-LINE_END "ss"
+LINE_END ""
   = EMPTY_LINE+ / EOF
+
+
+SIMPLE_LINE
+  = sargam:(sargam:DEVANAGRI_SARGAM_LINE / sargam:SARGAM_LINE / sargam:ABC_SARGAM_LINE/ sargam:NUMBER_SARGAM_LINE)
 
 
 LINE "main line of music. multiple lines including syllables etc,delimited by empty line. There is an order, optional upper octave lines followed by main line of sargam followed by optional lyrics line"
@@ -112,16 +114,6 @@ LINE "main line of music. multiple lines including syllables etc,delimited by em
           this.assign_attributes(sargam,attribute_lines)
           return sargam;
         }
-
-        
-SARGAM_ORNAMENT "in upper line NRSNS"
-  = items:SARGAM_ORNAMENT_ITEM+ 
-        { 
-            return parse_ornament(items)
-         }
-
-SARGAM_ORNAMENT_ITEM
-  = SARGAM_PITCH 
 
 UPPER_OCTAVE_LINE "can put upper octave dots or semicolons for upper upper octave (. or :). Also tala symbols +203"
   = items:UPPER_OCTAVE_LINE_ITEM+ LINE_END
@@ -166,15 +158,14 @@ ALTERNATE_ENDING_INDICATOR "1._______ 2.___ etc. The period is optional. Must ha
     }
 
 UPPER_OCTAVE_LINE_ITEM "Things above notes, including talas, octaves,chords, and 1st and second ending symbols"
-  =  
-     SARGAM_ORNAMENT /
-     WHITE_SPACE / 
+  =  WHITE_SPACE / 
      UPPER_OCTAVE_DOT /
      ALTERNATE_ENDING_INDICATOR /
      TALA /
      MORDENT /
      UPPER_UPPER_OCTAVE_SYMBOL /
-     CHORD_SYMBOL 
+     CHORD_SYMBOL  /
+     SARGAM_ORNAMENT
 
 
 LOWER_OCTAVE_LINE "can put lower octave dots or semicolons for lower-lower octave (. or :)"
@@ -280,7 +271,7 @@ DEVANAGRI_MEASURE "measures,note that beginning and end of line implicitly demar
           return parse_measure(start_obs,items,end_obs)
              }
 MEASURE "measures,note that beginning and end of line implicitly demarcates a measure"
-  = start_obs:BARLINE? items:NON_BARLINE+ end_obs:(BARLINE / &LINE_END ) 
+  = start_obs:BARLINE? items:NON_BARLINE+ end_obs:(BARLINE / &LINE_END) 
         {
           return parse_measure(start_obs,items,end_obs)
         }
@@ -390,6 +381,11 @@ ABC_BEAT_UNDELIMITED "beats can be indicated by a group of pitches that consist 
             return parse_beat_undelimited(beat_items)
          }
 
+SARGAM_ORNAMENT "beats can be indicated by a group of pitches that consist only of pitches and dashes such as S--R--G-"
+  = items:SARGAM_ORNAMENT_ITEM+ 
+        { 
+            return parse_ornament(items)
+         }
 BEAT_UNDELIMITED "beats can be indicated by a group of pitches that consist only of pitches and dashes such as S--R--G-"
   = beat_items:BEAT_UNDELIMITED_ITEM+ 
         { 
@@ -419,6 +415,9 @@ UNDELIMITED_SARGAM_PITCH_WITH_DASHES "for example S--"
          return([pitch].concat(dashes))
       }
 
+
+SARGAM_ORNAMENT_ITEM
+  = SARGAM_PITCH 
 
 BEAT_UNDELIMITED_ITEM "inside of a simple beat, ie S--R--G- Note that undelimited beats cannot contain spaces"
   = UNDELIMITED_SARGAM_PITCH_WITH_DASHES /
@@ -960,5 +959,4 @@ WHITE_SPACE "white space"
                      source: spaces.join("")
                      }
                      }
-
 

@@ -105,6 +105,16 @@
       this.measure_note_durations(my_beat);
       return my_beat;
     },
+    parse_ornament: function(items) {
+      var beat_items, ornament;
+      beat_items = _.flatten(items);
+      ornament = {
+        my_type: "ornament",
+        source: this.get_source_for_items(items),
+        ornament_items: items
+      };
+      return ornament;
+    },
     parse_sargam_line: function(line_number, items, kind) {
       var my_items, my_line, source;
       if (line_number !== '') {
@@ -461,13 +471,30 @@
         return pos = pos + item.source.length;
       }, this));
     },
-    check_semantics: function(sargam, sarg_obj, attribute) {
+    handle_ornament: function(sargam, sarg_obj, ornament, sargam_nodes) {
+      var s;
+      s = sargam_nodes[ornament.column - 1];
+      if ((s != null) && (s.my_type === "pitch")) {
+        ornament.placement = "after";
+        if (!(s.attributes != null)) {
+          s.attributes = [];
+        }
+        s.attributes.push(ornament);
+        return;
+      }
+      return this.warnings.push("ornament " + ornament.my_type + " (" + ornament.source + ") not to right of pitch , column is " + ornament.column);
+    },
+    check_semantics: function(sargam, sarg_obj, attribute, sargam_nodes) {
       var srgmpdn_in_devanagri;
       if (attribute.my_type === "whitespace") {
         return false;
       }
+      if (attribute.my_type === "ornament") {
+        handle_ornament(sargam, sarg_obj, attribute, sargam_nodes);
+        return false;
+      }
       if (!sarg_obj) {
-        this.warnings.push("Attribute " + attribute.my_type + " above/below nothing, column is " + attribute.column);
+        this.warnings.push("Attribute " + attribute.my_type + " (" + attribute.source + ") above/below nothing, column is " + attribute.column);
         return false;
       }
       if (attribute.my_type === "kommal_indicator") {
@@ -497,8 +524,10 @@
       }
       return true;
     },
+    assign_ornaments: function(attribute_line, sargam, sargam_nodes) {},
     assign_attributes: function(sargam, attribute_lines) {
       var attribute, attribute_line, attribute_map, attribute_nodes, column, sarg_obj, sargam_nodes, _i, _len, _results;
+      console.log("assign_attributes");
       this.log("entering assign_attributes=sargam,attribute_lines", sargam, attribute_lines);
       sargam_nodes = this.map_nodes(sargam);
       _results = [];
@@ -514,7 +543,7 @@
             attribute = attribute_nodes[column];
             this.log("processing column,attribute", column, attribute);
             sarg_obj = sargam_nodes[column];
-            _results2.push(this.check_semantics(sargam, sarg_obj, attribute) === !false ? (!(sarg_obj.attributes != null) ? sarg_obj.attributes = [] : void 0, sarg_obj.attributes.push(attribute)) : void 0);
+            _results2.push(this.check_semantics(sargam, sarg_obj, attribute, sargam_nodes) === !false ? (!(sarg_obj.attributes != null) ? sarg_obj.attributes = [] : void 0, sarg_obj.attributes.push(attribute)) : void 0);
           }
           return _results2;
         }).call(this));
