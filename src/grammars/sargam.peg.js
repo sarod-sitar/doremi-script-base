@@ -86,7 +86,7 @@ LINE "main line of music. multiple lines including syllables etc,delimited by em
 
   =
     uppers:UPPER_OCTAVE_LINE*
-    sargam:(sargam:DEVANAGRI_SARGAM_LINE / sargam:SARGAM_LINE / sargam:ABC_SARGAM_LINE)
+    sargam:(sargam:DEVANAGRI_SARGAM_LINE / sargam:SARGAM_LINE / sargam:ABC_SARGAM_LINE/ sargam:NUMBER_SARGAM_LINE)
     lowers:LOWER_OCTAVE_LINE*
     lyrics:LYRICS_LINE?
     LINE_END  { 
@@ -254,6 +254,11 @@ ABC_MEASURE "measures,note that beginning and end of line implicitly demarcates 
           return parse_measure(start_obs,items,end_obs)
              }
 
+NUMBER_MEASURE "measures,note that beginning and end of line implicitly demarcates a measure"
+  = start_obs:BARLINE? items:NUMBER_NON_BARLINE+ end_obs:(BARLINE / &LINE_END) 
+        {
+          return parse_measure(start_obs,items,end_obs)
+             }
 DEVANAGRI_MEASURE "measures,note that beginning and end of line implicitly demarcates a measure"
   = start_obs:BARLINE? items:DEVANAGRI_NON_BARLINE+ end_obs:(BARLINE / &LINE_END) 
         {
@@ -277,6 +282,17 @@ ABC_NON_BARLINE
             return x;
     }
 
+NUMBER_NON_BARLINE 
+  =
+    x:WHITE_SPACE /  
+    x:NUMBER_BEAT_DELIMITED / 
+    x:NUMBER_BEAT_UNDELIMITED / 
+    x:NUMBER_SARGAM_PITCH / 
+    x:RHYTHMICAL_DASH / 
+    x:REPEAT_SYMBOL {
+            x.attributes=[];
+            return x;
+    }
 DEVANAGRI_NON_BARLINE 
   =
     x:WHITE_SPACE /  
@@ -337,12 +353,22 @@ DEVANAGRI_SARGAM_LINE "consists of optional line# at beginning of line, followed
        return parse_sargam_line(line_number,items,"devanagri")
     }
 
+NUMBER_SARGAM_LINE "consists of optional line# at beginning of line, followed by 1 or more measures followed by line end"
+  = line_number:LINE_NUMBER?  items:NUMBER_MEASURE+ LINE_END
+    {
+       return parse_sargam_line(line_number,items,"number")
+    }
 SARGAM_LINE "consists of optional line# at beginning of line, followed by 1 or more measures followed by line end"
   = line_number:LINE_NUMBER?  items:MEASURE+ LINE_END
     {
        return parse_sargam_line(line_number,items,"latin_sargam")
       }
 
+NUMBER_BEAT_UNDELIMITED "beats can be indicated by a group of pitches that consist only of pitches and dashes such as S--R--G-"
+  = beat_items:NUMBER_BEAT_UNDELIMITED_ITEM+ 
+        { 
+            return parse_beat_undelimited(beat_items)
+         }
 ABC_BEAT_UNDELIMITED "beats can be indicated by a group of pitches that consist only of pitches and dashes such as S--R--G-"
   = beat_items:ABC_BEAT_UNDELIMITED_ITEM+ 
         { 
@@ -359,6 +385,9 @@ DEVANAGRI_BEAT_UNDELIMITED "beats can be indicated by a group of pitches that co
     { 
       return parse_beat_undelimited(beat_items)
     }
+
+NUMBER_BEAT_UNDELIMITED_ITEM "1--2--3-"
+  = NUMBER_SARGAM_PITCH / RHYTHMICAL_DASH 
 
 ABC_BEAT_UNDELIMITED_ITEM "C--D--E-"
   = ABC_SARGAM_PITCH / RHYTHMICAL_DASH 
@@ -387,6 +416,11 @@ ABC_BEAT_DELIMITED "ie <C D E F> ."
           return parse_beat_delimited(begin_symbol,beat_items,end_symbol)
          }
 
+NUMBER_BEAT_DELIMITED "ie <1 2 3> . Useful if lyrics wouldn't line up otherwise!. use <Srgm> or <S r g m> to group pithes into a single beat. The <> delimiters correspond to the lower loop in the aacm notation system"
+  = begin_symbol:BEGIN_BEAT_SYMBOL beat_items:NUMBER_BEAT_DELIMITED_ITEM+ end_symbol:END_BEAT_SYMBOL
+        { 
+          return parse_beat_delimited(begin_symbol,beat_items,end_symbol)
+         }
 DEVANAGRI_BEAT_DELIMITED "ie <S R G m> . Useful if lyrics wouldn't line up otherwise!. use <Srgm> or <S r g m> to group pithes into a single beat. The <> delimiters correspond to the lower loop in the aacm notation system"
   = begin_symbol:BEGIN_BEAT_SYMBOL beat_items:DEVANAGRI_BEAT_DELIMITED_ITEM+ end_symbol:END_BEAT_SYMBOL
         { 
@@ -414,6 +448,12 @@ END_BEAT_SYMBOL  "Symbol to use to indicate end of beat"
 ABC_BEAT_DELIMITED_ITEM "inside of a delimited beat, ie C--D--E-"
   = 
   ABC_SARGAM_PITCH /
+  RHYTHMICAL_DASH /
+  WHITE_SPACE
+
+NUMBER_BEAT_DELIMITED_ITEM "inside of a delimited beat, ie 1--3--2-"
+  = 
+  NUMBER_SARGAM_PITCH /
   RHYTHMICAL_DASH /
   WHITE_SPACE
 
@@ -588,6 +628,98 @@ ABC_BSHARP
   = char:"B#"
     { return sa_helper(char,"B#") }
 
+NUMBER_MUSICAL_CHAR  
+  = 
+  NUMBER_CSHARP /
+  NUMBER_CFLAT /
+  NUMBER_DFLAT /
+  NUMBER_DSHARP /
+  NUMBER_EFLAT /
+  NUMBER_ESHARP / 
+  // TODO: REVIEW ESHARP
+  NUMBER_FFLAT /
+  NUMBER_FSHARP /
+  NUMBER_GFLAT /
+  NUMBER_GSHARP /
+  NUMBER_AFLAT /
+  NUMBER_ASHARP /
+  NUMBER_BFLAT /
+  NUMBER_BSHARP /
+  NUMBER_C /
+  NUMBER_D /
+  NUMBER_E /
+  NUMBER_F /
+  NUMBER_G /
+  NUMBER_A /
+  NUMBER_B 
+  
+NUMBER_C 
+  = char:"1"
+  { return sa_helper(char,"C") }
+NUMBER_D
+  = char:"2"
+  { return sa_helper(char,"D") }
+NUMBER_E
+  = char:"3"
+    { return sa_helper(char,"E") }
+NUMBER_F 
+  = char:"4"
+    { return sa_helper(char,"F") }
+NUMBER_G 
+  = char:"5"
+    { return sa_helper(char,"G") }
+NUMBER_A
+  = char:"6"
+    { return sa_helper(char,"A") }
+NUMBER_B
+  = char:"7"
+    { return sa_helper(char,"B") }
+NUMBER_CSHARP 
+  = char:"1#"
+    { return sa_helper(char,"C#") }
+NUMBER_CFLAT 
+  = char:"1b"
+    { return sa_helper(char,"Cb") }
+NUMBER_DFLAT 
+  = char:"2b"
+    { return sa_helper(char,"Db") }
+NUMBER_DSHARP 
+  = char:"2#"
+    { return sa_helper(char,"D#") }
+NUMBER_EFLAT 
+  = char:"3b"
+    { return sa_helper(char,"Eb") }
+NUMBER_ESHARP 
+  = char:"3#"
+    { return sa_helper(char,"E#") }
+NUMBER_FFLAT 
+// TODO:REVIEW
+  = char:"4b"
+    { return sa_helper(char,"Fb") }
+NUMBER_FSHARP 
+  = char:"4#"
+    { return sa_helper(char,"F#") }
+NUMBER_GFLAT 
+  = char:"5b"
+    { return sa_helper(char,"Gb") }
+NUMBER_GSHARP 
+  = char:"5#"
+    { return sa_helper(char,"G#") }
+NUMBER_AFLAT 
+  = char:"6b"
+    { return sa_helper(char,"Ab") }
+NUMBER_ASHARP 
+  = char:"6#"
+    { return sa_helper(char,"A#") }
+NUMBER_BFLAT 
+  = char:"7b"
+    { return sa_helper(char,"Bb") }
+NUMBER_BSHARP 
+  = char:"7#"
+    { return sa_helper(char,"B#") }
+
+
+
 
 DEVANAGRI_MUSICAL_CHAR  "devanagri characters."
   = 
@@ -710,6 +842,11 @@ SARGAM_NI_SHARP
      {return sa_helper(char,"B#")}
 
 
+NUMBER_SARGAM_PITCH "ie 123"
+= slur:BEGIN_SLUR_OF_PITCH? char:NUMBER_MUSICAL_CHAR end_slur:END_SLUR_OF_PITCH?  
+       { 
+          return parse_sargam_pitch(slur,char,end_slur)
+       }
 ABC_SARGAM_PITCH "ie CDE"
 = slur:BEGIN_SLUR_OF_PITCH? char:ABC_MUSICAL_CHAR end_slur:END_SLUR_OF_PITCH?  
        { 

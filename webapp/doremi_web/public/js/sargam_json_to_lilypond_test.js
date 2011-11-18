@@ -41,7 +41,7 @@
     _.debug("test_to_lilypond returned \n" + lily + "\n");
     return lily;
   };
-  test_data = ["S - -", "c'4~ c'2", "should combine whole empty beat within a measure", "S -- ---------", "c'4~ c'2", "should combine whole empty beat within a measure"];
+  test_data = ["S - -", "c'4~ c'2", "should combine whole empty beat within a measure", "S -- ---------", "c'4~ c'2", "should combine whole empty beat within a measure", "1#2#3#4#5#6#7#-   1b2b3b4b5b6b7b- 1234567-", "cs'32 ds'32 es'32 fs'32 gs'32 as'32 bs'16 cf'32 df'32 ef'32 ff'32 gf'32 af'32 bf'16 c'32 d'32 e'32 f'32 g'32 a'32 b'16", "should work with number notation"];
   exports.test_all = function(test) {
     var fun;
     fun = function(args) {

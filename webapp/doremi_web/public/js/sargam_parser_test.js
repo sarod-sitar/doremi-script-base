@@ -602,6 +602,13 @@
     composition = test_parses(str, test);
     return test.done();
   };
+  exports.test_recognizes_number_notation = function(test) {
+    var composition, str;
+    str = '| 1234567 1#2#3#4#5#6#7#-   1b2b3b4b5b6b7b- \n  hello';
+    composition = test_parses(str, test);
+    test.equal(composition.lines[0].kind, "number", "should set composition kind to number");
+    return test.done();
+  };
   exports.test_measure_pitch_durations = function(test) {
     var composition, line, my_pitch, str;
     str = '--S- ---- --r-';
