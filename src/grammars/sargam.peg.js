@@ -18,6 +18,7 @@
   //
   sa_helper=Helper.sa_helper
   item_has_attribute=Helper.item_has_attribute
+  trim=Helper.trim
   parse_composition=Helper.parse_composition
   parse_sargam_pitch=Helper.parse_sargam_pitch
   parse_beat_delimited=Helper.parse_beat_delimited
@@ -54,7 +55,7 @@ START "Grammar for AACM/Bhatkande style sargam/letter notation by John Rothfield
   = COMPOSITION
 
 EMPTY_LINE ""
-= LINE_END_CHAR (" "* LINE_END_CHAR)* { return {my_type: "line_end"}
+= " "* LINE_END_CHAR (" "* LINE_END_CHAR)* { return {my_type: "line_end"}
            }
 
 HEADER_SECTION "Headers followed by blank lines or a line"
@@ -73,7 +74,7 @@ ATTRIBUTE_LINE "ie Author: John Rothfield"
 = key_chars:[a-zA-Z_\-0-9]+ ""? ":" blanks:_ value_chars:([^\n\r])+ _ (LINE_END_CHAR / &EOF)
      { return { my_type:"attribute",
                 key: key_chars.join(''),
-                value:value_chars.join(''),
+                value:this.trim(value_chars.join('')),
                 source: "todo"
                 }}
 

@@ -210,84 +210,111 @@ SargamParser = (function(){
         
         
         var savedPos0 = pos;
-        var result2 = parse_LINE_END_CHAR();
-        if (result2 !== null) {
-          var result3 = [];
-          var savedPos1 = pos;
-          var result5 = [];
+        var result2 = [];
+        if (input.substr(pos, 1) === " ") {
+          var result9 = " ";
+          pos += 1;
+        } else {
+          var result9 = null;
+          if (reportMatchFailures) {
+            matchFailed("\" \"");
+          }
+        }
+        while (result9 !== null) {
+          result2.push(result9);
           if (input.substr(pos, 1) === " ") {
-            var result7 = " ";
+            var result9 = " ";
             pos += 1;
           } else {
-            var result7 = null;
+            var result9 = null;
             if (reportMatchFailures) {
               matchFailed("\" \"");
             }
           }
-          while (result7 !== null) {
-            result5.push(result7);
-            if (input.substr(pos, 1) === " ") {
-              var result7 = " ";
-              pos += 1;
-            } else {
-              var result7 = null;
-              if (reportMatchFailures) {
-                matchFailed("\" \"");
-              }
-            }
-          }
-          if (result5 !== null) {
-            var result6 = parse_LINE_END_CHAR();
-            if (result6 !== null) {
-              var result4 = [result5, result6];
-            } else {
-              var result4 = null;
-              pos = savedPos1;
-            }
-          } else {
-            var result4 = null;
-            pos = savedPos1;
-          }
-          while (result4 !== null) {
-            result3.push(result4);
+        }
+        if (result2 !== null) {
+          var result3 = parse_LINE_END_CHAR();
+          if (result3 !== null) {
+            var result4 = [];
             var savedPos1 = pos;
-            var result5 = [];
+            var result6 = [];
             if (input.substr(pos, 1) === " ") {
-              var result7 = " ";
+              var result8 = " ";
               pos += 1;
             } else {
-              var result7 = null;
+              var result8 = null;
               if (reportMatchFailures) {
                 matchFailed("\" \"");
               }
             }
-            while (result7 !== null) {
-              result5.push(result7);
+            while (result8 !== null) {
+              result6.push(result8);
               if (input.substr(pos, 1) === " ") {
-                var result7 = " ";
+                var result8 = " ";
                 pos += 1;
               } else {
-                var result7 = null;
+                var result8 = null;
                 if (reportMatchFailures) {
                   matchFailed("\" \"");
                 }
               }
             }
-            if (result5 !== null) {
-              var result6 = parse_LINE_END_CHAR();
-              if (result6 !== null) {
-                var result4 = [result5, result6];
+            if (result6 !== null) {
+              var result7 = parse_LINE_END_CHAR();
+              if (result7 !== null) {
+                var result5 = [result6, result7];
               } else {
-                var result4 = null;
+                var result5 = null;
                 pos = savedPos1;
               }
             } else {
-              var result4 = null;
+              var result5 = null;
               pos = savedPos1;
             }
-          }
-          if (result3 !== null) {
-            var result1 = [result2, result3];
+            while (result5 !== null) {
+              result4.push(result5);
+              var savedPos1 = pos;
+              var result6 = [];
+              if (input.substr(pos, 1) === " ") {
+                var result8 = " ";
+                pos += 1;
+              } else {
+                var result8 = null;
+                if (reportMatchFailures) {
+                  matchFailed("\" \"");
+                }
+              }
+              while (result8 !== null) {
+                result6.push(result8);
+                if (input.substr(pos, 1) === " ") {
+                  var result8 = " ";
+                  pos += 1;
+                } else {
+                  var result8 = null;
+                  if (reportMatchFailures) {
+                    matchFailed("\" \"");
+                  }
+                }
+              }
+              if (result6 !== null) {
+                var result7 = parse_LINE_END_CHAR();
+                if (result7 !== null) {
+                  var result5 = [result6, result7];
+                } else {
+                  var result5 = null;
+                  pos = savedPos1;
+                }
+              } else {
+                var result5 = null;
+                pos = savedPos1;
+              }
+            }
+            if (result4 !== null) {
+              var result1 = [result2, result3, result4];
+            } else {
+              var result1 = null;
+              pos = savedPos0;
+            }
           } else {
             var result1 = null;
             pos = savedPos0;
@@ -628,7 +655,7 @@ SargamParser = (function(){
         var result0 = result1 !== null
           ? (function(key_chars, blanks, value_chars) { return { my_type:"attribute",
                           key: key_chars.join(''),
-                          value:value_chars.join(''),
+                          value:this.trim(value_chars.join('')),
                           source: "todo"
                           }})(result1[0], result1[3], result1[4])
           : null;
@@ -5777,6 +5804,8 @@ SargamParser = (function(){
     sa_helper=Helper.sa_helper
       
     item_has_attribute=Helper.item_has_attribute
+      
+    trim=Helper.trim
       
     parse_composition=Helper.parse_composition
       

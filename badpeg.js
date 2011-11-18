@@ -6,6 +6,7 @@
     sys = require('sys');
     _ = require("underscore")._;
     ParserHelper= require("./parser_helper.js").ParserHelper
+    Fraction=require('./third_party/fraction.js').Fraction
   }
   Helper =ParserHelper
   if (debug) {
@@ -14,6 +15,16 @@
   // Mix in the methods from Helper.
   // TODO: find a more elegant way to do this.
   // didn't work. _.extend(this, Helper) 
+  //
+  sa_helper=Helper.sa_helper
+  item_has_attribute=Helper.item_has_attribute
+  trim=Helper.trim
+  parse_composition=Helper.parse_composition
+  parse_sargam_pitch=Helper.parse_sargam_pitch
+  parse_beat_delimited=Helper.parse_beat_delimited
+  parse_beat_undelimited=Helper.parse_beat_undelimited
+  parse_measure=Helper.parse_measure
+  parse_sargam_line=Helper.parse_sargam_line
   extract_lyrics=Helper.extract_lyrics
   get_attribute=Helper.get_attribute
   mark_partial_measures= Helper.mark_partial_measures
@@ -29,6 +40,11 @@
   map_nodes = Helper.map_nodes
   my_inspect = Helper.my_inspect
   check_semantics=Helper.check_semantics
+  measure_pitch_durations=Helper.measure_pitch_durations
+  if (typeof require !== 'undefined') {
+    x=require('./tree_iterators.js')
+    all_items=x.all_items
+  }
   log = Helper.log
   // end of mixin section
   warnings=[]
@@ -39,67 +55,39 @@ START "Grammar for AACM/Bhatkande style sargam/letter notation by John Rothfield
   = COMPOSITION
 
 EMPTY_LINE ""
-= "\n" (" "* "\n")* { return {my_type: "logical_line_end"}
+= " "* LINE_END_CHAR (" "* LINE_END_CHAR)* { return {my_type: "line_end"}
            }
 
-HEADER_SECTION "Headers followed by blank lines or a logical line"
-= attributes:ATTRIBUTE_LINE+ (EMPTY_LINE / EOF / "/n" / &LOGICAL_LINE )
+HEADER_SECTION "Headers followed by blank lines or a line"
+= attributes:ATTRIBUTE_LINE+ (EMPTY_LINE / EOF / "/n" / &LINE )
      { return { my_type:"attributes",
                 items: attributes,
                 source: "TODO"
                 }}
 
-COMPOSITION "a musical piece  lines:LOGICAL_LINE+ "
-= "\n"* EMPTY_LINE* attributes:HEADER_SECTION? lines:LOGICAL_LINE*  (EOF / EMPTY_LINE)
+COMPOSITION "a musical piece  lines:LINE+ "
+= LINE_END_CHAR* EMPTY_LINE* attributes:HEADER_SECTION? lines:LINE*  (EOF / EMPTY_LINE)
        { 
-          if (attributes=="") {
-             attributes=null
-          }
-          title="Untitled";
-          this.log("in composition, attributes is")
-          this.my_inspect(attributes);
-          this.composition_data = { my_type:"composition",
-                   title:title,
-                   filename: "untitled",
-                   attributes: attributes,
-                   logical_lines: _.flatten(lines),
-                   warnings:this.warnings,
-                   source:"" // can't get input source here, put it in later
-                  }
-          // Certain attributes get set on the data object
-          // TODO: dry
-          x=get_attribute("Filename");
-          if (x) {
-            this.composition_data.filename =x 
-          }
-          x=get_attribute("Title");
-          console.log("get_attribute title is",x)
-          if (x) {
-            this.composition_data.title =x 
-          }
-          this.mark_partial_measures()
-          return composition_data
-              }
+          return parse_composition(attributes,lines)
+      }
 ATTRIBUTE_LINE "ie Author: John Rothfield"
-= key_chars:[a-zA-Z_\-0-9]+ ""? ":" blanks:_ value_chars:([^\n])+ _ ("\n" / &EOF)
+= key_chars:[a-zA-Z_\-0-9]+ ""? ":" blanks:_ value_chars:([^\n\r])+ _ (LINE_END_CHAR / &EOF)
      { return { my_type:"attribute",
                 key: key_chars.join(''),
-                value:value_chars.join(''),
+                value:this.trim(value_chars.join('')),
                 source: "todo"
                 }}
 
-LOGICAL_LINE_END "ss"
-  = EMPTY_LINE+ / EOF
 
 
-LOGICAL_LINE "multiple lines including syllables etc,delimited by empty line. There is an order, optional upper octave lines followed by main line of sargam followed by optional lyrics line"
+LINE "main line of music. multiple lines including syllables etc,delimited by empty line. There is an order, optional upper octave lines followed by main line of sargam followed by optional lyrics line"
 
   =
     uppers:UPPER_OCTAVE_LINE*
-    sargam:SARGAM_LINE 
+    sargam:(sargam:DEVANAGRI_SARGAM_LINE / sargam:SARGAM_LINE / sargam:ABC_SARGAM_LINE)
     lowers:LOWER_OCTAVE_LINE*
     lyrics:LYRICS_LINE?
-    LOGICAL_LINE_END  { 
+    LINE_END  { 
           if (lyrics.length==0) {
             lyrics='' 
           }
@@ -110,22 +98,14 @@ LOGICAL_LINE "multiple lines including syllables etc,delimited by empty line. Th
             uppers='' 
           }
           my_items = _.flatten(_.compact([uppers,sargam,lowers,lyrics])),
-           
-          obj = { my_type: "logical_line",
-                   sargam_line:sargam,
-                   lyrics:lyrics,
-                   warnings:[]
-                 } 
-
           _.each(my_items,function(my_line) {
             this.measure_columns(my_line.items,0);
                     });
           my_uppers=_.flatten(_.compact([uppers]))
           my_lowers=_.flatten(_.compact([lowers]))
           attribute_lines=_.flatten(_.compact([uppers,lowers,lyrics]))
-          this.assign_attributes(obj.sargam_line,attribute_lines)
-          // var x= this.assign_from_lyrics(obj)
-          return obj;
+          this.assign_attributes(sargam,attribute_lines)
+          return sargam;
         }
 
 UPPER_OCTAVE_LINE "can put upper octave dots or semicolons for upper upper octave (. or :). Also tala symbols +203"
@@ -156,10 +136,6 @@ CHORD_SYMBOL "I IV V. TODO: review"
 ALTERNATE_ENDING_INDICATOR "1._______ 2.___ etc. The period is optional. Must have either dot or underscores. TODO: accepts 1_.___ which is not exactly what I want."
 = num:[1-3] underscores:[\._]+
     {
-            console.log("underscores is",underscores)
-            console.log('typeof dot is ', typeof(dot))
-            console.log('typeof underscores is ', typeof(underscores))
-            
             if (typeof(dot) == 'undefined') {
               dot=''
             }
@@ -167,7 +143,6 @@ ALTERNATE_ENDING_INDICATOR "1._______ 2.___ etc. The period is optional. Must ha
               underscores=[]
             }
             source=_.flatten([num,dot,underscores]).join('')
-            console.log("source is",source)
             return {
               my_type: "ending",
               source:source,
@@ -245,11 +220,6 @@ TALA "tala markings. ie +203 for tintal. 012 for rupak"
                 source:char
      }
              }
-BEGIN_SLUR "symbol for beginning a slur - we use left-paren ("
-  = char:"(" { return { my_type: "begin_slur",
-                        source:char
-                        }
-             }
 
 END_SLUR "symbol for end of a slur - a right paren"
   = char:")" { return { my_type: "end_slur",
@@ -274,23 +244,48 @@ UPPER_OCTAVE_DOT
                         octave:1
                         }
              }
-MEASURE "measures,note that beginning and end of line implicitly demarcates a measure"
-  = start:BARLINE? items:NON_BARLINE+ end:(BARLINE / &LINE_END) 
+
+ABC_MEASURE "measures,note that beginning and end of line implicitly demarcates a measure"
+  = start_obs:BARLINE? items:ABC_NON_BARLINE+ end_obs:(BARLINE / &LINE_END) 
         {
-                if (start != "") {
-                   items.unshift(start)
-            }
-                this.log("end.length is"+end.length);
-                if (end != "") {
-                   items.push(end)
-            }
-       var source = this.get_source_for_items(items);
-       var obj= { my_type: "measure",
-                        source:source,
-                        items:items
-                        }
-         return obj;
+
+          return parse_measure(start_obs,items,end_obs)
              }
+
+DEVANAGRI_MEASURE "measures,note that beginning and end of line implicitly demarcates a measure"
+  = start_obs:BARLINE? items:DEVANAGRI_NON_BARLINE+ end_obs:(BARLINE / &LINE_END) 
+        {
+          return parse_measure(start_obs,items,end_obs)
+             }
+MEASURE "measures,note that beginning and end of line implicitly demarcates a measure"
+  = start_obs:BARLINE? items:NON_BARLINE+ end_obs:(BARLINE / &LINE_END) 
+        {
+          return parse_measure(start_obs,items,end_obs)
+        }
+
+ABC_NON_BARLINE 
+  =
+    x:WHITE_SPACE /  
+    x:ABC_BEAT_DELIMITED / 
+    x:ABC_BEAT_UNDELIMITED / 
+    x:ABC_SARGAM_PITCH / 
+    x:RHYTHMICAL_DASH / 
+    x:REPEAT_SYMBOL {
+            x.attributes=[];
+            return x;
+    }
+
+DEVANAGRI_NON_BARLINE 
+  =
+    x:WHITE_SPACE /  
+    x:DEVANAGRI_BEAT_DELIMITED / 
+    x:DEVANAGRI_BEAT_UNDELIMITED / 
+    x:DEVANAGRI_SARGAM_PITCH / 
+    x:RHYTHMICAL_DASH / 
+    x:REPEAT_SYMBOL {
+            x.attributes=[];
+            return x;
+    }
 NON_BARLINE 
   =
     x:WHITE_SPACE /  
@@ -298,8 +293,6 @@ NON_BARLINE
     x:BEAT_UNDELIMITED / 
     x:SARGAM_PITCH / 
     x:RHYTHMICAL_DASH / 
-    x:BEGIN_SLUR / 
-    x:END_SLUR /
     x:REPEAT_SYMBOL {
             x.attributes=[];
             return x;
@@ -313,8 +306,6 @@ SARGAM_LINE_ITEM  "an item in the main line"
     x:SARGAM_PITCH / 
     x:RHYTHMICAL_DASH / 
     x:BARLINE / 
-    x:BEGIN_SLUR / 
-    x:END_SLUR /
     x:REPEAT_SYMBOL {
             x.attributes=[];
             return x;
@@ -330,81 +321,80 @@ SARGAM_LINE_ITEM  "an item in the main line"
                  }
              }
 
-SARGAM_LINE_OLD "main line, consisting of sargams, barlines,spaces, dashes,etc, terminated by EOF or EOL"
-  = line_number:LINE_NUMBER? items:SARGAM_LINE_ITEM+ LINE_END
-      {
-       if (line_number !=''){
-        items.unshift(line_number) 
-       }
-       source = this.get_source_for_items(items);
-       my_items =  _.flatten(items)
-       my_line = {
-               line_number:line_number,
-               my_type:"sargam_line",
-               source: source,
-               items: my_items
-              } 
-       if (this.parens_unbalanced(my_line)) {
-         //TODO: collect warning here
-         // ERROR
-         //return null;
-       }
-       return my_line;
-      }
+
+ABC_SARGAM_LINE "consists of optional line# at beginning of line, followed by 1 or more measures followed by line end"
+  = line_number:LINE_NUMBER?  items:ABC_MEASURE+ LINE_END
+    {
+       return parse_sargam_line(line_number,items,"ABC")
+    }
+
+
+DEVANAGRI_SARGAM_LINE "consists of optional line# at beginning of line, followed by 1 or more measures followed by line end"
+  = line_number:LINE_NUMBER?  items:DEVANAGRI_MEASURE+ LINE_END
+    {
+       return parse_sargam_line(line_number,items,"devanagri")
+    }
 
 SARGAM_LINE "consists of optional line# at beginning of line, followed by 1 or more measures followed by line end"
   = line_number:LINE_NUMBER?  items:MEASURE+ LINE_END
     {
-       if (line_number !=''){
-        items.unshift(line_number) 
-       }
-       source = this.get_source_for_items(items);
-       my_items =  _.flatten(items)
-       my_line = {
-               line_number:line_number,
-               my_type:"sargam_line",
-               source: source,
-               items: my_items
-              } 
-       if (this.parens_unbalanced(my_line)) {
-         // ERROR
-       //  return null;
-       }
-       // REVIEW this.tie_notes(my_line);
-       this.measure_dashes_at_beginning_of_beats(my_line);
-       return my_line;
+       return parse_sargam_line(line_number,items,"latin_sargam")
       }
+
+ABC_BEAT_UNDELIMITED "beats can be indicated by a group of pitches that consist only of pitches and dashes such as S--R--G-"
+  = beat_items:ABC_BEAT_UNDELIMITED_ITEM+ 
+        { 
+            return parse_beat_undelimited(beat_items)
+         }
 
 BEAT_UNDELIMITED "beats can be indicated by a group of pitches that consist only of pitches and dashes such as S--R--G-"
   = beat_items:BEAT_UNDELIMITED_ITEM+ 
         { 
-            my_beat = { 
-                   my_type:"beat",
-                   source: this.get_source_for_items(beat_items),
-                   items: beat_items
-                   }
-            my_beat.subdivisions=this.count_beat_subdivisions(my_beat)
-            this.measure_note_durations(my_beat)
-            return my_beat
-                   
+            return parse_beat_undelimited(beat_items)
+         }
+DEVANAGRI_BEAT_UNDELIMITED "beats can be indicated by a group of pitches that consist only of pitches and dashes such as S--R--G-"
+  = beat_items:DEVANAGRI_BEAT_UNDELIMITED_ITEM+ 
+    { 
+      return parse_beat_undelimited(beat_items)
+    }
+
+ABC_BEAT_UNDELIMITED_ITEM "C--D--E-"
+  = ABC_SARGAM_PITCH / RHYTHMICAL_DASH 
+
+DEVANAGRI_BEAT_UNDELIMITED_ITEM "inside of a simple beat, ie S--R--G-"
+  = DEVANAGRI_SARGAM_PITCH / RHYTHMICAL_DASH
+
+
+
+UNDELIMITED_SARGAM_PITCH_WITH_DASHES "for example S--"
+  = pitch:SARGAM_PITCH dashes:RHYTHMICAL_DASH+
+      {
+         pitch.numerator=dashes.length+1
+         return([pitch].concat(dashes))
+      }
+
+
+BEAT_UNDELIMITED_ITEM "inside of a simple beat, ie S--R--G- Note that undelimited beats cannot contain spaces"
+  = UNDELIMITED_SARGAM_PITCH_WITH_DASHES /
+    SARGAM_PITCH /
+    RHYTHMICAL_DASH 
+  
+ABC_BEAT_DELIMITED "ie <C D E F> ."
+  = begin_symbol:BEGIN_BEAT_SYMBOL beat_items:ABC_BEAT_DELIMITED_ITEM+ end_symbol:END_BEAT_SYMBOL
+        { 
+          return parse_beat_delimited(begin_symbol,beat_items,end_symbol)
          }
 
-BEAT_UNDELIMITED_ITEM "inside of a simple beat, ie S--R--G-"
-  = SARGAM_PITCH / RHYTHMICAL_DASH / BEGIN_SLUR / END_SLUR
-  
+DEVANAGRI_BEAT_DELIMITED "ie <S R G m> . Useful if lyrics wouldn't line up otherwise!. use <Srgm> or <S r g m> to group pithes into a single beat. The <> delimiters correspond to the lower loop in the aacm notation system"
+  = begin_symbol:BEGIN_BEAT_SYMBOL beat_items:DEVANAGRI_BEAT_DELIMITED_ITEM+ end_symbol:END_BEAT_SYMBOL
+        { 
+          return parse_beat_delimited(begin_symbol,beat_items,end_symbol)
+         }
+
 BEAT_DELIMITED "ie <S R G m> . Useful if lyrics wouldn't line up otherwise!. use <Srgm> or <S r g m> to group pithes into a single beat. The <> delimiters correspond to the lower loop in the aacm notation system"
   = begin_symbol:BEGIN_BEAT_SYMBOL beat_items:BEAT_DELIMITED_ITEM+ end_symbol:END_BEAT_SYMBOL
         { 
-            beat_items.unshift(begin_symbol)
-            beat_items.push(end_symbol)
-            my_beat ={ 
-                   my_type:"beat",
-                   source: this.get_source_for_items(beat_items),
-                   items: beat_items
-                   }
-            my_beat.subdivisions=this.count_beat_subdivisions(my_beat)
-            this.measure_note_durations(my_beat)
-            return my_beat;
+          return parse_beat_delimited(begin_symbol,beat_items,end_symbol)
          }
 
 BEGIN_BEAT_SYMBOL  "symbol to use to indicate start of beat"
@@ -419,9 +409,17 @@ END_BEAT_SYMBOL  "Symbol to use to indicate end of beat"
                          source: char
                       }
              }
+ABC_BEAT_DELIMITED_ITEM "inside of a delimited beat, ie C--D--E-"
+  = 
+  ABC_SARGAM_PITCH /
+  RHYTHMICAL_DASH /
+  WHITE_SPACE
+
+DEVANAGRI_BEAT_DELIMITED_ITEM "inside of a delimited beat, ie S--R--G-"
+  = DEVANAGRI_SARGAM_PITCH / RHYTHMICAL_DASH / WHITE_SPACE
 
 BEAT_DELIMITED_ITEM "inside of a delimited beat, ie S--R--G-"
-  = SARGAM_PITCH / RHYTHMICAL_DASH / BEGIN_SLUR / END_SLUR / WHITE_SPACE
+  = SARGAM_PITCH / RHYTHMICAL_DASH / WHITE_SPACE
 
 
 WORD "a non-syllable like john"
@@ -481,76 +479,253 @@ RHYTHMICAL_DASH "ie a -, used as a rhythmical placeholder. IE S--R--G- "
                 } 
 
 
-DEVANAGRI_SARGAM_CHAR "SRGMPDN in devanagri"
- = char:DEVANAGRI_SA / char:[\u0938\u0930\u095A\u092E\u092a\u0927\u0929] {
-         return char;
- }
  
 DEVANAGRI_SA "sa in devanagri"
- = char:"\u0938"
+  = char:"\u0938" 
+    { return sa_helper(char,"C")
+     }
+DEVANAGRI_RE "re in devanagri"
+  = char:"\u0930"
+    { return sa_helper(char,"D") }
+DEVANAGRI_GA "ga in devanagri"
+  = char:"\u095A"
+    { return sa_helper(char,"E") }
+DEVANAGRI_MA_SHARP "tivra ma in devanagri. NOTE THE TICK!!!!"
+  = char:"\u092E'" 
+    { return sa_helper(char,"F#") }
+DEVANAGRI_MA "ma in devanagri"
+  = char:"\u092E"
+    { return sa_helper(char,"F") }
+DEVANAGRI_PA "pa in devanagri"
+  = char:"\u092a"
+    { return sa_helper(char,"G") }
+DEVANAGRI_DHA "dha in devanagri"
+  = char:"\u0927"
+    { return sa_helper(char,"A") }
+DEVANAGRI_NI "ni in devanagri"
+  = char:"\u0929"
+    { return sa_helper(char,"B") }
 
-MUSICAL_CHAR  "Try and support multiple scripts here"
-  = EXTENDED_SARGAM_CHAR / SARGAM_CHAR / DEVANAGRI_SARGAM_CHAR 
+ABC_MUSICAL_CHAR  
+  = 
+  ABC_CSHARP /
+  ABC_CFLAT /
+  ABC_DFLAT /
+  ABC_DSHARP /
+  ABC_EFLAT /
+  ABC_FSHARP /
+  ABC_GFLAT /
+  ABC_GSHARP /
+  ABC_AFLAT /
+  ABC_ASHARP /
+  ABC_BFLAT /
+  ABC_BSHARP /
+  ABC_C /
+  ABC_D /
+  ABC_E /
+  ABC_F /
+  ABC_G /
+  ABC_A /
+  ABC_B 
+  
+ABC_C 
+  = char:"C"
+  { return sa_helper(char,"C") }
+ABC_D
+  = char:"D"
+  { return sa_helper(char,"D") }
+ABC_E
+  = char:"E"
+    { return sa_helper(char,"E") }
+ABC_F 
+  = char:"F"
+    { return sa_helper(char,"F") }
+ABC_G 
+  = char:"G"
+    { return sa_helper(char,"G") }
+ABC_A
+  = char:"A"
+    { return sa_helper(char,"A") }
+ABC_B
+  = char:"B"
+    { return sa_helper(char,"B") }
+ABC_CSHARP 
+  = char:"C#"
+    { return sa_helper(char,"C#") }
+ABC_CFLAT 
+  = char:"Cb"
+    { return sa_helper(char,"Cb") }
+ABC_DFLAT 
+  = char:"Db"
+    { return sa_helper(char,"Db") }
+ABC_DSHARP 
+  = char:"D#"
+    { return sa_helper(char,"D#") }
+ABC_EFLAT 
+  = char:"Eb"
+    { return sa_helper(char,"Eb") }
+ABC_FSHARP 
+  = char:"F#"
+    { return sa_helper(char,"F#") }
+ABC_GFLAT 
+  = char:"Gb"
+    { return sa_helper(char,"Gb") }
+ABC_GSHARP 
+  = char:"G#"
+    { return sa_helper(char,"G#") }
+ABC_AFLAT 
+  = char:"Ab"
+    { return sa_helper(char,"Ab") }
+ABC_ASHARP 
+  = char:"A#"
+    { return sa_helper(char,"A#") }
+ABC_BFLAT 
+  = char:"Bb"
+    { return sa_helper(char,"Bb") }
+ABC_BSHARP 
+  = char:"B#"
+    { return sa_helper(char,"B#") }
 
-EXTENDED_SARGAM_CHAR "add to the usual sargam chars to get things like sa sharp and pa sharp. Needed to notate Yesterday by the beatles"
- = SA_FLAT / SA_SHARP / RE_SHARP / GA_SHARP / 
-   PA_SHARP / DHA_SHARP / NI_SHARP / PA_FLAT
 
-SARGAM_CHAR "ie SrRgG, and possibly the devanagri characters as well"
- = char:[SrRgGmMPdDnN] {
+DEVANAGRI_MUSICAL_CHAR  "devanagri characters."
+  = 
+  DEVANAGRI_SA /
+  DEVANAGRI_RE /
+  DEVANAGRI_GA /
+  DEVANAGRI_MA_SHARP /
+  DEVANAGRI_MA /
+  DEVANAGRI_PA /
+  DEVANAGRI_DHA /
+  DEVANAGRI_NI 
+
+SARGAM_MUSICAL_CHAR  "Letters SrRgGmMPdDnN in latin script"
+  = 
+  SARGAM_SA_FLAT /
+  SARGAM_SA_SHARP /
+  SARGAM_RE_SHARP /
+  SARGAM_GA_SHARP /
+  SARGAM_PA_SHARP /
+  SARGAM_DHA_SHARP /
+  SARGAM_NI_SHARP
+  SARGAM_PA_FLAT /
+  SARGAM_SA /
+  SARGAM_RE_FLAT /
+  SARGAM_RE /
+  SARGAM_GA_FLAT /
+  SARGAM_GA /
+  SARGAM_MA /
+  SARGAM_MA_SHARP /
+  SARGAM_PA /
+  SARGAM_DHA_FLAT /
+  SARGAM_DHA /
+  SARGAM_NI_FLAT /
+  SARGAM_NI 
+
+
+ABC_SARGAM_CHAR "ie SrRgG, and possibly the devanagri characters as well"
+ = char:[CDEFGAB] {
          return char;
  }
- 
- SA_FLAT
-  = "Sb"
 
- PA_FLAT
-  = "Pb"
+SARGAM_SA
+ = char:"S"
+     {return sa_helper(char,"C")}
 
- SA_SHARP "I want S#!!! C#"
-  = "S#"
+SARGAM_SA_FLAT
+ = char:"Sb"
+     {return sa_helper(char,"Cb")}
 
- RE_SHARP
-  = "R#"
- 
- GA_SHARP
-  = "G#"
-  
- PA_SHARP
-  = "P#"
+SARGAM_SA_SHARP
+ = char:"S#"
+     {return sa_helper(char,"C#")}
 
- DHA_SHARP 
-  = "D#"
+SARGAM_RE_FLAT
+ = char:"r"
+     {return sa_helper(char,"Db")}
 
- NI_SHARP
-  = "N#"
+SARGAM_RE
+ = char:"R"
+     {return sa_helper(char,"D")}
 
- PA_FLAT
-  = "Pb"
+SARGAM_RE_SHARP
+ = char:"R#"
+     {return sa_helper(char,"D#")}
+
+SARGAM_GA_SHARP
+ = char:"G#"
+     {return sa_helper(char,"E#")}
+
+SARGAM_GA_FLAT
+ = char:"g"
+     {return sa_helper(char,"Eb")}
+
+SARGAM_GA
+ = char:"G"
+     {return sa_helper(char,"E")}
+
+SARGAM_MA
+ = char:"m"
+     {return sa_helper(char,"F")}
+
+SARGAM_MA_SHARP
+ = char:"M"
+     {return sa_helper(char,"F#")}
+
+SARGAM_PA
+ = char:"P"
+     {return sa_helper(char,"G")}
+
+SARGAM_PA_FLAT
+ = char:"Pb"
+     {return sa_helper(char,"Gb")}
+
+SARGAM_PA_SHARP
+ = char:"P#"
+     {return sa_helper(char,"G#")}
+
+SARGAM_DHA_FLAT
+ = char:"d"
+     {return sa_helper(char,"Ab")}
+
+SARGAM_DHA
+ = char:"D"
+     {return sa_helper(char,"A")}
+
+SARGAM_DHA_SHARP
+ = char:"D#"
+     {return sa_helper(char,"A#")}
+
+SARGAM_NI_FLAT
+ = char:"n"
+     {return sa_helper(char,"Bb")}
+
+SARGAM_NI
+ = char:"N"
+     {return sa_helper(char,"B")}
+
+SARGAM_NI_SHARP
+ = char:"N#"
+     {return sa_helper(char,"B#")}
+
+
+ABC_SARGAM_PITCH "ie CDE"
+= slur:BEGIN_SLUR_OF_PITCH? char:ABC_MUSICAL_CHAR end_slur:END_SLUR_OF_PITCH?  
+       { 
+          return parse_sargam_pitch(slur,char,end_slur)
+       }
+
+
+DEVANAGRI_SARGAM_PITCH "a sargam pitch ie SrR.."
+= slur:BEGIN_SLUR_OF_PITCH? char:DEVANAGRI_MUSICAL_CHAR end_slur:END_SLUR_OF_PITCH?  
+       { 
+          return parse_sargam_pitch(slur,char,end_slur)
+       }
+
 
 SARGAM_PITCH "a sargam pitch ie SrR.."
-= slur:BEGIN_SLUR_OF_PITCH? char:MUSICAL_CHAR end_slur:END_SLUR_OF_PITCH?  
+= slur:BEGIN_SLUR_OF_PITCH? char:SARGAM_MUSICAL_CHAR end_slur:END_SLUR_OF_PITCH?  
        { 
-         source=char;  
-         attributes=[]
-          if (slur !='') {
-                  source=slur.source + source
-                  attributes.push(slur);
-          }
-
-          if (end_slur !='') {
-                  source=source + end_slur.source
-                  attributes.push(end_slur);
-          }
-       return {
-       my_type: "pitch",
-       attributes:attributes,
-       source: source,
-       pitch_source:char,
-       begin_slur:  (slur !=''),
-       end_slur: (end_slur !=''),
-       octave: 0
-          }
+          return parse_sargam_pitch(slur,char,end_slur)
        }
 
 REPEAT_SYMBOL "ie %"                       
@@ -610,10 +785,14 @@ RIGHT_REPEAT "ie :|"
                      source: ":|"
                    }
         }
-LINE_END "eol or eof"
-  =  &EOF / EOL
+
+LINE_END "TODO:review"
+  = EMPTY_LINE+ / EOF
+
+LINE_END_CHAR= "\r\n" / "\r" / "\n"
+
 EOL "end of line"
-  = "\n" { return { my_type: "end_of_line",
+  = LINE_END_CHAR { return { my_type: "end_of_line",
                     source: "\n"
                     }}
 EOF "end of file"

@@ -582,6 +582,26 @@
     x = sys.inspect(line, true, null);
     return test.done();
   };
+  exports.test_title = function(test) {
+    var composition, str;
+    str = 'Title: The entertainer \n\nS';
+    composition = test_parses(str, test);
+    test.equal(composition.title, "The entertainer");
+    return test.done();
+  };
+  exports.test_filename = function(test) {
+    var composition, str;
+    str = 'Filename: the_entertainer \n\nS';
+    composition = test_parses(str, test);
+    test.equal(composition.filename, "the_entertainer");
+    return test.done();
+  };
+  exports.test_empty_lines_with_blanks = function(test) {
+    var composition, str;
+    str = '    --S- ---- --r-\n \n\n            S';
+    composition = test_parses(str, test);
+    return test.done();
+  };
   exports.test_measure_pitch_durations = function(test) {
     var composition, line, my_pitch, str;
     str = '--S- ---- --r-';
