@@ -80,6 +80,7 @@ SargamParser = (function(){
         "LEFT_REPEAT": parse_LEFT_REPEAT,
         "LINE": parse_LINE,
         "LINE_END": parse_LINE_END,
+        "LINE_END_CHAR": parse_LINE_END_CHAR,
         "LINE_NUMBER": parse_LINE_NUMBER,
         "LOWER_LOWER_OCTAVE_SYMBOL": parse_LOWER_LOWER_OCTAVE_SYMBOL,
         "LOWER_OCTAVE_DOT": parse_LOWER_OCTAVE_DOT,
@@ -209,15 +210,7 @@ SargamParser = (function(){
         
         
         var savedPos0 = pos;
-        if (input.substr(pos, 1) === "\n") {
-          var result2 = "\n";
-          pos += 1;
-        } else {
-          var result2 = null;
-          if (reportMatchFailures) {
-            matchFailed("\"\\n\"");
-          }
-        }
+        var result2 = parse_LINE_END_CHAR();
         if (result2 !== null) {
           var result3 = [];
           var savedPos1 = pos;
@@ -244,15 +237,7 @@ SargamParser = (function(){
             }
           }
           if (result5 !== null) {
-            if (input.substr(pos, 1) === "\n") {
-              var result6 = "\n";
-              pos += 1;
-            } else {
-              var result6 = null;
-              if (reportMatchFailures) {
-                matchFailed("\"\\n\"");
-              }
-            }
+            var result6 = parse_LINE_END_CHAR();
             if (result6 !== null) {
               var result4 = [result5, result6];
             } else {
@@ -289,15 +274,7 @@ SargamParser = (function(){
               }
             }
             if (result5 !== null) {
-              if (input.substr(pos, 1) === "\n") {
-                var result6 = "\n";
-                pos += 1;
-              } else {
-                var result6 = null;
-                if (reportMatchFailures) {
-                  matchFailed("\"\\n\"");
-                }
-              }
+              var result6 = parse_LINE_END_CHAR();
               if (result6 !== null) {
                 var result4 = [result5, result6];
               } else {
@@ -434,26 +411,10 @@ SargamParser = (function(){
         reportMatchFailures = false;
         var savedPos0 = pos;
         var result2 = [];
-        if (input.substr(pos, 1) === "\n") {
-          var result12 = "\n";
-          pos += 1;
-        } else {
-          var result12 = null;
-          if (reportMatchFailures) {
-            matchFailed("\"\\n\"");
-          }
-        }
+        var result12 = parse_LINE_END_CHAR();
         while (result12 !== null) {
           result2.push(result12);
-          if (input.substr(pos, 1) === "\n") {
-            var result12 = "\n";
-            pos += 1;
-          } else {
-            var result12 = null;
-            if (reportMatchFailures) {
-              matchFailed("\"\\n\"");
-            }
-          }
+          var result12 = parse_LINE_END_CHAR();
         }
         if (result2 !== null) {
           var result3 = [];
@@ -508,41 +469,7 @@ SargamParser = (function(){
         }
         var result0 = result1 !== null
           ? (function(attributes, lines) { 
-                    if (attributes=="") {
-                       attributes=null
-                    }
-                    title="Untitled";
-                    this.log("in composition, attributes is")
-                    this.my_inspect(attributes);
-                    to_string= function (arg) {
-                            JSON.stringify(arg,null," ")
-                    }
-                    this.composition_data = { my_type:"composition",
-                             title:title,
-                             filename: "untitled",
-                             attributes: attributes,
-                             lines: _.flatten(lines),
-                             warnings:this.warnings,
-                             source:"" // can't get input source here, put it in later
-                             // toString:to_string
-                            }
-                        
-                    // Certain attributes get set on the data object
-                    // TODO: dry
-                    x=get_attribute("Key");
-                    if (x) {
-                      this.composition_data.key =x 
-                    }
-                    x=get_attribute("Filename");
-                    if (x) {
-                      this.composition_data.filename =x 
-                    }
-                    x=get_attribute("Title");
-                    if (x) {
-                      this.composition_data.title =x 
-                    }
-                    this.mark_partial_measures()
-                    return composition_data
+                    return parse_composition(attributes,lines)
                 })(result1[2], result1[3])
           : null;
         reportMatchFailures = savedReportMatchFailures;
@@ -618,26 +545,26 @@ SargamParser = (function(){
             if (result4 !== null) {
               var result5 = parse__();
               if (result5 !== null) {
-                if (input.substr(pos).match(/^[^\n]/) !== null) {
+                if (input.substr(pos).match(/^[^\n\r]/) !== null) {
                   var result12 = input.charAt(pos);
                   pos++;
                 } else {
                   var result12 = null;
                   if (reportMatchFailures) {
-                    matchFailed("[^\\n]");
+                    matchFailed("[^\\n\\r]");
                   }
                 }
                 if (result12 !== null) {
                   var result6 = [];
                   while (result12 !== null) {
                     result6.push(result12);
-                    if (input.substr(pos).match(/^[^\n]/) !== null) {
+                    if (input.substr(pos).match(/^[^\n\r]/) !== null) {
                       var result12 = input.charAt(pos);
                       pos++;
                     } else {
                       var result12 = null;
                       if (reportMatchFailures) {
-                        matchFailed("[^\\n]");
+                        matchFailed("[^\\n\\r]");
                       }
                     }
                   }
@@ -647,15 +574,7 @@ SargamParser = (function(){
                 if (result6 !== null) {
                   var result7 = parse__();
                   if (result7 !== null) {
-                    if (input.substr(pos, 1) === "\n") {
-                      var result11 = "\n";
-                      pos += 1;
-                    } else {
-                      var result11 = null;
-                      if (reportMatchFailures) {
-                        matchFailed("\"\\n\"");
-                      }
-                    }
+                    var result11 = parse_LINE_END_CHAR();
                     if (result11 !== null) {
                       var result8 = result11;
                     } else {
@@ -5553,6 +5472,65 @@ SargamParser = (function(){
         return result0;
       }
       
+      function parse_LINE_END_CHAR() {
+        var cacheKey = 'LINE_END_CHAR@' + pos;
+        var cachedResult = cache[cacheKey];
+        if (cachedResult) {
+          pos = cachedResult.nextPos;
+          return cachedResult.result;
+        }
+        
+        
+        if (input.substr(pos, 2) === "\r\n") {
+          var result3 = "\r\n";
+          pos += 2;
+        } else {
+          var result3 = null;
+          if (reportMatchFailures) {
+            matchFailed("\"\\r\\n\"");
+          }
+        }
+        if (result3 !== null) {
+          var result0 = result3;
+        } else {
+          if (input.substr(pos, 1) === "\r") {
+            var result2 = "\r";
+            pos += 1;
+          } else {
+            var result2 = null;
+            if (reportMatchFailures) {
+              matchFailed("\"\\r\"");
+            }
+          }
+          if (result2 !== null) {
+            var result0 = result2;
+          } else {
+            if (input.substr(pos, 1) === "\n") {
+              var result1 = "\n";
+              pos += 1;
+            } else {
+              var result1 = null;
+              if (reportMatchFailures) {
+                matchFailed("\"\\n\"");
+              }
+            }
+            if (result1 !== null) {
+              var result0 = result1;
+            } else {
+              var result0 = null;;
+            };
+          };
+        }
+        
+        
+        
+        cache[cacheKey] = {
+          nextPos: pos,
+          result:  result0
+        };
+        return result0;
+      }
+      
       function parse_EOL() {
         var cacheKey = 'EOL@' + pos;
         var cachedResult = cache[cacheKey];
@@ -5563,15 +5541,7 @@ SargamParser = (function(){
         
         var savedReportMatchFailures = reportMatchFailures;
         reportMatchFailures = false;
-        if (input.substr(pos, 1) === "\n") {
-          var result1 = "\n";
-          pos += 1;
-        } else {
-          var result1 = null;
-          if (reportMatchFailures) {
-            matchFailed("\"\\n\"");
-          }
-        }
+        var result1 = parse_LINE_END_CHAR();
         var result0 = result1 !== null
           ? (function() { return { my_type: "end_of_line",
                               source: "\n"
@@ -5807,6 +5777,8 @@ SargamParser = (function(){
     sa_helper=Helper.sa_helper
       
     item_has_attribute=Helper.item_has_attribute
+      
+    parse_composition=Helper.parse_composition
       
     parse_sargam_pitch=Helper.parse_sargam_pitch
       

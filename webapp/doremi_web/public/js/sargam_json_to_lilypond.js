@@ -1,5 +1,5 @@
 (function() {
-  var all_items_in_line, calculate_lilypond_duration, debug, emit_tied_array, extract_lyrics, fraction_to_lilypond, get_attribute, is_sargam_line, is_valid_key, lilypond_barline_map, lilypond_octave_map, lilypond_pitch_map, log, my_inspect, normalized_pitch_to_lilypond, notation_is_in_sargam, root, running_under_node, to_lilypond;
+  var all_items_in_line, beat_is_all_dashes, calculate_lilypond_duration, debug, emit_tied_array, extract_lyrics, fraction_to_lilypond, get_attribute, is_sargam_line, is_valid_key, lilypond_barline_map, lilypond_octave_map, lilypond_pitch_map, log, my_inspect, normalized_pitch_to_lilypond, notation_is_in_sargam, root, running_under_node, to_lilypond;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   debug = true;
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
@@ -280,6 +280,19 @@
       return is_sargam_line(line);
     });
   };
+  beat_is_all_dashes = function(beat) {
+    var fun, x;
+    x = all_items_in_line(beat);
+    fun = function(item) {
+      if (!(item.my_type != null)) {
+        return true;
+      }
+      if (item.my_type === "pitch") {
+        return false;
+      }
+    };
+    return _.all(beat, fun);
+  };
   to_lilypond = function(composition_data) {
     var all, ary, at_beginning_of_first_measure_of_line, bar, beat, composer, composer_snippet, dash, dashes_at_beginning_of_line_array, in_times, item, key_is_valid, key_snippet, last_pitch, lilypond_template, line, measure, mode, my_mode, notes, obj, orig, src, src1, tied_array, time, title, title_snippet, transpose_snip, x, _i, _j, _k, _len, _len2, _len3, _ref, _ref2, _ref3;
     ary = [];
@@ -334,7 +347,7 @@
         }
         if (item.my_type === "beat") {
           beat = item;
-          if ((_ref3 = beat.subdivisions) !== 0 && _ref3 !== 1 && _ref3 !== 2 && _ref3 !== 4 && _ref3 !== 8 && _ref3 !== 16 && _ref3 !== 32 && _ref3 !== 64 && _ref3 !== 128) {
+          if (((_ref3 = beat.subdivisions) !== 0 && _ref3 !== 1 && _ref3 !== 2 && _ref3 !== 4 && _ref3 !== 8 && _ref3 !== 16 && _ref3 !== 32 && _ref3 !== 64 && _ref3 !== 128) && !beat_is_all_dashes(beat)) {
             this.log("odd beat.subdivisions=", beat.subdivisions);
             x = 2;
             if (beat.subdivisions === 6) {
@@ -436,6 +449,9 @@
   };
   all_items_in_line = function(line_or_item, items) {
     var an_item, _fn, _i, _len, _ref;
+    if (items == null) {
+      items = [];
+    }
     if (!line_or_item.items) {
       return [line_or_item];
     }

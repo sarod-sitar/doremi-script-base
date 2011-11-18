@@ -18,6 +18,7 @@
   //
   sa_helper=Helper.sa_helper
   item_has_attribute=Helper.item_has_attribute
+  parse_composition=Helper.parse_composition
   parse_sargam_pitch=Helper.parse_sargam_pitch
   parse_beat_delimited=Helper.parse_beat_delimited
   parse_beat_undelimited=Helper.parse_beat_undelimited
@@ -53,7 +54,7 @@ START "Grammar for AACM/Bhatkande style sargam/letter notation by John Rothfield
   = COMPOSITION
 
 EMPTY_LINE ""
-= "\n" (" "* "\n")* { return {my_type: "line_end"}
+= LINE_END_CHAR (" "* LINE_END_CHAR)* { return {my_type: "line_end"}
            }
 
 HEADER_SECTION "Headers followed by blank lines or a line"
@@ -64,46 +65,12 @@ HEADER_SECTION "Headers followed by blank lines or a line"
                 }}
 
 COMPOSITION "a musical piece  lines:LINE+ "
-= "\n"* EMPTY_LINE* attributes:HEADER_SECTION? lines:LINE*  (EOF / EMPTY_LINE)
+= LINE_END_CHAR* EMPTY_LINE* attributes:HEADER_SECTION? lines:LINE*  (EOF / EMPTY_LINE)
        { 
-          if (attributes=="") {
-             attributes=null
-          }
-          title="Untitled";
-          this.log("in composition, attributes is")
-          this.my_inspect(attributes);
-          to_string= function (arg) {
-                  JSON.stringify(arg,null," ")
-          }
-          this.composition_data = { my_type:"composition",
-                   title:title,
-                   filename: "untitled",
-                   attributes: attributes,
-                   lines: _.flatten(lines),
-                   warnings:this.warnings,
-                   source:"" // can't get input source here, put it in later
-                   // toString:to_string
-                  }
-              
-          // Certain attributes get set on the data object
-          // TODO: dry
-          x=get_attribute("Key");
-          if (x) {
-            this.composition_data.key =x 
-          }
-          x=get_attribute("Filename");
-          if (x) {
-            this.composition_data.filename =x 
-          }
-          x=get_attribute("Title");
-          if (x) {
-            this.composition_data.title =x 
-          }
-          this.mark_partial_measures()
-          return composition_data
+          return parse_composition(attributes,lines)
       }
 ATTRIBUTE_LINE "ie Author: John Rothfield"
-= key_chars:[a-zA-Z_\-0-9]+ ""? ":" blanks:_ value_chars:([^\n])+ _ ("\n" / &EOF)
+= key_chars:[a-zA-Z_\-0-9]+ ""? ":" blanks:_ value_chars:([^\n\r])+ _ (LINE_END_CHAR / &EOF)
      { return { my_type:"attribute",
                 key: key_chars.join(''),
                 value:value_chars.join(''),
@@ -821,8 +788,11 @@ RIGHT_REPEAT "ie :|"
         }
 LINE_END "eol or eof"
   =  &EOF / EOL
+
+LINE_END_CHAR= "\r\n" / "\r" / "\n"
+
 EOL "end of line"
-  = "\n" { return { my_type: "end_of_line",
+  = LINE_END_CHAR { return { my_type: "end_of_line",
                     source: "\n"
                     }}
 EOF "end of file"
