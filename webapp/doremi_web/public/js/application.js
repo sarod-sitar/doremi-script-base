@@ -115,7 +115,6 @@
             snip = "window.open('compositions/" + some_data.fname + "." + typ + "'); return false; ";
             $("#download_" + typ).attr('href', x = "compositions/" + some_data.fname + "." + typ);
             if (typ === 'png') {
-              console.log("typ is png");
               $('#lilypond_png').attr('src', x);
             }
             $("#download_" + typ).attr('onclick', snip);

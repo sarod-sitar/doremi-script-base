@@ -527,7 +527,6 @@
     assign_ornaments: function(attribute_line, sargam, sargam_nodes) {},
     assign_attributes: function(sargam, attribute_lines) {
       var attribute, attribute_line, attribute_map, attribute_nodes, column, sarg_obj, sargam_nodes, _i, _len, _results;
-      console.log("assign_attributes");
       this.log("entering assign_attributes=sargam,attribute_lines", sargam, attribute_lines);
       sargam_nodes = this.map_nodes(sargam);
       _results = [];
