@@ -3,7 +3,7 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   $(document).ready(function() {
-    var Logger, debug, generate_html_page_aux, get_css, get_zepto, handleFileSelect, long_composition, my_url, params_for_download_lilypond, params_for_download_sargam, parser, str, str1, str_simple, zlong_composition;
+    var Logger, debug, generate_html_page_aux, get_css, get_dom_fixer, get_zepto, handleFileSelect, long_composition, my_url, params_for_download_lilypond, params_for_download_sargam, parser, str, str1, str_simple, zlong_composition;
     $('.generated_by_lilypond').hide();
     Logger = _console.constructor;
     _console.level = Logger.WARN;
@@ -130,6 +130,19 @@
       };
       return $.ajax(obj);
     }, this));
+    get_dom_fixer = function() {
+      var params;
+      params = {
+        type: 'GET',
+        url: 'js/dom_fixer.js',
+        dataType: 'text',
+        success: function(data) {
+          $('#dom_fixer_for_html_doc').html(data);
+          return generate_html_page_aux();
+        }
+      };
+      return $.ajax(params);
+    };
     get_zepto = function() {
       var params;
       params = {
@@ -138,15 +151,10 @@
         dataType: 'text',
         success: function(data) {
           $('#zepto_for_html_doc').html(data);
-          return generate_html_page_aux();
+          return get_dom_fixer();
         }
       };
       return $.ajax(params);
-    };
-    generate_html_page_aux = function() {
-      var css, js;
-      css = $('#css_for_html_doc').html();
-      return js = $('#zepto_for_html_doc').html();
     };
     get_css = function() {
       var params;
@@ -162,13 +170,14 @@
       return $.ajax(params);
     };
     generate_html_page_aux = function() {
-      var composition, css, full_url, html_str, js, my_data, obj;
+      var composition, css, full_url, html_str, js, js2, my_data, obj;
       css = $('#css_for_html_doc').html();
       js = $('#zepto_for_html_doc').html();
+      js2 = $('#dom_fixer_for_html_doc').html();
       my_url = "generate_html_page";
       composition = window.the_composition;
       full_url = "http://ragapedia.com";
-      html_str = to_html_doc(composition, full_url, css, js);
+      html_str = to_html_doc(composition, full_url, css, js + js2);
       my_data = {
         timestamp: new Date().getTime(),
         filename: composition.filename,
