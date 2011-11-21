@@ -19,6 +19,43 @@
       };
       return obj;
     },
+    parse_line: function(uppers, sargam, lowers, lyrics) {
+      var attribute_lines, ctr, lower, my_items, my_lowers, my_uppers, upper, _i, _j, _len, _len2;
+      if (lyrics.length === 0) {
+        lyrics = '';
+      }
+      if (lowers.length === 0) {
+        lowers = '';
+      }
+      if (uppers.length === 0) {
+        uppers = '';
+      }
+      my_items = _.flatten(_.compact([uppers, sargam, lowers, lyrics]));
+      ctr = 0;
+      for (_i = 0, _len = uppers.length; _i < _len; _i++) {
+        upper = uppers[_i];
+        upper.group_line_no = ctr;
+        ctr = ctr + 1;
+        sargam.group_line_no = ctr;
+        ctr = ctr + 1;
+      }
+      for (_j = 0, _len2 = lowers.length; _j < _len2; _j++) {
+        lower = lowers[_j];
+        lower.group_line_no = ctr;
+        ctr = ctr + 1;
+      }
+      if (lyrics != null) {
+        lyrics.group_line_no = ctr;
+      }
+      _.each(my_items, function(my_line) {
+        return this.measure_columns(my_line.items, 0);
+      });
+      my_uppers = _.flatten(_.compact([uppers]));
+      my_lowers = _.flatten(_.compact([lowers]));
+      attribute_lines = _.flatten(_.compact([uppers, lowers, lyrics]));
+      this.assign_attributes(sargam, attribute_lines);
+      return sargam;
+    },
     parse_composition: function(attributes, lines) {
       var title, to_string, x;
       if (attributes === "") {
@@ -508,7 +545,7 @@
       }
       if (attribute.octave != null) {
         if (sarg_obj.my_type !== 'pitch') {
-          this.warnings.push("Error on line ?, column " + sarg_obj.column + ("lower octave indicator below non-pitch. Type of obj was " + sarg_obj.my_type + ". sargam line was:") + sargam.source);
+          this.warnings.push("Error on line ?, column " + sarg_obj.column + ("" + attribute.my_type + " below non-pitch. Type of obj was " + sarg_obj.my_type + ". sargam line was:") + sargam.source);
           return false;
         }
         sarg_obj.octave = attribute.octave;
@@ -524,11 +561,51 @@
       }
       return true;
     },
-    assign_ornaments: function(attribute_line, sargam, sargam_nodes) {},
+    find_ornaments: function(attribute_lines) {
+      var item, line, orn_item, orns, _i, _j, _k, _len, _len2, _len3, _ref, _ref2;
+      orns = [];
+      for (_i = 0, _len = attribute_lines.length; _i < _len; _i++) {
+        line = attribute_lines[_i];
+        _ref = line.items;
+        for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
+          item = _ref[_j];
+          if (item.my_type === "ornament") {
+            item.group_line_no = line.group_line_no;
+            _ref2 = item.ornament_items;
+            for (_k = 0, _len3 = _ref2.length; _k < _len3; _k++) {
+              orn_item = _ref2[_k];
+              orn_item.group_line_no = line.group_line_no;
+            }
+            orns.push(item);
+          }
+        }
+      }
+      return orns;
+    },
+    map_ornaments: function(ornaments) {
+      var column, map, orn, ornament_item, _i, _j, _len, _len2, _ref;
+      map = {};
+      for (_i = 0, _len = ornaments.length; _i < _len; _i++) {
+        orn = ornaments[_i];
+        console.log(orn);
+        column = orn.column;
+        _ref = orn.ornament_items;
+        for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
+          ornament_item = _ref[_j];
+          map[column] = ornament_item;
+          column = column + 1;
+        }
+      }
+      return map;
+    },
     assign_attributes: function(sargam, attribute_lines) {
-      var attribute, attribute_line, attribute_map, attribute_nodes, column, sarg_obj, sargam_nodes, _i, _len, _results;
+      var attribute, attribute_line, attribute_map, attribute_nodes, column, ornament_nodes, ornaments, sargam_nodes, _i, _len, _results;
       this.log("entering assign_attributes=sargam,attribute_lines", sargam, attribute_lines);
       sargam_nodes = this.map_nodes(sargam);
+      ornaments = this.find_ornaments(attribute_lines);
+      console.log(ornaments);
+      ornament_nodes = this.map_ornaments(ornaments);
+      console.log(ornament_nodes);
       _results = [];
       for (_i = 0, _len = attribute_lines.length; _i < _len; _i++) {
         attribute_line = attribute_lines[_i];
@@ -540,9 +617,32 @@
           _results2 = [];
           for (column in attribute_nodes) {
             attribute = attribute_nodes[column];
-            this.log("processing column,attribute", column, attribute);
-            sarg_obj = sargam_nodes[column];
-            _results2.push(this.check_semantics(sargam, sarg_obj, attribute, sargam_nodes) === !false ? (!(sarg_obj.attributes != null) ? sarg_obj.attributes = [] : void 0, sarg_obj.attributes.push(attribute)) : void 0);
+            _results2.push(__bind(function(column, attribute) {
+              var orn_obj, sarg_obj;
+              this.log("processing column,attribute", column, attribute);
+              sarg_obj = sargam_nodes[column];
+              orn_obj = ornament_nodes[column];
+              if (orn_obj != null) {
+                if (attribute.my_type === "upper_octave_indicator") {
+                  console.log("upper_octave_indicator case", attribute);
+                  if (orn_obj.group_line_no < attribute_line.group_line_no) {
+                    attribute.my_type = "lower_octave_indicator";
+                    attribute.octave = attribute.octave * -1;
+                  }
+                  if (!(orn_obj.attributes != null)) {
+                    orn_obj.attributes = [];
+                  }
+                  orn_obj.attributes.push(attribute);
+                  return;
+                }
+              }
+              if (this.check_semantics(sargam, sarg_obj, attribute, sargam_nodes) === !false) {
+                if (!(sarg_obj.attributes != null)) {
+                  sarg_obj.attributes = [];
+                }
+                return sarg_obj.attributes.push(attribute);
+              }
+            }, this)(column, attribute));
           }
           return _results2;
         }).call(this));

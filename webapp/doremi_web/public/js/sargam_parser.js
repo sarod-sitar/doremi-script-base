@@ -820,24 +820,7 @@ SargamParser = (function(){
         }
         var result0 = result1 !== null
           ? (function(uppers, sargam, lowers, lyrics) { 
-                    if (lyrics.length==0) {
-                      lyrics='' 
-                    }
-                    if (lowers.length==0) {
-                      lowers='' 
-                    }
-                    if (uppers.length==0) {
-                      uppers='' 
-                    }
-                    my_items = _.flatten(_.compact([uppers,sargam,lowers,lyrics])),
-                    _.each(my_items,function(my_line) {
-                      this.measure_columns(my_line.items,0);
-                              });
-                    my_uppers=_.flatten(_.compact([uppers]))
-                    my_lowers=_.flatten(_.compact([lowers]))
-                    attribute_lines=_.flatten(_.compact([uppers,lowers,lyrics]))
-                    this.assign_attributes(sargam,attribute_lines)
-                    return sargam;
+                    return parse_line(uppers,sargam,lowers,lyrics)
                   })(result1[0], result1[1], result1[2], result1[3])
           : null;
         reportMatchFailures = savedReportMatchFailures;
@@ -7060,11 +7043,17 @@ SargamParser = (function(){
       
     sa_helper=Helper.sa_helper
       
+    parse_line=Helper.parse_line
+      
     item_has_attribute=Helper.item_has_attribute
       
     trim=Helper.trim
       
     handle_ornament=Helper.handle_ornament
+      
+    find_ornaments=Helper.find_ornaments
+      
+    map_ornaments=Helper.map_ornaments
       
     parse_ornament=Helper.parse_ornament
       
