@@ -1,7 +1,7 @@
 (function() {
   var Logger, debug, parser, root, sys, test_data, test_to_lilypond, to_lilypond, utils, _;
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
-  debug = true;
+  debug = false;
   if (typeof global !== "undefined" && global !== null) {
     global._console || (global._console = require('./underscore.logger.js'));
   }
