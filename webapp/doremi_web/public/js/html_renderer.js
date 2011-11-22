@@ -98,11 +98,22 @@
     }
     return "<span class=\"lower_octave1\">" + lower_sym + "</span>";
   };
-  draw_ornament_item = function(ornament_item) {
-    return draw_pitch(ornament_item);
+  draw_ornament_item = function(item) {
+    return "<span class=\"ornament_item octave" + item.octave + "\">" + item.source + "</span>";
   };
   draw_ornament = function(ornament) {
-    return "<span class=\"upper_attribute ornament\">" + ornament.source + "</span>";
+    var orn_item, x;
+    x = ((function() {
+      var _i, _len, _ref, _results;
+      _ref = ornament.ornament_items;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        orn_item = _ref[_i];
+        _results.push(draw_ornament_item(orn_item));
+      }
+      return _results;
+    })()).join('');
+    return "<span class=\"upper_attribute ornament\">" + x + "</span>";
   };
   draw_pitch = function(pitch) {
     var attribute, data1, lower_sym_html, my_source, pitch_sign, source2, syl_html, title, upper_attributes_html, upper_sym_html;
