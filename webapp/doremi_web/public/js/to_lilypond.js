@@ -1,5 +1,5 @@
 (function() {
-  var all_items_in_line, beat_is_all_dashes, calculate_lilypond_duration, debug, emit_tied_array, extract_lyrics, fraction_to_lilypond, get_attribute, is_sargam_line, is_valid_key, lilypond_octave_map, lilypond_pitch_map, log, lookup_lilypond_barline, my_inspect, normalized_pitch_to_lilypond, notation_is_in_sargam, root, running_under_node, to_lilypond;
+  var all_items_in_line, beat_is_all_dashes, calculate_lilypond_duration, debug, emit_tied_array, extract_lyrics, fraction_to_lilypond, get_attribute, get_ornament, has_mordent, is_sargam_line, is_valid_key, lilypond_grace_note_pitch, lilypond_grace_notes, lilypond_octave_map, lilypond_pitch_map, log, lookup_lilypond_barline, lookup_lilypond_pitch, my_inspect, normalized_pitch_to_lilypond, notation_is_in_sargam, root, running_under_node, to_lilypond;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   debug = true;
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
@@ -140,8 +140,54 @@
     }
     return looked_up_duration;
   };
+  get_ornament = function(pitch) {
+    if (!(pitch.attributes != null)) {
+      return false;
+    }
+    return _.detect(pitch.attributes, function(attribute) {
+      return attribute.my_type === "ornament";
+    });
+  };
+  has_mordent = function(pitch) {
+    if (!(pitch.attributes != null)) {
+      return false;
+    }
+    return _.detect(pitch.attributes, function(attribute) {
+      return attribute.my_type === "mordent";
+    });
+  };
+  lookup_lilypond_pitch = function(pitch) {
+    return lilypond_pitch_map[pitch.normalized_pitch];
+  };
+  lilypond_grace_note_pitch = function(pitch) {
+    var duration, lilypond_octave, lilypond_pitch;
+    duration = "16";
+    lilypond_pitch = lookup_lilypond_pitch(pitch);
+    lilypond_octave = lilypond_octave_map["" + pitch.octave];
+    if (!(lilypond_octave != null)) {
+      return "???" + pitch.octave;
+    }
+    return "" + lilypond_pitch + lilypond_octave + duration;
+  };
+  lilypond_grace_notes = function(ornament) {
+    var ary, length, pitch;
+    ary = (function() {
+      var _i, _len, _ref, _results;
+      _ref = ornament.ornament_items;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        pitch = _ref[_i];
+        _results.push(lilypond_grace_note_pitch(pitch));
+      }
+      return _results;
+    })();
+    ary[0] = "" + ary[0] + "[";
+    length = ary.length;
+    ary[length - 1] = "" + ary[length - 1] + "])";
+    return ary.join(' ');
+  };
   normalized_pitch_to_lilypond = function(pitch) {
-    var begin_slur, duration, e, end_slur, ending, first_fraction, mordent, o, p, t;
+    var begin_slur, duration, e, end_slur, ending, first_fraction, grace1, grace2, grace_notes, lilypond_octave, lilypond_pitch, lilypond_symbol_for_tie, mordent, ornament;
     ending = "";
     if (pitch.attributes) {
       if (e = _.detect(pitch.attributes, function(x) {
@@ -160,35 +206,25 @@
     if (pitch.my_type === "dash") {
       return "r" + duration + ending;
     }
-    p = lilypond_pitch_map[pitch.normalized_pitch];
-    if (!(p != null)) {
+    lilypond_pitch = lilypond_pitch_map[pitch.normalized_pitch];
+    if (!(lilypond_pitch != null)) {
       return "???" + pitch.source;
     }
-    o = lilypond_octave_map["" + pitch.octave];
-    if (!(o != null)) {
+    lilypond_octave = lilypond_octave_map["" + pitch.octave];
+    if (!(lilypond_octave != null)) {
       return "???" + pitch.octave;
     }
-    begin_slur = "";
-    mordent = "";
-    if (pitch.attributes) {
-      if (_.detect(pitch.attributes, function(x) {
-        return x.my_type === "mordent";
-      })) {
-        mordent = "\\mordent";
-      }
+    mordent = has_mordent(pitch) ? "\\mordent" : "";
+    begin_slur = item_has_attribute(pitch, "begin_slur") ? "(" : "";
+    end_slur = item_has_attribute(pitch, "end_slur") ? ")" : "";
+    lilypond_symbol_for_tie = pitch.tied != null ? '~' : '';
+    ornament = get_ornament(pitch);
+    grace1 = grace2 = grace_notes = "";
+    if (ornament != null) {
+      grace1 = "\\afterGrace ";
+      grace2 = "( { " + (lilypond_grace_notes(ornament)) + ") }";
     }
-    end_slur = "";
-    if (item_has_attribute(pitch, "begin_slur")) {
-      begin_slur = "(";
-    }
-    if (item_has_attribute(pitch, "end_slur")) {
-      end_slur = ")";
-    }
-    t = "";
-    if (pitch.tied != null) {
-      t = '~';
-    }
-    return "" + p + o + duration + t + mordent + begin_slur + end_slur + ending;
+    return "" + grace1 + lilypond_pitch + lilypond_octave + duration + lilypond_symbol_for_tie + mordent + begin_slur + end_slur + ending + grace2;
   };
   lookup_lilypond_barline = function(barline_type) {
     var map;
