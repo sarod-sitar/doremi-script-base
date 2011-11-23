@@ -1,5 +1,5 @@
 (function() {
-  var draw_attributes, draw_beat, draw_item, draw_line, draw_lower_sym, draw_measure, draw_ornament, draw_ornament_item, draw_pitch, draw_syllable, draw_upper_sym, id_ctr, last_slur_id, lookup_html_entity, root, to_html, to_html_doc;
+  var class_for_octave, draw_attributes, draw_beat, draw_item, draw_line, draw_lower_sym, draw_measure, draw_ornament, draw_ornament_item, draw_pitch, draw_syllable, draw_upper_sym, id_ctr, last_slur_id, lookup_html_entity, root, to_html, to_html_doc;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   id_ctr = new Date().getTime();
@@ -98,8 +98,20 @@
     }
     return "<span class=\"lower_octave1\">" + lower_sym + "</span>";
   };
+  class_for_octave = function(octave_num) {
+    if (!(octave_num != null)) {
+      return "octave0";
+    }
+    if (octave_num < 0) {
+      return "lower_octave_" + (octave_num * -1);
+    }
+    if (octave_num > 0) {
+      return "upper_octave_" + octave_num;
+    }
+    return "octave0";
+  };
   draw_ornament_item = function(item) {
-    return "<span class=\"ornament_item octave" + item.octave + "\">" + item.source + "</span>";
+    return "<span class=\"ornament_item " + (class_for_octave(item.octave)) + "\">" + item.source + "</span>";
   };
   draw_ornament = function(ornament) {
     var orn_item, x;
