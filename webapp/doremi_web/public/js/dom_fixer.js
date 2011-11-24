@@ -2,7 +2,6 @@
   var adjust_slurs_in_dom, root;
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   adjust_slurs_in_dom = function() {
-    console.log("entering adjust_slurs_in_dom");
     $('span[data-begin-slur-id]').each(function(index) {
       var attr, pos1, pos2, slur, val;
       pos2 = $(this).offset();
@@ -23,7 +22,6 @@
     });
     return $('span.ornament.placement_before').each(function(index) {
       var el;
-      _.debug("fixing ornaments.processing " + this);
       el = $(this);
       return el.css('margin-left', "-" + (el.offset().width) + "px");
     });
