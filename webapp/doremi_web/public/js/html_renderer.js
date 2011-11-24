@@ -1,8 +1,8 @@
 (function() {
-  var class_for_octave, draw_attributes, draw_beat, draw_item, draw_line, draw_lower_sym, draw_measure, draw_ornament, draw_ornament_item, draw_pitch, draw_syllable, draw_upper_sym, id_ctr, last_slur_id, lookup_html_entity, root, to_html, to_html_doc;
+  var class_for_octave, draw_attributes, draw_beat, draw_item, draw_line, draw_lower_sym, draw_measure, draw_ornament, draw_ornament_item, draw_pitch, draw_syllable, draw_upper_sym, last_slur_id, lookup_html_entity, root, to_html, to_html_doc;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
-  id_ctr = new Date().getTime();
+  this.id_ctr = new Date().getTime();
   last_slur_id = -1;
   lookup_html_entity = function(str) {
     var LOOKUP;
@@ -115,6 +115,7 @@
   };
   draw_ornament = function(ornament) {
     var orn_item, x;
+    console.log("draw_ornament, @id_ctr is " + this.id_ctr);
     x = ((function() {
       var _i, _len, _ref, _results;
       _ref = ornament.ornament_items;
@@ -125,7 +126,8 @@
       }
       return _results;
     })()).join('');
-    return "<span class=\"upper_attribute ornament\">" + x + "</span>";
+    this.id_ctr++;
+    return "<span id=\"" + this.id_ctr + "\" class=\"upper_attribute ornament placement_" + ornament.placement + "\">" + x + "</span>";
   };
   draw_pitch = function(pitch) {
     var attribute, data1, lower_sym_html, my_source, pitch_sign, source2, syl_html, title, upper_attributes_html, upper_sym_html;
