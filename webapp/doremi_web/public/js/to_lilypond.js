@@ -161,7 +161,7 @@
   };
   lilypond_grace_note_pitch = function(pitch) {
     var duration, lilypond_octave, lilypond_pitch;
-    duration = "16";
+    duration = "32";
     lilypond_pitch = lookup_lilypond_pitch(pitch);
     lilypond_octave = lilypond_octave_map["" + pitch.octave];
     if (!(lilypond_octave != null)) {
