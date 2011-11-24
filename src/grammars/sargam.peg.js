@@ -17,7 +17,7 @@
   // didn't work. _.extend(this, Helper) 
   //
   
-  id_ctr=Helper.id_ctr
+  id_ctr=1
   sa_helper=Helper.sa_helper
   parse_line=Helper.parse_line
   item_has_attribute=Helper.item_has_attribute

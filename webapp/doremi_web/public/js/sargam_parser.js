@@ -7041,6 +7041,10 @@ SargamParser = (function(){
       
     //
       
+    
+      
+    id_ctr=1
+      
     sa_helper=Helper.sa_helper
       
     parse_line=Helper.parse_line

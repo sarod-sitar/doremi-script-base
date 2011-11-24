@@ -147,9 +147,9 @@
       beat_items = _.flatten(items);
       ornament = {
         my_type: "ornament",
+        id: ++this.id_ctr,
         source: this.get_source_for_items(items),
-        ornament_items: items,
-        id: this.id_ctr++
+        ornament_items: items
       };
       return ornament;
     },
@@ -163,6 +163,7 @@
       my_line = {
         line_number: line_number,
         my_type: "sargam_line",
+        id: ++this.id_ctr,
         source: source,
         items: my_items,
         kind: kind
@@ -186,6 +187,7 @@
       source = this.get_source_for_items(items);
       return obj = {
         my_type: "measure",
+        id: ++this.id_ctr,
         source: source,
         items: items
       };
