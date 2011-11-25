@@ -16,9 +16,16 @@
   // TODO: find a more elegant way to do this.
   // didn't work. _.extend(this, Helper) 
   //
+  
+  id_ctr=1
   sa_helper=Helper.sa_helper
+  parse_line=Helper.parse_line
   item_has_attribute=Helper.item_has_attribute
   trim=Helper.trim
+  handle_ornament=Helper.handle_ornament
+  find_ornaments=Helper.find_ornaments
+  map_ornaments=Helper.map_ornaments
+  parse_ornament=Helper.parse_ornament
   parse_composition=Helper.parse_composition
   parse_sargam_pitch=Helper.parse_sargam_pitch
   parse_beat_delimited=Helper.parse_beat_delimited
@@ -53,6 +60,7 @@
 
 START "Grammar for AACM/Bhatkande style sargam/letter notation by John Rothfield 707 538-5133, cell 707 331-2700  john@rothfield.com"
   = COMPOSITION
+  //= UPPER_OCTAVE_LINE
 
 EMPTY_LINE ""
 = " "* LINE_END_CHAR (" "* LINE_END_CHAR)* { return {my_type: "line_end"}
@@ -84,33 +92,30 @@ LINE "main line of music. multiple lines including syllables etc,delimited by em
 
   =
     uppers:UPPER_OCTAVE_LINE*
-    sargam:(sargam:DEVANAGRI_SARGAM_LINE / sargam:SARGAM_LINE / sargam:ABC_SARGAM_LINE)
+    sargam:(sargam:SARGAM_LINE / sargam:DEVANAGRI_SARGAM_LINE /  sargam:ABC_SARGAM_LINE/ sargam:NUMBER_SARGAM_LINE)
     lowers:LOWER_OCTAVE_LINE*
     lyrics:LYRICS_LINE?
     LINE_END  { 
-          if (lyrics.length==0) {
-            lyrics='' 
-          }
-          if (lowers.length==0) {
-            lowers='' 
-          }
-          if (uppers.length==0) {
-            uppers='' 
-          }
-          my_items = _.flatten(_.compact([uppers,sargam,lowers,lyrics])),
-          _.each(my_items,function(my_line) {
-            this.measure_columns(my_line.items,0);
-                    });
-          my_uppers=_.flatten(_.compact([uppers]))
-          my_lowers=_.flatten(_.compact([lowers]))
-          attribute_lines=_.flatten(_.compact([uppers,lowers,lyrics]))
-          this.assign_attributes(sargam,attribute_lines)
-          return sargam;
+          _.warn("LINE")
+          return parse_line(uppers,sargam,lowers,lyrics)
         }
+
+        
+SARGAM_ORNAMENT "in upper line NRSNS"
+  = items:SARGAM_ORNAMENT_ITEM+ 
+        { 
+          _.warn("SARGAM_ORNAMENT")
+            return parse_ornament(items)
+         }
+
+SARGAM_ORNAMENT_ITEM
+  = SARGAM_PITCH 
 
 UPPER_OCTAVE_LINE "can put upper octave dots or semicolons for upper upper octave (. or :). Also tala symbols +203"
   = items:UPPER_OCTAVE_LINE_ITEM+ LINE_END
       {
+       console.log("UPPER_OCTAVE_LINE")
+       _.warn("UPPER_OCTAVE_LINE")
        my_items =  _.flatten(items)
        if (my_items.length == 0) {
          return ""
@@ -151,7 +156,9 @@ ALTERNATE_ENDING_INDICATOR "1._______ 2.___ etc. The period is optional. Must ha
     }
 
 UPPER_OCTAVE_LINE_ITEM "Things above notes, including talas, octaves,chords, and 1st and second ending symbols"
-  =  WHITE_SPACE / 
+  =  
+     SARGAM_ORNAMENT /
+     WHITE_SPACE / 
      UPPER_OCTAVE_DOT /
      ALTERNATE_ENDING_INDICATOR /
      TALA /
@@ -252,14 +259,20 @@ ABC_MEASURE "measures,note that beginning and end of line implicitly demarcates 
           return parse_measure(start_obs,items,end_obs)
              }
 
+NUMBER_MEASURE "measures,note that beginning and end of line implicitly demarcates a measure"
+  = start_obs:BARLINE? items:NUMBER_NON_BARLINE+ end_obs:(BARLINE / &LINE_END) 
+        {
+          return parse_measure(start_obs,items,end_obs)
+             }
 DEVANAGRI_MEASURE "measures,note that beginning and end of line implicitly demarcates a measure"
   = start_obs:BARLINE? items:DEVANAGRI_NON_BARLINE+ end_obs:(BARLINE / &LINE_END) 
         {
           return parse_measure(start_obs,items,end_obs)
              }
 MEASURE "measures,note that beginning and end of line implicitly demarcates a measure"
-  = start_obs:BARLINE? items:NON_BARLINE+ end_obs:(BARLINE / &LINE_END) 
+  = start_obs:BARLINE? items:NON_BARLINE+ end_obs:(BARLINE / &LINE_END / &EOF ) 
         {
+          _.info("MEASURE")
           return parse_measure(start_obs,items,end_obs)
         }
 
@@ -275,6 +288,17 @@ ABC_NON_BARLINE
             return x;
     }
 
+NUMBER_NON_BARLINE 
+  =
+    x:WHITE_SPACE /  
+    x:NUMBER_BEAT_DELIMITED / 
+    x:NUMBER_BEAT_UNDELIMITED / 
+    x:NUMBER_SARGAM_PITCH / 
+    x:RHYTHMICAL_DASH / 
+    x:REPEAT_SYMBOL {
+            x.attributes=[];
+            return x;
+    }
 DEVANAGRI_NON_BARLINE 
   =
     x:WHITE_SPACE /  
@@ -294,6 +318,7 @@ NON_BARLINE
     x:SARGAM_PITCH / 
     x:RHYTHMICAL_DASH / 
     x:REPEAT_SYMBOL {
+          _.warn("NON_BARLINE")
             x.attributes=[];
             return x;
     }
@@ -307,6 +332,7 @@ SARGAM_LINE_ITEM  "an item in the main line"
     x:RHYTHMICAL_DASH / 
     x:BARLINE / 
     x:REPEAT_SYMBOL {
+            _.warn("SARGAM_LINE_ITEM")
             x.attributes=[];
             return x;
     }
@@ -335,12 +361,24 @@ DEVANAGRI_SARGAM_LINE "consists of optional line# at beginning of line, followed
        return parse_sargam_line(line_number,items,"devanagri")
     }
 
-SARGAM_LINE "consists of optional line# at beginning of line, followed by 1 or more measures followed by line end"
-  = line_number:LINE_NUMBER?  items:MEASURE+ LINE_END
+NUMBER_SARGAM_LINE "consists of optional line# at beginning of line, followed by 1 or more measures followed by line end"
+  = line_number:LINE_NUMBER?  items:NUMBER_MEASURE+ LINE_END
     {
+       return parse_sargam_line(line_number,items,"number")
+    }
+SARGAM_LINE "consists of optional line# at beginning of line, followed by 1 or more measures followed by line end"
+= line_number:LINE_NUMBER?  items:MEASURE+ (LINE_END / &EOF)
+    {
+       // _.info("SARGAM_LINE")
+       console.log("SARGAM_LINE")
        return parse_sargam_line(line_number,items,"latin_sargam")
       }
 
+NUMBER_BEAT_UNDELIMITED "beats can be indicated by a group of pitches that consist only of pitches and dashes such as S--R--G-"
+  = beat_items:NUMBER_BEAT_UNDELIMITED_ITEM+ 
+        { 
+            return parse_beat_undelimited(beat_items)
+         }
 ABC_BEAT_UNDELIMITED "beats can be indicated by a group of pitches that consist only of pitches and dashes such as S--R--G-"
   = beat_items:ABC_BEAT_UNDELIMITED_ITEM+ 
         { 
@@ -350,6 +388,7 @@ ABC_BEAT_UNDELIMITED "beats can be indicated by a group of pitches that consist 
 BEAT_UNDELIMITED "beats can be indicated by a group of pitches that consist only of pitches and dashes such as S--R--G-"
   = beat_items:BEAT_UNDELIMITED_ITEM+ 
         { 
+            _.warn("BEAT_UNDELIMITED")
             return parse_beat_undelimited(beat_items)
          }
 DEVANAGRI_BEAT_UNDELIMITED "beats can be indicated by a group of pitches that consist only of pitches and dashes such as S--R--G-"
@@ -357,6 +396,9 @@ DEVANAGRI_BEAT_UNDELIMITED "beats can be indicated by a group of pitches that co
     { 
       return parse_beat_undelimited(beat_items)
     }
+
+NUMBER_BEAT_UNDELIMITED_ITEM "1--2--3-"
+  = NUMBER_SARGAM_PITCH / RHYTHMICAL_DASH 
 
 ABC_BEAT_UNDELIMITED_ITEM "C--D--E-"
   = ABC_SARGAM_PITCH / RHYTHMICAL_DASH 
@@ -375,9 +417,12 @@ UNDELIMITED_SARGAM_PITCH_WITH_DASHES "for example S--"
 
 
 BEAT_UNDELIMITED_ITEM "inside of a simple beat, ie S--R--G- Note that undelimited beats cannot contain spaces"
-  = UNDELIMITED_SARGAM_PITCH_WITH_DASHES /
-    SARGAM_PITCH /
-    RHYTHMICAL_DASH 
+  = x:UNDELIMITED_SARGAM_PITCH_WITH_DASHES /
+    x:SARGAM_PITCH /
+    x:RHYTHMICAL_DASH  {
+            _.warn("BEAT_UNDELIMITED_ITEM")
+            return(x)
+    }
   
 ABC_BEAT_DELIMITED "ie <C D E F> ."
   = begin_symbol:BEGIN_BEAT_SYMBOL beat_items:ABC_BEAT_DELIMITED_ITEM+ end_symbol:END_BEAT_SYMBOL
@@ -385,6 +430,11 @@ ABC_BEAT_DELIMITED "ie <C D E F> ."
           return parse_beat_delimited(begin_symbol,beat_items,end_symbol)
          }
 
+NUMBER_BEAT_DELIMITED "ie <1 2 3> . Useful if lyrics wouldn't line up otherwise!. use <Srgm> or <S r g m> to group pithes into a single beat. The <> delimiters correspond to the lower loop in the aacm notation system"
+  = begin_symbol:BEGIN_BEAT_SYMBOL beat_items:NUMBER_BEAT_DELIMITED_ITEM+ end_symbol:END_BEAT_SYMBOL
+        { 
+          return parse_beat_delimited(begin_symbol,beat_items,end_symbol)
+         }
 DEVANAGRI_BEAT_DELIMITED "ie <S R G m> . Useful if lyrics wouldn't line up otherwise!. use <Srgm> or <S r g m> to group pithes into a single beat. The <> delimiters correspond to the lower loop in the aacm notation system"
   = begin_symbol:BEGIN_BEAT_SYMBOL beat_items:DEVANAGRI_BEAT_DELIMITED_ITEM+ end_symbol:END_BEAT_SYMBOL
         { 
@@ -394,6 +444,7 @@ DEVANAGRI_BEAT_DELIMITED "ie <S R G m> . Useful if lyrics wouldn't line up other
 BEAT_DELIMITED "ie <S R G m> . Useful if lyrics wouldn't line up otherwise!. use <Srgm> or <S r g m> to group pithes into a single beat. The <> delimiters correspond to the lower loop in the aacm notation system"
   = begin_symbol:BEGIN_BEAT_SYMBOL beat_items:BEAT_DELIMITED_ITEM+ end_symbol:END_BEAT_SYMBOL
         { 
+          _.warn("BEAT_DELIMITED")
           return parse_beat_delimited(begin_symbol,beat_items,end_symbol)
          }
 
@@ -412,6 +463,12 @@ END_BEAT_SYMBOL  "Symbol to use to indicate end of beat"
 ABC_BEAT_DELIMITED_ITEM "inside of a delimited beat, ie C--D--E-"
   = 
   ABC_SARGAM_PITCH /
+  RHYTHMICAL_DASH /
+  WHITE_SPACE
+
+NUMBER_BEAT_DELIMITED_ITEM "inside of a delimited beat, ie 1--3--2-"
+  = 
+  NUMBER_SARGAM_PITCH /
   RHYTHMICAL_DASH /
   WHITE_SPACE
 
@@ -586,6 +643,98 @@ ABC_BSHARP
   = char:"B#"
     { return sa_helper(char,"B#") }
 
+NUMBER_MUSICAL_CHAR  
+  = 
+  NUMBER_CSHARP /
+  NUMBER_CFLAT /
+  NUMBER_DFLAT /
+  NUMBER_DSHARP /
+  NUMBER_EFLAT /
+  NUMBER_ESHARP / 
+  // TODO: REVIEW ESHARP
+  NUMBER_FFLAT /
+  NUMBER_FSHARP /
+  NUMBER_GFLAT /
+  NUMBER_GSHARP /
+  NUMBER_AFLAT /
+  NUMBER_ASHARP /
+  NUMBER_BFLAT /
+  NUMBER_BSHARP /
+  NUMBER_C /
+  NUMBER_D /
+  NUMBER_E /
+  NUMBER_F /
+  NUMBER_G /
+  NUMBER_A /
+  NUMBER_B 
+  
+NUMBER_C 
+  = char:"1"
+  { return sa_helper(char,"C") }
+NUMBER_D
+  = char:"2"
+  { return sa_helper(char,"D") }
+NUMBER_E
+  = char:"3"
+    { return sa_helper(char,"E") }
+NUMBER_F 
+  = char:"4"
+    { return sa_helper(char,"F") }
+NUMBER_G 
+  = char:"5"
+    { return sa_helper(char,"G") }
+NUMBER_A
+  = char:"6"
+    { return sa_helper(char,"A") }
+NUMBER_B
+  = char:"7"
+    { return sa_helper(char,"B") }
+NUMBER_CSHARP 
+  = char:"1#"
+    { return sa_helper(char,"C#") }
+NUMBER_CFLAT 
+  = char:"1b"
+    { return sa_helper(char,"Cb") }
+NUMBER_DFLAT 
+  = char:"2b"
+    { return sa_helper(char,"Db") }
+NUMBER_DSHARP 
+  = char:"2#"
+    { return sa_helper(char,"D#") }
+NUMBER_EFLAT 
+  = char:"3b"
+    { return sa_helper(char,"Eb") }
+NUMBER_ESHARP 
+  = char:"3#"
+    { return sa_helper(char,"E#") }
+NUMBER_FFLAT 
+// TODO:REVIEW
+  = char:"4b"
+    { return sa_helper(char,"Fb") }
+NUMBER_FSHARP 
+  = char:"4#"
+    { return sa_helper(char,"F#") }
+NUMBER_GFLAT 
+  = char:"5b"
+    { return sa_helper(char,"Gb") }
+NUMBER_GSHARP 
+  = char:"5#"
+    { return sa_helper(char,"G#") }
+NUMBER_AFLAT 
+  = char:"6b"
+    { return sa_helper(char,"Ab") }
+NUMBER_ASHARP 
+  = char:"6#"
+    { return sa_helper(char,"A#") }
+NUMBER_BFLAT 
+  = char:"7b"
+    { return sa_helper(char,"Bb") }
+NUMBER_BSHARP 
+  = char:"7#"
+    { return sa_helper(char,"B#") }
+
+
+
 
 DEVANAGRI_MUSICAL_CHAR  "devanagri characters."
   = 
@@ -708,6 +857,11 @@ SARGAM_NI_SHARP
      {return sa_helper(char,"B#")}
 
 
+NUMBER_SARGAM_PITCH "ie 123"
+= slur:BEGIN_SLUR_OF_PITCH? char:NUMBER_MUSICAL_CHAR end_slur:END_SLUR_OF_PITCH?  
+       { 
+          return parse_sargam_pitch(slur,char,end_slur)
+       }
 ABC_SARGAM_PITCH "ie CDE"
 = slur:BEGIN_SLUR_OF_PITCH? char:ABC_MUSICAL_CHAR end_slur:END_SLUR_OF_PITCH?  
        { 
@@ -725,6 +879,7 @@ DEVANAGRI_SARGAM_PITCH "a sargam pitch ie SrR.."
 SARGAM_PITCH "a sargam pitch ie SrR.."
 = slur:BEGIN_SLUR_OF_PITCH? char:SARGAM_MUSICAL_CHAR end_slur:END_SLUR_OF_PITCH?  
        { 
+          _.warn("SARGAM_PITCH")
           return parse_sargam_pitch(slur,char,end_slur)
        }
 
@@ -785,8 +940,10 @@ RIGHT_REPEAT "ie :|"
                      source: ":|"
                    }
         }
+LINE_END "eol or eof"
+  =  &EOF / EOL
 
-LINE_END "TODO:review"
+zzLINE_END "ss"
   = EMPTY_LINE+ / EOF
 
 LINE_END_CHAR= "\r\n" / "\r" / "\n"
@@ -807,4 +964,5 @@ WHITE_SPACE "white space"
                      source: spaces.join("")
                      }
                      }
+
 
