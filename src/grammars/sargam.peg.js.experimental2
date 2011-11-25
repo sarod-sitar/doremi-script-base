@@ -90,7 +90,11 @@ LINE_END "ss"
   = EMPTY_LINE+ / EOF
 
 
-LINE "main line of music. multiple lines including syllables etc,delimited by empty line. There is an order, optional upper octave lines followed by main line of sargam followed by optional lyrics line"
+LINE
+ =
+   SINGLE_LINE / LINE_WITH_UPPERS
+
+LINE_WITH_UPPERS "main line of music. multiple lines including syllables etc,delimited by empty line. There is an order, optional upper octave lines followed by main line of sargam followed by optional lyrics line"
 
   =
     uppers:UPPER_OCTAVE_LINE*
@@ -99,6 +103,16 @@ LINE "main line of music. multiple lines including syllables etc,delimited by em
     lyrics:LYRICS_LINE?
     LINE_END  { 
           return parse_line(uppers,sargam,lowers,lyrics)
+        }
+
+SINGLE_LINE "main line of music. multiple lines including syllables etc,delimited by empty line. There is an order, optional upper octave lines followed by main line of sargam followed by optional lyrics line"
+
+  =
+    sargam:(sargam:DEVANAGRI_SARGAM_LINE / sargam:SARGAM_LINE / sargam:ABC_SARGAM_LINE/ sargam:NUMBER_SARGAM_LINE)
+    lowers:LOWER_OCTAVE_LINE*
+    lyrics:LYRICS_LINE?
+    LINE_END  { 
+          return parse_line([],sargam,lowers,lyrics)
         }
 
         
@@ -948,7 +962,6 @@ WHITE_SPACE "white space"
                      source: spaces.join("")
                      }
                      }
-
 
 
 

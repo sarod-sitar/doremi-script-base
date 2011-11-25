@@ -115,7 +115,6 @@
   };
   draw_ornament = function(ornament) {
     var orn_item, x;
-    console.log("draw_ornament, @id_ctr is " + this.id_ctr);
     x = ((function() {
       var _i, _len, _ref, _results;
       _ref = ornament.ornament_items;
