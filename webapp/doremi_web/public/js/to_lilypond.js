@@ -170,7 +170,7 @@
     return "" + lilypond_pitch + lilypond_octave + duration;
   };
   lilypond_grace_notes = function(ornament) {
-    var ary, length, pitch;
+    var ary, begin_beam, begin_slur, end_beam, end_slur, length, needs_beam, pitch;
     ary = (function() {
       var _i, _len, _ref, _results;
       _ref = ornament.ornament_items;
@@ -181,9 +181,18 @@
       }
       return _results;
     })();
-    ary[0] = "" + ary[0] + "[";
+    needs_beam = ary.length > 1;
+    begin_beam = end_beam = "";
+    begin_slur = "(";
+    begin_slur = "";
+    end_slur = ")";
+    if (needs_beam) {
+      begin_beam = "[";
+      end_beam = "]";
+    }
+    ary[0] = "" + ary[0] + begin_slur + begin_beam;
     length = ary.length;
-    ary[length - 1] = "" + ary[length - 1] + "])";
+    ary[length - 1] = "" + ary[length - 1] + end_beam;
     return ary.join(' ');
   };
   normalized_pitch_to_lilypond = function(pitch) {

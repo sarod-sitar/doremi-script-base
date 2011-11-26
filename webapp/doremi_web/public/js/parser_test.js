@@ -10,7 +10,7 @@
   if (typeof require !== "undefined" && require !== null) {
     _ = require("underscore")._;
   }
-  require('./sargam_parser.js');
+  require('./doremi_script_parser.js');
   sys = require('sys');
   utils = require('./tree_iterators.js');
   _.mixin(_console.toObject());
@@ -36,7 +36,7 @@
   _.mixin({
     my_inspect: my_inspect
   });
-  parser = SargamParser;
+  parser = DoremiScriptParser;
   aux1 = function(str, result) {
     if (!sys) {
       return;
