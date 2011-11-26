@@ -3,7 +3,7 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   $(document).ready(function() {
-    var Logger, debug, generate_html_page_aux, get_css, get_dom_fixer, get_zepto, handleFileSelect, my_url, parser, str, str3;
+    var Logger, debug, generate_html_page_aux, get_css, get_dom_fixer, get_zepto, handleFileSelect, my_url, params, parser, sample_compositions_click, str, str3;
     $('.generated_by_lilypond').hide();
     Logger = _console.constructor;
     _console.level = Logger.WARN;
@@ -12,6 +12,44 @@
       _.debug("***Using zepto.js instead of jQuery***");
     }
     debug = false;
+    params = {
+      type: 'GET',
+      url: 'list_samples',
+      dataType: 'json',
+      success: function(data) {
+        var item, str;
+        str = ((function() {
+          var _i, _len, _results;
+          _results = [];
+          for (_i = 0, _len = data.length; _i < _len; _i++) {
+            item = data[_i];
+            _results.push("<option>" + item + "</option>");
+          }
+          return _results;
+        })()).join('');
+        return $('#sample_compositions').append(str);
+      }
+    };
+    $.ajax(params);
+    sample_compositions_click = function() {
+      var val;
+      console.log("sample_compositions_click");
+      if (this.selectedIndex === 0) {
+        return;
+      }
+      val = this.value;
+      params = {
+        type: 'GET',
+        url: "/samples/" + val,
+        dataType: 'text',
+        success: function(data) {
+          $('#sample_compositions').val("Load sample compositions");
+          return $('#entry_area').val(data);
+        }
+      };
+      return $.ajax(params);
+    };
+    $('#sample_compositions').change(sample_compositions_click);
     handleFileSelect = __bind(function(evt) {
       var file, reader;
       file = document.getElementById('file').files[0];
@@ -98,7 +136,6 @@
       return $.ajax(obj);
     }, this));
     get_dom_fixer = function() {
-      var params;
       params = {
         type: 'GET',
         url: 'js/dom_fixer.js',
@@ -111,7 +148,6 @@
       return $.ajax(params);
     };
     get_zepto = function() {
-      var params;
       params = {
         type: 'GET',
         url: 'js/third_party/zepto.unminified.js',
@@ -124,7 +160,6 @@
       return $.ajax(params);
     };
     get_css = function() {
-      var params;
       params = {
         type: 'GET',
         url: 'css/application.css',
