@@ -630,6 +630,13 @@
     test.equal(composition.lines[0].kind, "number", "should set composition kind to number");
     return test.done();
   };
+  exports.test_recognizes_sa = function(test) {
+    var composition, str, z;
+    str = 'S';
+    composition = test_parses(str, test);
+    test.equal(composition.lines[0].kind, z = "latin_sargam", "should set composition kind to " + z);
+    return test.done();
+  };
   exports.test_measure_pitch_durations = function(test) {
     var composition, line, my_pitch, str;
     str = '--S- ---- --r-';

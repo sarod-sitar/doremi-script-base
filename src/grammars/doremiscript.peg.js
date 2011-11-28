@@ -9,14 +9,10 @@
     Fraction=require('./third_party/fraction.js').Fraction
   }
   Helper =ParserHelper
-  if (debug) {
-    console.log("Helper is",Helper)
-  } 
   // Mix in the methods from Helper.
   // TODO: find a more elegant way to do this.
   // didn't work. _.extend(this, Helper) 
   //
-  
   id_ctr=1
   sa_helper=Helper.sa_helper
   parse_line=Helper.parse_line
@@ -90,7 +86,7 @@ LINE_END "ss"
   = EMPTY_LINE+ / EOF
 
 
-LINE "main line of music. multiple lines including syllables etc,delimited by empty line. There is an order, optional upper octave lines followed by main line of sargam followed by optional lyrics line"
+COMPOUND_LINE "main line of music. multiple lines including syllables etc,delimited by empty line. There is an order, optional upper octave lines followed by main line of sargam followed by optional lyrics line"
 
   =
     uppers:UPPER_OCTAVE_LINE*
@@ -101,7 +97,19 @@ LINE "main line of music. multiple lines including syllables etc,delimited by em
           return parse_line(uppers,sargam,lowers,lyrics)
         }
 
-        
+LINE
+  = COMPOUND_LINE / SIMPLE_LINE
+
+SIMPLE_LINE
+  =
+    sargam:(sargam:DEVANAGRI_SARGAM_LINE / sargam:SARGAM_LINE / sargam:ABC_SARGAM_LINE/ sargam:NUMBER_SARGAM_LINE)
+    lowers:LOWER_OCTAVE_LINE*
+    lyrics:LYRICS_LINE?
+    LINE_END  { 
+          uppers=''
+          return parse_line(uppers,sargam,lowers,lyrics)
+    }
+
 SARGAM_ORNAMENT "in upper line NRSNS"
   = items:SARGAM_ORNAMENT_ITEM+ 
         { 
