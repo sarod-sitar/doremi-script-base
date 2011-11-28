@@ -242,124 +242,142 @@ DoremiScriptParser = (function(){
         }
         
         
-        var savedPos0 = pos;
-        var result2 = [];
-        if (input.substr(pos, 1) === " ") {
-          var result9 = " ";
+        if (input.substr(pos, 1) === "\n") {
+          var result11 = "\n";
           pos += 1;
         } else {
-          var result9 = null;
+          var result11 = null;
           if (reportMatchFailures) {
-            matchFailed("\" \"");
+            matchFailed("\"\\n\"");
           }
         }
-        while (result9 !== null) {
-          result2.push(result9);
+        if (result11 !== null) {
+          var result0 = result11;
+        } else {
+          var savedPos0 = pos;
+          var result3 = [];
           if (input.substr(pos, 1) === " ") {
-            var result9 = " ";
+            var result10 = " ";
             pos += 1;
           } else {
-            var result9 = null;
+            var result10 = null;
             if (reportMatchFailures) {
               matchFailed("\" \"");
             }
           }
-        }
-        if (result2 !== null) {
-          var result3 = parse_LINE_END_CHAR();
-          if (result3 !== null) {
-            var result4 = [];
-            var savedPos1 = pos;
-            var result6 = [];
+          while (result10 !== null) {
+            result3.push(result10);
             if (input.substr(pos, 1) === " ") {
-              var result8 = " ";
+              var result10 = " ";
               pos += 1;
             } else {
-              var result8 = null;
+              var result10 = null;
               if (reportMatchFailures) {
                 matchFailed("\" \"");
               }
             }
-            while (result8 !== null) {
-              result6.push(result8);
-              if (input.substr(pos, 1) === " ") {
-                var result8 = " ";
-                pos += 1;
-              } else {
-                var result8 = null;
-                if (reportMatchFailures) {
-                  matchFailed("\" \"");
-                }
-              }
-            }
-            if (result6 !== null) {
-              var result7 = parse_LINE_END_CHAR();
-              if (result7 !== null) {
-                var result5 = [result6, result7];
-              } else {
-                var result5 = null;
-                pos = savedPos1;
-              }
-            } else {
-              var result5 = null;
-              pos = savedPos1;
-            }
-            while (result5 !== null) {
-              result4.push(result5);
+          }
+          if (result3 !== null) {
+            var result4 = parse_LINE_END_CHAR();
+            if (result4 !== null) {
+              var result5 = [];
               var savedPos1 = pos;
-              var result6 = [];
+              var result7 = [];
               if (input.substr(pos, 1) === " ") {
-                var result8 = " ";
+                var result9 = " ";
                 pos += 1;
               } else {
-                var result8 = null;
+                var result9 = null;
                 if (reportMatchFailures) {
                   matchFailed("\" \"");
                 }
               }
-              while (result8 !== null) {
-                result6.push(result8);
+              while (result9 !== null) {
+                result7.push(result9);
                 if (input.substr(pos, 1) === " ") {
-                  var result8 = " ";
+                  var result9 = " ";
                   pos += 1;
                 } else {
-                  var result8 = null;
+                  var result9 = null;
                   if (reportMatchFailures) {
                     matchFailed("\" \"");
                   }
                 }
               }
-              if (result6 !== null) {
-                var result7 = parse_LINE_END_CHAR();
-                if (result7 !== null) {
-                  var result5 = [result6, result7];
+              if (result7 !== null) {
+                var result8 = parse_LINE_END_CHAR();
+                if (result8 !== null) {
+                  var result6 = [result7, result8];
                 } else {
-                  var result5 = null;
+                  var result6 = null;
                   pos = savedPos1;
                 }
               } else {
-                var result5 = null;
+                var result6 = null;
                 pos = savedPos1;
               }
-            }
-            if (result4 !== null) {
-              var result1 = [result2, result3, result4];
+              while (result6 !== null) {
+                result5.push(result6);
+                var savedPos1 = pos;
+                var result7 = [];
+                if (input.substr(pos, 1) === " ") {
+                  var result9 = " ";
+                  pos += 1;
+                } else {
+                  var result9 = null;
+                  if (reportMatchFailures) {
+                    matchFailed("\" \"");
+                  }
+                }
+                while (result9 !== null) {
+                  result7.push(result9);
+                  if (input.substr(pos, 1) === " ") {
+                    var result9 = " ";
+                    pos += 1;
+                  } else {
+                    var result9 = null;
+                    if (reportMatchFailures) {
+                      matchFailed("\" \"");
+                    }
+                  }
+                }
+                if (result7 !== null) {
+                  var result8 = parse_LINE_END_CHAR();
+                  if (result8 !== null) {
+                    var result6 = [result7, result8];
+                  } else {
+                    var result6 = null;
+                    pos = savedPos1;
+                  }
+                } else {
+                  var result6 = null;
+                  pos = savedPos1;
+                }
+              }
+              if (result5 !== null) {
+                var result2 = [result3, result4, result5];
+              } else {
+                var result2 = null;
+                pos = savedPos0;
+              }
             } else {
-              var result1 = null;
+              var result2 = null;
               pos = savedPos0;
             }
           } else {
-            var result1 = null;
+            var result2 = null;
             pos = savedPos0;
           }
-        } else {
-          var result1 = null;
-          pos = savedPos0;
+          var result1 = result2 !== null
+            ? (function() { return {my_type: "line_end"}
+                       })()
+            : null;
+          if (result1 !== null) {
+            var result0 = result1;
+          } else {
+            var result0 = null;;
+          };
         }
-        var result0 = result1 !== null
-          ? (function() { return {my_type: "line_end"}
-                     })()
-          : null;
         
         
         
@@ -381,18 +399,27 @@ DoremiScriptParser = (function(){
         var savedReportMatchFailures = reportMatchFailures;
         reportMatchFailures = false;
         var savedPos0 = pos;
-        var result9 = parse_ATTRIBUTE_LINE();
-        if (result9 !== null) {
+        var result10 = parse_ATTRIBUTE_LINE();
+        if (result10 !== null) {
           var result2 = [];
-          while (result9 !== null) {
-            result2.push(result9);
-            var result9 = parse_ATTRIBUTE_LINE();
+          while (result10 !== null) {
+            result2.push(result10);
+            var result10 = parse_ATTRIBUTE_LINE();
           }
         } else {
           var result2 = null;
         }
         if (result2 !== null) {
-          var result8 = parse_EMPTY_LINE();
+          var result9 = parse_EMPTY_LINE();
+          if (result9 !== null) {
+            var result8 = [];
+            while (result9 !== null) {
+              result8.push(result9);
+              var result9 = parse_EMPTY_LINE();
+            }
+          } else {
+            var result8 = null;
+          }
           if (result8 !== null) {
             var result3 = result8;
           } else {
@@ -755,31 +782,30 @@ DoremiScriptParser = (function(){
           return cachedResult.result;
         }
         
-        var savedReportMatchFailures = reportMatchFailures;
-        reportMatchFailures = false;
+        
         var savedPos0 = pos;
         var result2 = [];
-        var result13 = parse_UPPER_OCTAVE_LINE();
-        while (result13 !== null) {
-          result2.push(result13);
-          var result13 = parse_UPPER_OCTAVE_LINE();
+        var result15 = parse_UPPER_OCTAVE_LINE();
+        while (result15 !== null) {
+          result2.push(result15);
+          var result15 = parse_UPPER_OCTAVE_LINE();
         }
         if (result2 !== null) {
-          var result12 = parse_DEVANAGRI_SARGAM_LINE();
-          if (result12 !== null) {
-            var result3 = result12;
+          var result14 = parse_DEVANAGRI_SARGAM_LINE();
+          if (result14 !== null) {
+            var result3 = result14;
           } else {
-            var result11 = parse_SARGAM_LINE();
-            if (result11 !== null) {
-              var result3 = result11;
+            var result13 = parse_SARGAM_LINE();
+            if (result13 !== null) {
+              var result3 = result13;
             } else {
-              var result10 = parse_ABC_SARGAM_LINE();
-              if (result10 !== null) {
-                var result3 = result10;
+              var result12 = parse_ABC_SARGAM_LINE();
+              if (result12 !== null) {
+                var result3 = result12;
               } else {
-                var result9 = parse_NUMBER_SARGAM_LINE();
-                if (result9 !== null) {
-                  var result3 = result9;
+                var result11 = parse_NUMBER_SARGAM_LINE();
+                if (result11 !== null) {
+                  var result3 = result11;
                 } else {
                   var result3 = null;;
                 };
@@ -788,18 +814,29 @@ DoremiScriptParser = (function(){
           }
           if (result3 !== null) {
             var result4 = [];
-            var result8 = parse_LOWER_OCTAVE_LINE();
-            while (result8 !== null) {
-              result4.push(result8);
-              var result8 = parse_LOWER_OCTAVE_LINE();
+            var result10 = parse_LOWER_OCTAVE_LINE();
+            while (result10 !== null) {
+              result4.push(result10);
+              var result10 = parse_LOWER_OCTAVE_LINE();
             }
             if (result4 !== null) {
-              var result7 = parse_LYRICS_LINE();
-              var result5 = result7 !== null ? result7 : '';
+              var result9 = parse_LYRICS_LINE();
+              var result5 = result9 !== null ? result9 : '';
               if (result5 !== null) {
                 var result6 = parse_LINE_END();
                 if (result6 !== null) {
-                  var result1 = [result2, result3, result4, result5, result6];
+                  var result7 = [];
+                  var result8 = parse_EMPTY_LINE();
+                  while (result8 !== null) {
+                    result7.push(result8);
+                    var result8 = parse_EMPTY_LINE();
+                  }
+                  if (result7 !== null) {
+                    var result1 = [result2, result3, result4, result5, result6, result7];
+                  } else {
+                    var result1 = null;
+                    pos = savedPos0;
+                  }
                 } else {
                   var result1 = null;
                   pos = savedPos0;
@@ -821,14 +858,12 @@ DoremiScriptParser = (function(){
           pos = savedPos0;
         }
         var result0 = result1 !== null
-          ? (function(uppers, sargam, lowers, lyrics) { 
+          ? (function(uppers, sargam, lowers, lyrics) {
                     return parse_line(uppers,sargam,lowers,lyrics)
                   })(result1[0], result1[1], result1[2], result1[3])
           : null;
-        reportMatchFailures = savedReportMatchFailures;
-        if (reportMatchFailures && result0 === null) {
-          matchFailed("main line of music. multiple lines including syllables etc,delimited by empty line. There is an order, optional upper octave lines followed by main line of sargam followed by optional lyrics line");
-        }
+        
+        
         
         cache[cacheKey] = {
           nextPos: pos,
@@ -845,7 +880,8 @@ DoremiScriptParser = (function(){
           return cachedResult.result;
         }
         
-        
+        var savedReportMatchFailures = reportMatchFailures;
+        reportMatchFailures = false;
         var result2 = parse_COMPOUND_LINE();
         if (result2 !== null) {
           var result0 = result2;
@@ -857,8 +893,10 @@ DoremiScriptParser = (function(){
             var result0 = null;;
           };
         }
-        
-        
+        reportMatchFailures = savedReportMatchFailures;
+        if (reportMatchFailures && result0 === null) {
+          matchFailed("main line of music. multiple lines including syllables etc,delimited by empty line. There is an order, optional upper octave lines followed by main line of sargam followed by optional lyrics line");
+        }
         
         cache[cacheKey] = {
           nextPos: pos,
@@ -877,21 +915,21 @@ DoremiScriptParser = (function(){
         
         
         var savedPos0 = pos;
-        var result11 = parse_DEVANAGRI_SARGAM_LINE();
-        if (result11 !== null) {
-          var result2 = result11;
+        var result13 = parse_DEVANAGRI_SARGAM_LINE();
+        if (result13 !== null) {
+          var result2 = result13;
         } else {
-          var result10 = parse_SARGAM_LINE();
-          if (result10 !== null) {
-            var result2 = result10;
+          var result12 = parse_SARGAM_LINE();
+          if (result12 !== null) {
+            var result2 = result12;
           } else {
-            var result9 = parse_ABC_SARGAM_LINE();
-            if (result9 !== null) {
-              var result2 = result9;
+            var result11 = parse_ABC_SARGAM_LINE();
+            if (result11 !== null) {
+              var result2 = result11;
             } else {
-              var result8 = parse_NUMBER_SARGAM_LINE();
-              if (result8 !== null) {
-                var result2 = result8;
+              var result10 = parse_NUMBER_SARGAM_LINE();
+              if (result10 !== null) {
+                var result2 = result10;
               } else {
                 var result2 = null;;
               };
@@ -900,18 +938,29 @@ DoremiScriptParser = (function(){
         }
         if (result2 !== null) {
           var result3 = [];
-          var result7 = parse_LOWER_OCTAVE_LINE();
-          while (result7 !== null) {
-            result3.push(result7);
-            var result7 = parse_LOWER_OCTAVE_LINE();
+          var result9 = parse_LOWER_OCTAVE_LINE();
+          while (result9 !== null) {
+            result3.push(result9);
+            var result9 = parse_LOWER_OCTAVE_LINE();
           }
           if (result3 !== null) {
-            var result6 = parse_LYRICS_LINE();
-            var result4 = result6 !== null ? result6 : '';
+            var result8 = parse_LYRICS_LINE();
+            var result4 = result8 !== null ? result8 : '';
             if (result4 !== null) {
               var result5 = parse_LINE_END();
               if (result5 !== null) {
-                var result1 = [result2, result3, result4, result5];
+                var result6 = [];
+                var result7 = parse_EMPTY_LINE();
+                while (result7 !== null) {
+                  result6.push(result7);
+                  var result7 = parse_EMPTY_LINE();
+                }
+                if (result6 !== null) {
+                  var result1 = [result2, result3, result4, result5, result6];
+                } else {
+                  var result1 = null;
+                  pos = savedPos0;
+                }
               } else {
                 var result1 = null;
                 pos = savedPos0;

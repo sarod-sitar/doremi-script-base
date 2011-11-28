@@ -59,11 +59,11 @@ START "Grammar for AACM/Bhatkande style sargam/letter notation by John Rothfield
   //= UPPER_OCTAVE_LINE
 
 EMPTY_LINE ""
-= " "* LINE_END_CHAR (" "* LINE_END_CHAR)* { return {my_type: "line_end"}
+= "\n" / " "* LINE_END_CHAR (" "* LINE_END_CHAR)* { return {my_type: "line_end"}
            }
 
 HEADER_SECTION "Headers followed by blank lines or a line"
-= attributes:ATTRIBUTE_LINE+ (EMPTY_LINE / EOF / "/n" / &LINE )
+= attributes:ATTRIBUTE_LINE+ (EMPTY_LINE+ / EOF / "/n" / &LINE )
      { return { my_type:"attributes",
                 items: attributes,
                 source: "TODO"
@@ -86,18 +86,19 @@ LINE_END "ss"
   = EMPTY_LINE+ / EOF
 
 
-COMPOUND_LINE "main line of music. multiple lines including syllables etc,delimited by empty line. There is an order, optional upper octave lines followed by main line of sargam followed by optional lyrics line"
-
+COMPOUND_LINE 
   =
     uppers:UPPER_OCTAVE_LINE*
     sargam:(sargam:DEVANAGRI_SARGAM_LINE / sargam:SARGAM_LINE / sargam:ABC_SARGAM_LINE/ sargam:NUMBER_SARGAM_LINE)
     lowers:LOWER_OCTAVE_LINE*
     lyrics:LYRICS_LINE?
-    LINE_END  { 
+    LINE_END   
+    EMPTY_LINE*
+    {
           return parse_line(uppers,sargam,lowers,lyrics)
         }
 
-LINE
+LINE "main line of music. multiple lines including syllables etc,delimited by empty line. There is an order, optional upper octave lines followed by main line of sargam followed by optional lyrics line"
   = COMPOUND_LINE / SIMPLE_LINE
 
 SIMPLE_LINE
@@ -105,7 +106,9 @@ SIMPLE_LINE
     sargam:(sargam:DEVANAGRI_SARGAM_LINE / sargam:SARGAM_LINE / sargam:ABC_SARGAM_LINE/ sargam:NUMBER_SARGAM_LINE)
     lowers:LOWER_OCTAVE_LINE*
     lyrics:LYRICS_LINE?
-    LINE_END  { 
+    LINE_END 
+    EMPTY_LINE*
+    { 
           uppers=''
           return parse_line(uppers,sargam,lowers,lyrics)
     }
