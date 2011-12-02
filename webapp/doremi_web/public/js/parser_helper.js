@@ -743,8 +743,8 @@
       if (!(console.log != null)) {
         return;
       }
-      if (typeof sys !== "undefined" && sys !== null) {
-        console.log(sys.inspect(obj, false, null));
+      if (typeof util !== "undefined" && util !== null) {
+        console.log(util.inspect(obj, false, null));
         return;
       }
       return console.log(obj);

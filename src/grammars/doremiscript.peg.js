@@ -3,7 +3,7 @@
   debug=false
   if (typeof module !== 'undefined' && module.exports) {
     // running under node.js
-    sys = require('sys');
+    util = require('util');
     _ = require("underscore")._;
     ParserHelper= require("./parser_helper.js").ParserHelper
     Fraction=require('./third_party/fraction.js').Fraction
