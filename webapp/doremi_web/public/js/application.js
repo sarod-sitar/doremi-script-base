@@ -3,7 +3,7 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   $(document).ready(function() {
-    var Logger, debug, generate_html_page_aux, get_css, get_dom_fixer, get_zepto, handleFileSelect, my_url, params, parser, sample_compositions_click, str, str3, x;
+    var Logger, debug, generate_html_page_aux, get_css, get_dom_fixer, get_zepto, handleFileSelect, my_url, params, parser, sample_compositions_click, str, str3;
     $('.generated_by_lilypond').hide();
     Logger = _console.constructor;
     _console.level = Logger.WARN;
@@ -12,10 +12,6 @@
       _.debug("***Using zepto.js instead of jQuery***");
     }
     debug = false;
-    $('body').append($('#testing_utf_support').html());
-    x = $('span.note.left_repeat')[0];
-    window.left_repeat_width = $(x).width();
-    $('#width_test').hide();
     $('body').append("left_repeat_width is " + window.left_repeat_width);
     params = {
       type: 'GET',
@@ -47,7 +43,7 @@
         url: "/samples/" + filename,
         dataType: 'text',
         success: __bind(function(data) {
-          var snip, typ, without_suffix, _i, _len, _ref;
+          var snip, typ, without_suffix, x, _i, _len, _ref;
           without_suffix = filename.substr(0, filename.lastIndexOf('.')) || filename;
           $('#entry_area').val(data);
           $('#sample_compositions').val("Load sample compositions");
@@ -130,7 +126,7 @@
           return $('#lilypond_png').attr('src', 'none.jpg');
         },
         success: function(some_data, text_status) {
-          var snip, typ, _i, _len, _ref;
+          var snip, typ, x, _i, _len, _ref;
           _ref = ["png", "pdf", "mid", "ly", "txt"];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             typ = _ref[_i];

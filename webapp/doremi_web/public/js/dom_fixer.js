@@ -2,6 +2,26 @@
   var adjust_slurs_in_dom, root;
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   adjust_slurs_in_dom = function() {
+    var tag, x;
+    console.log("adjust_slurs_in_dom");
+    if (!(window.left_repeat_width != null)) {
+      x = $('#testing_utf_support');
+      x.show();
+      window.left_repeat_width = $(x).width();
+      x.hide();
+    }
+    console.log("checking left_repeat_width");
+    if (window.left_repeat_width === 0 || window.left_repeat_width > 8) {
+      tag = "data-fallback-if-no-utf8-chars";
+      $("span[" + tag + "]").each(function(index) {
+        var attr, obj;
+        console.log("utf8 fix loop, this is", this);
+        obj = $(this);
+        console.log('dom-fixer', this);
+        attr = obj.attr(tag);
+        return obj.html(attr);
+      });
+    }
     $('span[data-begin-slur-id]').each(function(index) {
       var attr, pos1, pos2, slur, val;
       pos2 = $(this).offset();
