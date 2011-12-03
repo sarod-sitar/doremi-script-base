@@ -12,7 +12,6 @@
       _.debug("***Using zepto.js instead of jQuery***");
     }
     debug = false;
-    $('body').append("left_repeat_width is " + window.left_repeat_width);
     params = {
       type: 'GET',
       url: 'list_samples',
