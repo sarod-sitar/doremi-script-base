@@ -1091,20 +1091,34 @@ DoremiScriptParser = (function(){
         reportMatchFailures = false;
         var savedPos0 = pos;
         var savedPos1 = pos;
-        var result5 = parse_UPPER_OCTAVE_LINE_ITEM();
-        if (result5 !== null) {
-          var result3 = [];
-          while (result5 !== null) {
-            result3.push(result5);
-            var result5 = parse_UPPER_OCTAVE_LINE_ITEM();
-          }
-        } else {
-          var result3 = null;
-        }
+        var result9 = parse_WHITE_SPACE();
+        var result3 = result9 !== null ? result9 : '';
         if (result3 !== null) {
-          var result4 = parse_LINE_END();
+          var result8 = parse_UPPER_OCTAVE_LINE_ITEM();
+          if (result8 !== null) {
+            var result4 = [];
+            while (result8 !== null) {
+              result4.push(result8);
+              var result8 = parse_UPPER_OCTAVE_LINE_ITEM();
+            }
+          } else {
+            var result4 = null;
+          }
           if (result4 !== null) {
-            var result1 = [result3, result4];
+            var result7 = parse_WHITE_SPACE();
+            var result5 = result7 !== null ? result7 : '';
+            if (result5 !== null) {
+              var result6 = parse_LINE_END();
+              if (result6 !== null) {
+                var result1 = [result3, result4, result5, result6];
+              } else {
+                var result1 = null;
+                pos = savedPos1;
+              }
+            } else {
+              var result1 = null;
+              pos = savedPos1;
+            }
           } else {
             var result1 = null;
             pos = savedPos1;
@@ -1114,17 +1128,14 @@ DoremiScriptParser = (function(){
           pos = savedPos1;
         }
         var result2 = result1 !== null
-          ? (function(items) {
-                 my_items =  _.flatten(items)
-                 if (my_items.length == 0) {
-                   return ""
-                 }
+          ? (function(begin_white_space, items, end_white_space) {
+                   my_items =  _.compact(_.flatten([begin_white_space, items,end_white_space]))
                  return {
                          my_type:"upper_octave_line",
-                         source: this.get_source_for_items(items),
+                         source: this.get_source_for_items(my_items),
                          items: my_items
                         } 
-                })(result1[0])
+                })(result1[0], result1[1], result1[2])
           : null;
         if (result2 !== null) {
           var result0 = result2;
@@ -4023,7 +4034,7 @@ DoremiScriptParser = (function(){
         reportMatchFailures = false;
         var savedPos0 = pos;
         var savedPos1 = pos;
-        var result9 = parse__();
+        var result9 = parse_WHITE_SPACE();
         var result3 = result9 !== null ? result9 : '';
         if (result3 !== null) {
           var result8 = parse_SYLLABLE();
@@ -4037,7 +4048,7 @@ DoremiScriptParser = (function(){
             var result4 = null;
           }
           if (result4 !== null) {
-            var result7 = parse__();
+            var result7 = parse_WHITE_SPACE();
             var result5 = result7 !== null ? result7 : '';
             if (result5 !== null) {
               var result6 = parse_LINE_END();
@@ -4060,14 +4071,12 @@ DoremiScriptParser = (function(){
           pos = savedPos1;
         }
         var result2 = result1 !== null
-          ? (function(begin_whitespace, items, end_white_space) {  items.unshift(begin_whitespace) 
-                   items.push(end_white_space)
-                   items= _.flatten(items)
+          ? (function(begin_white_space, items, end_white_space) {  
+                   my_items =  _.compact(_.flatten([begin_white_space, items,end_white_space]))
                    return {
                      my_type:"lyrics_line",
-                     /* compact removes empty strings that whitespace returns */
-                     items:_.compact(items),
-                     source: ""
+                     items:my_items,
+                     source: this.get_source_for_items(my_items),
                         }
                 })(result1[0], result1[1], result1[2])
           : null;

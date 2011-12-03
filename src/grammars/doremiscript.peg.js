@@ -123,15 +123,12 @@ SARGAM_ORNAMENT_ITEM
   = SARGAM_PITCH 
 
 UPPER_OCTAVE_LINE "can put upper octave dots or semicolons for upper upper octave (. or :). Also tala symbols +203"
-  = items:UPPER_OCTAVE_LINE_ITEM+ LINE_END
+  = begin_white_space:WHITE_SPACE? items:UPPER_OCTAVE_LINE_ITEM+ end_white_space:WHITE_SPACE? LINE_END
       {
-       my_items =  _.flatten(items)
-       if (my_items.length == 0) {
-         return ""
-       }
+         my_items =  _.compact(_.flatten([begin_white_space, items,end_white_space]))
        return {
                my_type:"upper_octave_line",
-               source: this.get_source_for_items(items),
+               source: this.get_source_for_items(my_items),
                items: my_items
               } 
       }
@@ -508,16 +505,16 @@ SYLLABLE "for example he- or world"
 
 
 LYRICS_LINE "line of syllables"
-  = begin_whitespace:_? items:LYRICS_LINE_ITEM+ 
-     end_white_space:_? LINE_END 
-      {  items.unshift(begin_whitespace) 
-         items.push(end_white_space)
-         items= _.flatten(items)
+  = begin_white_space:WHITE_SPACE? 
+    items:LYRICS_LINE_ITEM+ 
+    end_white_space:WHITE_SPACE? LINE_END 
+
+      {  
+         my_items =  _.compact(_.flatten([begin_white_space, items,end_white_space]))
          return {
            my_type:"lyrics_line",
-           /* compact removes empty strings that whitespace returns */
-           items:_.compact(items),
-           source: ""
+           items:my_items,
+           source: this.get_source_for_items(my_items),
               }
       }
 
