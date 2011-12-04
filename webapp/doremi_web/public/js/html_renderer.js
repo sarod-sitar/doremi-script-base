@@ -1,5 +1,5 @@
 (function() {
-  var class_for_octave, draw_attributes, draw_beat, draw_item, draw_line, draw_lower_sym, draw_measure, draw_ornament, draw_ornament_item, draw_pitch, draw_syllable, draw_upper_sym, last_slur_id, lookup_html_entity, lookup_simple, root, to_html, to_html_doc;
+  var class_for_octave, draw_attributes, draw_beat, draw_item, draw_line, draw_lower_sym, draw_measure, draw_ornament, draw_ornament_item, draw_pitch, draw_pitch_sign, draw_syllable, draw_upper_sym, last_slur_id, lookup_html_entity, lookup_simple, root, to_html, to_html_doc;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   this.id_ctr = new Date().getTime();
@@ -149,33 +149,39 @@
     this.id_ctr++;
     return "<span id=\"" + this.id_ctr + "\" class=\"upper_attribute ornament placement_" + ornament.placement + "\">" + x + "</span>";
   };
-  draw_pitch = function(pitch) {
-    var attribute, data1, fallback, lower_octave_symbol_html, my_source, pitch_sign, simple, source2, syl_html, title, upper_attributes_html, upper_octave_symbol_html;
-    source2 = lookup_html_entity(pitch.source);
-    my_source = "";
-    my_source = source2 != null ? source2 : pitch.source;
-    fallback = "";
-    if (source2 != null) {
-      simple = lookup_simple(source2);
-      fallback = "data-fallback-if-no-utf8-chars='" + simple + "'";
-    }
-    if (pitch.pitch_source != null) {
-      my_source = pitch.pitch_source;
-    }
-    pitch_sign = "";
-    title = "";
-    if (pitch.numerator != null) {
-      title = "" + pitch.numerator + "/" + pitch.denominator + " of a beat";
+  draw_pitch_sign = function(my_source) {
+    var simple;
+    if (my_source.length === 1) {
+      return "";
     }
     if (my_source[1] === "#") {
       simple = lookup_simple("#");
       my_source = my_source[0];
-      pitch_sign = "<span data-fallback-if-no-utf8-chars='" + simple + "' class='pitch_sign sharp'>" + (lookup_html_entity('#')) + "</span>";
+      return "<span data-fallback-if-no-utf8-chars='" + simple + "' class='pitch_sign sharp'>" + (lookup_html_entity('#')) + "</span>";
     }
     if (my_source[1] === "b") {
       my_source = my_source[0];
       simple = lookup_simple("b");
-      pitch_sign = "<span data-fallback-if-no-utf8-chars='" + simple + "' class='pitch_sign flat'>" + (lookup_html_entity('b')) + "</span>";
+      return "<span data-fallback-if-no-utf8-chars='" + simple + "' class='pitch_sign flat'>" + (lookup_html_entity('b')) + "</span>";
+    }
+    return "";
+  };
+  draw_pitch = function(pitch) {
+    var attribute, data1, lower_octave_symbol_html, my_source, pitch_sign, syl_html, title, upper_attributes_html, upper_octave_symbol_html;
+    my_source = pitch.source;
+    if (pitch.pitch_source != null) {
+      my_source = pitch.pitch_source;
+    }
+    title = "";
+    if (pitch.numerator != null) {
+      title = "" + pitch.numerator + "/" + pitch.denominator + " of a beat";
+    }
+    pitch_sign = draw_pitch_sign(my_source);
+    if (my_source[1] === "#") {
+      my_source = my_source[0];
+    }
+    if (my_source[1] === "b") {
+      my_source = my_source[0];
     }
     upper_octave_symbol_html = draw_upper_sym(pitch);
     lower_octave_symbol_html = draw_lower_sym(pitch);
@@ -190,7 +196,7 @@
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           attribute = _ref[_i];
           _results.push(__bind(function(attribute) {
-            var data, my_item, my_source2;
+            var data, my_item, my_source2, simple;
             if (attribute.my_type === "upper_octave_indicator") {
               return "";
             }
@@ -222,7 +228,7 @@
         return _results;
       }).call(this)).join('');
     }
-    return "<span title=\"" + title + "\" class=\"note_wrapper\" " + data1 + ">" + upper_attributes_html + upper_octave_symbol_html + lower_octave_symbol_html + syl_html + "<span " + fallback + " class=\"note " + pitch.my_type + "\" tabindex=\"0\">" + my_source + "</span>" + pitch_sign + "</span>";
+    return "<span title=\"" + title + "\" class=\"note_wrapper\" " + data1 + ">" + upper_attributes_html + upper_octave_symbol_html + lower_octave_symbol_html + syl_html + "<span class=\"note " + pitch.my_type + "\" tabindex=\"0\">" + my_source + "</span>" + pitch_sign + "</span>";
   };
   draw_item = function(item) {
     var attribute, data1, fallback, my_source, simple, source2, title, upper_attributes_html;
