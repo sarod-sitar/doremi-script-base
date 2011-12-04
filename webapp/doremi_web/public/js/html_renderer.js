@@ -150,24 +150,24 @@
     return "<span id=\"" + this.id_ctr + "\" class=\"upper_attribute ornament placement_" + ornament.placement + "\">" + x + "</span>";
   };
   draw_pitch_sign = function(my_source) {
-    var simple;
+    var simple, snip;
     if (my_source.length === 1) {
-      return "";
+      snip = "";
     }
     if (my_source[1] === "#") {
       simple = lookup_simple("#");
       my_source = my_source[0];
-      return "<span data-fallback-if-no-utf8-chars='" + simple + "' class='pitch_sign sharp'>" + (lookup_html_entity('#')) + "</span>";
+      snip = "<span data-fallback-if-no-utf8-chars='" + simple + "' class='pitch_sign sharp'>" + (lookup_html_entity('#')) + "</span>";
     }
     if (my_source[1] === "b") {
       my_source = my_source[0];
       simple = lookup_simple("b");
-      return "<span data-fallback-if-no-utf8-chars='" + simple + "' class='pitch_sign flat'>" + (lookup_html_entity('b')) + "</span>";
+      snip = "<span data-fallback-if-no-utf8-chars='" + simple + "' class='pitch_sign flat'>" + (lookup_html_entity('b')) + "</span>";
     }
-    return "";
+    return [snip, my_source];
   };
   draw_pitch = function(pitch) {
-    var attribute, data1, lower_octave_symbol_html, my_source, pitch_sign, syl_html, title, upper_attributes_html, upper_octave_symbol_html;
+    var attribute, data1, lower_octave_symbol_html, my_source, pitch_sign, syl_html, title, upper_attributes_html, upper_octave_symbol_html, _ref;
     my_source = pitch.source;
     if (pitch.pitch_source != null) {
       my_source = pitch.pitch_source;
@@ -176,13 +176,7 @@
     if (pitch.numerator != null) {
       title = "" + pitch.numerator + "/" + pitch.denominator + " of a beat";
     }
-    pitch_sign = draw_pitch_sign(my_source);
-    if (my_source[1] === "#") {
-      my_source = my_source[0];
-    }
-    if (my_source[1] === "b") {
-      my_source = my_source[0];
-    }
+    _ref = draw_pitch_sign(my_source), pitch_sign = _ref[0], my_source = _ref[1];
     upper_octave_symbol_html = draw_upper_sym(pitch);
     lower_octave_symbol_html = draw_lower_sym(pitch);
     syl_html = draw_syllable(pitch);
@@ -190,11 +184,11 @@
     data1 = "";
     if (pitch.attributes) {
       upper_attributes_html = ((function() {
-        var _i, _len, _ref, _results;
-        _ref = pitch.attributes;
+        var _i, _len, _ref2, _results;
+        _ref2 = pitch.attributes;
         _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          attribute = _ref[_i];
+        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+          attribute = _ref2[_i];
           _results.push(__bind(function(attribute) {
             var data, my_item, my_source2, simple;
             if (attribute.my_type === "upper_octave_indicator") {
@@ -228,7 +222,7 @@
         return _results;
       }).call(this)).join('');
     }
-    return "<span title=\"" + title + "\" class=\"note_wrapper\" " + data1 + ">" + upper_attributes_html + upper_octave_symbol_html + lower_octave_symbol_html + syl_html + "<span class=\"note " + pitch.my_type + "\" tabindex=\"0\">" + my_source + "</span>" + pitch_sign + "</span>";
+    return "<span title=\"" + title + "\" class=\"note_wrapper\" " + data1 + ">" + upper_attributes_html + upper_octave_symbol_html + lower_octave_symbol_html + syl_html + "<span class=\"note " + pitch.my_type + "\" >" + my_source + "</span>" + pitch_sign + "</span>";
   };
   draw_item = function(item) {
     var attribute, data1, fallback, my_source, simple, source2, title, upper_attributes_html;
@@ -307,7 +301,7 @@
         return _results;
       }).call(this)).join('');
     }
-    return "<span title=\"" + title + "\" class=\"note_wrapper\" " + data1 + ">" + upper_attributes_html + "<span " + fallback + " class=\"note " + item.my_type + "\" tabindex=\"0\">" + my_source + "</span></span>";
+    return "<span title=\"" + title + "\" class=\"note_wrapper\" " + data1 + ">" + upper_attributes_html + "<span " + fallback + " class=\"note " + item.my_type + "\" >" + my_source + "</span></span>";
   };
   draw_beat = function(beat) {
     var extra, item, x;
@@ -339,7 +333,7 @@
       js = "";
     }
     rendered_composition = to_html(composition);
-    return "<html>\n  <head>\n  <style type=\"text/css\">\n    " + css + "\n  </style>\n    <title>" + composition.title + "</title>\n    <!--\n    <link media=\"all\" type=\"text/css\" href=\"" + full_url + "/css/application.css\" rel=\"stylesheet\">\n     -->\n    <meta content=\"text/html;charset=utf-8\" http-equiv=\"Content-Type\">\n  </head>\n<body>\n  <div id=\"rendered_sargam\">\n    " + rendered_composition + "\n  </div>\n<script type=\"text/javascript\">\n" + js + "\n$(document).ready(function() {\n    return adjust_slurs_in_dom()\n})\n</script>\n<script id=\"source\" type=\"text/html\">\n" + composition.source + "\n</script>\n</body>\n</html>";
+    return "<html>\n  <head>\n  <style type=\"text/css\">\n    " + css + "\n  </style>\n    <title>" + composition.title + "</title>\n    <!--\n    <link media=\"all\" type=\"text/css\" href=\"" + full_url + "/css/application.css\" rel=\"stylesheet\">\n     -->\n    <meta content=\"text/html;charset=utf-8\" http-equiv=\"Content-Type\">\n  </head>\n<body>\n  <div id=\"rendered_sargam\">\n    " + rendered_composition + "\n  </div>\n<span id=\"testing_utf_support\" style=\"display:none\" class=\"note left_repeat\">&#x1d106;</span>\n<script type=\"text/javascript\">\n" + js + "\n$(document).ready(function() {\n    return adjust_slurs_in_dom()\n})\n</script>\n<script id=\"source\" type=\"text/html\">\n" + composition.source + "\n</script>\n</body>\n</html>";
   };
   draw_attributes = function(attributes) {
     var attribute, attrs;

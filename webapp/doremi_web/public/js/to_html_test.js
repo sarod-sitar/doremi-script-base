@@ -1,5 +1,5 @@
 (function() {
-  var Logger, debug, long_sample, parser, root, sys, test_to_html, to_html, utils, _;
+  var Logger, debug, long_sample, parser, root, sys, test_data, test_to_html, to_html, utils, _;
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   debug = false;
   if (typeof global !== "undefined" && global !== null) {
@@ -46,6 +46,20 @@
     var html;
     html = test_to_html(long_sample, test);
     test.ok(html.indexOf("note_wrapper") > -1, "failure");
+    return test.done();
+  };
+  test_data = ["P#", '<div class=\'composition\'><div class=\'stave sargam_line\'><span  class=\'beat\'><span title="1/1 of a beat" class="note_wrapper" ><span class="note pitch" >P</span><span data-fallback-if-no-utf8-chars=\'#\' class=\'pitch_sign sharp\'>&#9839;</span></span></span></div></div>', "not expected"];
+  exports.test_all = function(test) {
+    var fun;
+    console.log("test_all");
+    fun = function(args) {
+      var expected, msg, str, val;
+      str = args[0], expected = args[1], msg = args[2];
+      val = test_to_html(str, test);
+      _.warn("✔ Testing " + str + " -> " + expected);
+      return test.ok(val.indexOf(expected) > -1, "FAILED*** " + msg + ". Expected output of " + str + " to include " + expected + ". Output was \n\n" + val + "\n\n");
+    };
+    _.each_slice(test_data, 3, fun);
     return test.done();
   };
 }).call(this);

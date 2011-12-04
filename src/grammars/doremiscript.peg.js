@@ -495,7 +495,7 @@ WORD_TERMINATOR "marks end of word"
   = WHITE_SPACE 
 
 SYLLABLE "for example he- or world"
-  = letters:[a-zA-Z]+ optional_dash:'-'? whitespace:_ 
+  = letters:[a-zA-Z'!]+ optional_dash:'-'? whitespace:_ 
      { var syl = letters.join('') + optional_dash
        return _.compact([{ my_type:  "syllable",
                 syllable: syl,

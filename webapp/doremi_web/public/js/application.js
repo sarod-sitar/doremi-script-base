@@ -230,7 +230,7 @@
       if (parser.is_parsing) {}
     });
     $('#run_parser').click(function() {
-      var canvas, composition_data, src, src2;
+      var canvas, composition_data, src;
       if (parser.is_parsing) {
         return;
       }
@@ -241,10 +241,7 @@
         $('#warnings_div').html("");
         parser.is_parsing = true;
         src = $('#entry_area').val();
-        src2 = src.replace(/\n[\t ]+\n/g, "\n\n");
-        src2 = src2.replace(/\n[\t ]+$/g, "\n");
-        console.log(src2);
-        composition_data = parser.parse(src2);
+        composition_data = parser.parse(src);
         composition_data.source = src;
         composition_data.lilypond = to_lilypond(composition_data);
         window.the_composition = composition_data;
