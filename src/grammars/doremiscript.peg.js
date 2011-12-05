@@ -164,14 +164,14 @@ ALTERNATE_ENDING_INDICATOR "1._______ 2.___ etc. The period is optional. Must ha
 
 UPPER_OCTAVE_LINE_ITEM "Things above notes, including talas, octaves,chords, and 1st and second ending symbols"
   =  
-     SARGAM_ORNAMENT /
      WHITE_SPACE / 
      UPPER_OCTAVE_DOT /
      ALTERNATE_ENDING_INDICATOR /
      TALA /
      MORDENT /
      UPPER_UPPER_OCTAVE_SYMBOL /
-     CHORD_SYMBOL 
+     CHORD_SYMBOL /
+     SARGAM_ORNAMENT 
 
 
 LOWER_OCTAVE_LINE "can put lower octave dots or semicolons for lower-lower octave (. or :)"
