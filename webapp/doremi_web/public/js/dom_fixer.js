@@ -20,7 +20,6 @@
       next_left = $next.offset().left;
       syl_right = $syllable.offset().left + width;
       if (syl_right > next_left) {
-        console.log("correcting syllable " + ($syllable.html()));
         $par = $syllable.parent();
         $note = $('span.note', $par);
         margin_right = $note.css("margin-right");
@@ -29,7 +28,6 @@
         $note.css("margin-right", "" + (existing_margin_right + (syl_right - next_left) + extra) + "px");
       }
     }
-    console.log("adjust_slurs_in_dom");
     if (!(window.left_repeat_width != null)) {
       x = $('#testing_utf_support');
       x.show();
@@ -38,7 +36,6 @@
         window.left_repeat_width = 0;
       }
       x.hide();
-      $('body').append("left_repeat_width is " + window.left_repeat_width);
     }
     if ((window.left_repeat_width === 0) || (window.left_repeat_width > 10)) {
       tag = "data-fallback-if-no-utf8-chars";

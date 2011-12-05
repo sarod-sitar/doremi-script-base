@@ -3,7 +3,7 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   $(document).ready(function() {
-    var Logger, debug, generate_html_page_aux, get_css, get_dom_fixer, get_zepto, handleFileSelect, my_url, params, parser, sample_compositions_click, str, str3;
+    var Logger, debug, generate_html_page_aux, get_css, get_dom_fixer, get_zepto, handleFileSelect, my_url, parser, sample_compositions_click, setup_links, setup_samples_dropdown, str, str3;
     $('.generated_by_lilypond').hide();
     Logger = _console.constructor;
     _console.level = Logger.WARN;
@@ -12,27 +12,50 @@
       _.debug("***Using zepto.js instead of jQuery***");
     }
     debug = false;
-    params = {
-      type: 'GET',
-      url: 'list_samples',
-      dataType: 'json',
-      success: function(data) {
-        var item, str;
-        str = ((function() {
-          var _i, _len, _results;
-          _results = [];
-          for (_i = 0, _len = data.length; _i < _len; _i++) {
-            item = data[_i];
-            _results.push("<option>" + item + "</option>");
-          }
-          return _results;
-        })()).join('');
-        return $('#sample_compositions').append(str);
-      }
+    setup_samples_dropdown = function() {
+      var params;
+      params = {
+        type: 'GET',
+        url: 'list_samples',
+        dataType: 'json',
+        success: function(data) {
+          var item, str;
+          str = ((function() {
+            var _i, _len, _results;
+            _results = [];
+            for (_i = 0, _len = data.length; _i < _len; _i++) {
+              item = data[_i];
+              _results.push("<option>" + item + "</option>");
+            }
+            return _results;
+          })()).join('');
+          return $('#sample_compositions').append(str);
+        }
+      };
+      return $.ajax(params);
     };
-    $.ajax(params);
+    setup_samples_dropdown();
+    setup_links = function(filename, dir) {
+      var snip, typ, without_suffix, x, _i, _len, _ref, _results;
+      if (dir == null) {
+        dir = "compositions";
+      }
+      without_suffix = filename.substr(0, filename.lastIndexOf('.txt')) || filename;
+      _ref = ["png", "pdf", "mid", "ly", "txt"];
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        typ = _ref[_i];
+        snip = "window.open('compositions/" + without_suffix + "." + typ + "'); return false; ";
+        $("#download_" + typ).attr('href', x = "" + dir + "/" + without_suffix + "." + typ);
+        if (typ === 'png') {
+          $('#lilypond_png').attr('src', x);
+        }
+        _results.push($("#download_" + typ).attr('onclick', snip));
+      }
+      return _results;
+    };
     sample_compositions_click = function() {
-      var filename;
+      var filename, params;
       if (this.selectedIndex === 0) {
         return;
       }
@@ -42,20 +65,9 @@
         url: "/samples/" + filename,
         dataType: 'text',
         success: __bind(function(data) {
-          var snip, typ, without_suffix, x, _i, _len, _ref;
-          without_suffix = filename.substr(0, filename.lastIndexOf('.')) || filename;
           $('#entry_area').val(data);
           $('#sample_compositions').val("Load sample compositions");
-          _ref = ["png", "pdf", "mid", "ly", "txt"];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            typ = _ref[_i];
-            snip = "window.open('compositions/" + without_suffix + "." + typ + "'); return false; ";
-            $("#download_" + typ).attr('href', x = "samples/" + without_suffix + "." + typ);
-            if (typ === 'png') {
-              $('#lilypond_png').attr('src', x);
-            }
-            $("#download_" + typ).attr('onclick', snip);
-          }
+          setup_links(filename, 'samples');
           return $('.generated_by_lilypond').show();
         }, this)
       };
@@ -125,17 +137,7 @@
           return $('#lilypond_png').attr('src', 'none.jpg');
         },
         success: function(some_data, text_status) {
-          var snip, typ, x, _i, _len, _ref;
-          _ref = ["png", "pdf", "mid", "ly", "txt"];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            typ = _ref[_i];
-            snip = "window.open('compositions/" + some_data.fname + "." + typ + "'); return false; ";
-            $("#download_" + typ).attr('href', x = "compositions/" + some_data.fname + "." + typ);
-            if (typ === 'png') {
-              $('#lilypond_png').attr('src', x);
-            }
-            $("#download_" + typ).attr('onclick', snip);
-          }
+          setup_links(some_data.fname);
           window.location = String(window.location).replace(/\#.*$/, "") + "#staff_notation";
           $('.generated_by_lilypond').show();
           $('#lilypond_output').html(some_data.lilypond_output);
@@ -148,6 +150,7 @@
       return $.ajax(obj);
     }, this));
     get_dom_fixer = function() {
+      var params;
       params = {
         type: 'GET',
         url: 'js/dom_fixer.js',
@@ -160,6 +163,7 @@
       return $.ajax(params);
     };
     get_zepto = function() {
+      var params;
       params = {
         type: 'GET',
         url: 'js/third_party/zepto.unminified.js',
@@ -172,6 +176,7 @@
       return $.ajax(params);
     };
     get_css = function() {
+      var params;
       params = {
         type: 'GET',
         url: 'css/application.css',
