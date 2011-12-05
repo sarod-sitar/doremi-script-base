@@ -232,9 +232,6 @@
     if (item.my_type === "pitch") {
       return draw_pitch(item);
     }
-    if (item.my_type === "dash") {
-      return draw_pitch(item);
-    }
     if (item.my_type === "begin_beat") {
       return "";
     }
