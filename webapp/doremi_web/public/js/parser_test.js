@@ -278,40 +278,19 @@
     test.ok(composition.warnings[0].indexOf(z = "unbalanced parens") > -1, "Expected warning to include " + z + ". Warning was " + composition.warnings[0]);
     return test.done();
   };
-  exports.test_gives_warning_if_syllable_under_right_paren = function(test) {
-    var composition, str, z;
-    str = '| <(Pm)>\n      nai- ';
-    composition = test_parses(str, test);
-    test.ok(composition.warnings.length > 0, "expected warnings");
-    test.ok(composition.warnings[0].indexOf(z = "Attribute syllable above/below nothing" > -1), "Expected warning to include " + z + ", warning was " + warnings[0]);
-    return test.done();
-  };
-  exports.test_gives_warning_if_syllable_under_left_paren = function(test) {
-    var composition, str, z;
-    str = '| <(Pm)>\n   nai- ';
-    composition = test_parses(str, test);
-    test.ok(composition.warnings.length > 0, "expected warnings");
-    test.ok(composition.warnings[0].indexOf(z = "Attribute syllable above/below nothing" > -1), "Expected warning to include " + z + ", warning was " + warnings[0]);
-    return test.done();
-  };
-  exports.test_gives_warning_if_syllable_not_under_note = function(test) {
-    var composition, str, z;
-    str = '|S\n  hi \n';
-    composition = test_parses(str, test);
-    test.ok(composition.warnings.length > 0, "No warnings");
-    test.ok(composition.warnings[0].indexOf(z = "Attribute syllable above/below nothing" > -1), "Expected warning to include " + z + ", warning was " + warnings[0]);
-    return test.done();
-  };
-  exports.test_syllable_assigned_to_note_above_it = function(test) {
+  exports.test_syllable_assigned_using_melismas = function(test) {
     var composition, line, my_pitch, str;
-    str = '| S\n  hi \n';
+    str = '| (SR G)m P\nhe-llo     john \n';
     composition = test_parses(str, test);
     line = first_sargam_line(composition);
-    _.debug(composition);
     my_pitch = utils.tree_find(line, function(item) {
-      return item.my_type === "pitch";
+      return item.syllable === "llo";
     });
-    test.equal("hi", my_pitch.syllable);
+    test.equal("m", my_pitch.source);
+    my_pitch = utils.tree_find(line, function(item) {
+      return item.source === "R";
+    });
+    test.ok(!(my_pitch.syllable != null), "R is part of a slur SRG an should not be assigned a syllable");
     return test.done();
   };
   exports.test_upper_octave_assigned_to_note_below_it = function(test) {
@@ -380,7 +359,6 @@
     str = 'Rag:Bhairavi\nTal:Tintal\nTitle:Bansuri\nSource:AAK\n\n          3                   +            2         .\n1) |: (Sr | n) S   (gm Pd) || P - P  P   | P - D  <(nDSn)> |\n            .\n       ban-    su-  ri        ba- ja ra-   hi  dhu- na\n\n0                 3                     +     .    *  .\n| P  d   P   d    | <(Pm>   PmnP) (g m) || PdnS -- g  S |\n  ma-dhu-ra  kan-     nai-         ya      khe-    la-ta\n\n2              0     ~\n|  d-Pm g P  m | r - S :| %\n   ga-    wa-ta  ho- ri\n\n     +                     2    0     3\n2)  [| Srgm PdnS SndP mgrS | %    | %   | S--S --S- ---- R-G-     |]\n';
     strzz = 'Rag:Bhairavi\nTal:Tintal\nTitle:Bansuri\nSource:AAK\n\n          3                   +            2         .\n1) |: (Sr | n) S   (gm Pd) || P - P  P   | P - D  <(nDSn)> |\n            .\n       ban-    su-  ri        ba- ja ra-   hi  dhu- na\n0                 3                     +     .    *  .\n| P  d   P   d    | <(Pm>   PmnP) (g m) || PdnS -- g  S |\n  ma-dhu-ra  kan-     nai-         ya      khe-    la-ta\n\n2              0     ~\n|  d-Pm g P  m | r - S :| %\n   ga-    wa-ta  ho- ri\n\n     +                     2    0     3\n2)  [| Srgm PdnS SndP mgrS | %    | %   | S--S --S- ---- R-G-     |]';
     composition = test_parses(str, test);
-    console.log(composition);
     first_sargam_source = str.split('\n')[6];
     line = first_sargam_line(composition);
     test.equal(line.source, first_sargam_source, "sanity check, expected first line's source to be " + first_sargam_source);

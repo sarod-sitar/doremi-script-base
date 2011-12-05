@@ -39,6 +39,7 @@
   get_source_for_items = Helper.get_source_for_items
   measure_columns = Helper.measure_columns
   assign_attributes=Helper.assign_attributes
+  assign_lyrics=Helper.assign_lyrics
   collect_nodes = Helper.collect_nodes
   map_nodes = Helper.map_nodes
   my_inspect = Helper.my_inspect

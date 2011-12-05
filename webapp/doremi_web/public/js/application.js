@@ -93,7 +93,7 @@
     str = "| S--R --G- | -m-- P";
     str3 = '      . .. .\n       NRSNS      NRSNS\n              .  .    \n|     S          S\n\n m\n| g\n\n';
     str3 = '  . .. .\n   NRSNS      NRSNS\n              .  .    \n| S          S\n\n   m\n|    g';
-    str3 = ' PmPm       \n|    P   ';
+    str3 = '| P(P  D)  n  \n  he-llo there';
     $('#entry_area').val(str3);
     parser = DoremiScriptParser;
     window.parse_errors = "";

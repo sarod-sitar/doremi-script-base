@@ -48,7 +48,7 @@
     test.ok(html.indexOf("note_wrapper") > -1, "failure");
     return test.done();
   };
-  test_data = ["P#", '<div class=\'composition\'><div class=\'stave sargam_line\'><span  class=\'beat\'><span title="1/1 of a beat" class="note_wrapper" ><span class="note pitch" >P</span><span data-fallback-if-no-utf8-chars=\'#\' class=\'pitch_sign sharp\'>&#9839;</span></span></span></div></div>', "not expected"];
+  test_data = ["P#", '<div class=\'composition\'><div class=\'stave sargam_line\'><span class=\'beat\'><span title="1/1 of a beat" class="note_wrapper" ><span data-fallback-if-no-utf8-chars=\'#\' class=\'pitch_sign sharp\'>&#9839;</span><span class="note pitch">P</span></span></span></div></div>', "not expected"];
   exports.test_all = function(test) {
     var fun;
     console.log("test_all");

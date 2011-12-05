@@ -19,6 +19,51 @@
       };
       return obj;
     },
+    assign_lyrics: function(sargam, lyrics) {
+      var item, slurring_state, syls, _i, _len, _ref, _results;
+      if (!(lyrics != null)) {
+        return;
+      }
+      if (lyrics === "") {
+        return;
+      }
+      slurring_state = false;
+      syls = (function() {
+        var _i, _len, _ref, _results;
+        _ref = lyrics.items;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          item = _ref[_i];
+          if (item.my_type === "syllable") {
+            _results.push(item.syllable);
+          }
+        }
+        return _results;
+      })();
+      _ref = this.all_items(sargam);
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        item = _ref[_i];
+        _results.push(__bind(function(item) {
+          if (item.my_type !== "pitch") {
+            return;
+          }
+          if (syls.length === 0) {
+            return;
+          }
+          if (!slurring_state) {
+            item.syllable = syls.shift();
+          }
+          if (item_has_attribute(item, 'begin_slur')) {
+            slurring_state = true;
+          }
+          if (item_has_attribute(item, 'end_slur')) {
+            return slurring_state = false;
+          }
+        }, this)(item));
+      }
+      return _results;
+    },
     parse_line: function(uppers, sargam, lowers, lyrics) {
       var attribute_lines, ctr, lower, lyric, my_items, my_lowers, my_uppers, upper, _i, _j, _k, _len, _len2, _len3;
       if (lyrics.length === 0) {
@@ -30,7 +75,7 @@
       if (uppers.length === 0) {
         uppers = '';
       }
-      my_items = _.flatten(_.compact([uppers, sargam, lowers, lyrics]));
+      my_items = _.flatten(_.compact([uppers, sargam, lowers]));
       ctr = 0;
       for (_i = 0, _len = uppers.length; _i < _len; _i++) {
         upper = uppers[_i];
@@ -56,6 +101,7 @@
       my_lowers = _.flatten(_.compact([lowers]));
       attribute_lines = _.flatten(_.compact([uppers, lowers, lyrics]));
       this.assign_attributes(sargam, attribute_lines);
+      this.assign_lyrics(sargam, lyrics);
       return sargam;
     },
     parse_composition: function(attributes, lines) {

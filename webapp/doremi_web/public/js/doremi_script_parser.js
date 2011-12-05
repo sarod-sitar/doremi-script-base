@@ -8199,6 +8199,8 @@ DoremiScriptParser = (function(){
       
     assign_attributes=Helper.assign_attributes
       
+    assign_lyrics=Helper.assign_lyrics
+      
     collect_nodes = Helper.collect_nodes
       
     map_nodes = Helper.map_nodes
