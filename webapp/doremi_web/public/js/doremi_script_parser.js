@@ -849,8 +849,12 @@ DoremiScriptParser = (function(){
               var result11 = parse_LOWER_OCTAVE_LINE();
             }
             if (result5 !== null) {
+              var result6 = [];
               var result10 = parse_LYRICS_LINE();
-              var result6 = result10 !== null ? result10 : '';
+              while (result10 !== null) {
+                result6.push(result10);
+                var result10 = parse_LYRICS_LINE();
+              }
               if (result6 !== null) {
                 var result7 = parse_LINE_END();
                 if (result7 !== null) {
@@ -980,8 +984,12 @@ DoremiScriptParser = (function(){
             var result10 = parse_LOWER_OCTAVE_LINE();
           }
           if (result4 !== null) {
+            var result5 = [];
             var result9 = parse_LYRICS_LINE();
-            var result5 = result9 !== null ? result9 : '';
+            while (result9 !== null) {
+              result5.push(result9);
+              var result9 = parse_LYRICS_LINE();
+            }
             if (result5 !== null) {
               var result6 = parse_LINE_END();
               if (result6 !== null) {

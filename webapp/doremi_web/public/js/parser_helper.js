@@ -20,7 +20,7 @@
       return obj;
     },
     parse_line: function(uppers, sargam, lowers, lyrics) {
-      var attribute_lines, ctr, lower, my_items, my_lowers, my_uppers, upper, _i, _j, _len, _len2;
+      var attribute_lines, ctr, lower, lyric, my_items, my_lowers, my_uppers, upper, _i, _j, _k, _len, _len2, _len3;
       if (lyrics.length === 0) {
         lyrics = '';
       }
@@ -44,8 +44,9 @@
         lower.group_line_no = ctr;
         ctr = ctr + 1;
       }
-      if (lyrics != null) {
-        lyrics.group_line_no = ctr;
+      for (_k = 0, _len3 = lyrics.length; _k < _len3; _k++) {
+        lyric = lyrics[_k];
+        lyric.group_line_no = ctr;
       }
       _.each(my_items, function(my_line) {
         _.debug(my_line.my_type);

@@ -97,7 +97,7 @@
     if (item.syllable === '') {
       return '';
     }
-    return "<span class=\"syllable1\">" + item.syllable + "</span>";
+    return "<span class=\"syllable\">" + item.syllable + "</span>";
   };
   draw_lower_sym = function(item) {
     var bull, lower_sym;

@@ -91,7 +91,7 @@ COMPOUND_LINE
     uppers:UPPER_OCTAVE_LINE*
     sargam:(sargam:DEVANAGRI_SARGAM_LINE / sargam:SARGAM_LINE / sargam:ABC_SARGAM_LINE/ sargam:NUMBER_SARGAM_LINE)
     lowers:LOWER_OCTAVE_LINE*
-    lyrics:LYRICS_LINE?
+    lyrics:LYRICS_LINE*
     LINE_END   
     EMPTY_LINE*
     {
@@ -105,7 +105,7 @@ SIMPLE_LINE
   =
     sargam:(sargam:DEVANAGRI_SARGAM_LINE / sargam:SARGAM_LINE / sargam:ABC_SARGAM_LINE/ sargam:NUMBER_SARGAM_LINE)
     lowers:LOWER_OCTAVE_LINE*
-    lyrics:LYRICS_LINE?
+    lyrics:LYRICS_LINE*
     LINE_END 
     EMPTY_LINE*
     { 
