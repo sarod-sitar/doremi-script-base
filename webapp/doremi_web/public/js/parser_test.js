@@ -655,16 +655,6 @@
     });
     return test.done();
   };
-  exports.test_multiple_lyric_lines = function(test) {
-    var composition, line, my_pitch, str;
-    str = 'P  P      \nhi\n   john';
-    composition = test_parses(str, test);
-    line = first_sargam_line(composition);
-    my_pitch = utils.tree_find(line, function(item) {
-      return item.source === "john";
-    });
-    return test.done();
-  };
   exports.test_zzz = function(test) {
     var str;
     str = '                    ..\nCDbDEb EFF#G AbABbB CD\n\n            ..\nSrGmMP dDnN SR \n\n            \nसररग़ग़ मम\'पधधऩऩ\n_ _      _ __\n';
