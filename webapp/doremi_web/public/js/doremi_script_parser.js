@@ -1170,13 +1170,13 @@ DoremiScriptParser = (function(){
         var savedPos2 = pos;
         var savedReportMatchFailuresVar0 = reportMatchFailures;
         reportMatchFailures = false;
-        if (input.substr(pos, 1) === "+") {
-          var result6 = "+";
-          pos += 1;
+        if (input.substr(pos).match(/^[+\/]/) !== null) {
+          var result6 = input.charAt(pos);
+          pos++;
         } else {
           var result6 = null;
           if (reportMatchFailures) {
-            matchFailed("\"+\"");
+            matchFailed("[+\\/]");
           }
         }
         reportMatchFailures = savedReportMatchFailuresVar0;
@@ -1187,26 +1187,26 @@ DoremiScriptParser = (function(){
           pos = savedPos2;
         }
         if (result3 !== null) {
-          if (input.substr(pos).match(/^[a-gA-GmiMaIivV0-9+]/) !== null) {
+          if (input.substr(pos).match(/^[a-gA-GmiMaIivV0-9+\/]/) !== null) {
             var result5 = input.charAt(pos);
             pos++;
           } else {
             var result5 = null;
             if (reportMatchFailures) {
-              matchFailed("[a-gA-GmiMaIivV0-9+]");
+              matchFailed("[a-gA-GmiMaIivV0-9+\\/]");
             }
           }
           if (result5 !== null) {
             var result4 = [];
             while (result5 !== null) {
               result4.push(result5);
-              if (input.substr(pos).match(/^[a-gA-GmiMaIivV0-9+]/) !== null) {
+              if (input.substr(pos).match(/^[a-gA-GmiMaIivV0-9+\/]/) !== null) {
                 var result5 = input.charAt(pos);
                 pos++;
               } else {
                 var result5 = null;
                 if (reportMatchFailures) {
-                  matchFailed("[a-gA-GmiMaIivV0-9+]");
+                  matchFailed("[a-gA-GmiMaIivV0-9+\\/]");
                 }
               }
             }

@@ -12,7 +12,7 @@
   require('./doremi_script_parser.js');
   sys = require('sys');
   utils = require('./tree_iterators.js');
-  _console.level = Logger.WARN;
+  _console.level = Logger.INFO;
   _.mixin(_console.toObject());
   _.mixin({
   each_slice: function(obj, slice_size, iterator, context) {
@@ -50,7 +50,7 @@
       var expected, lily, msg, str;
       str = args[0], expected = args[1], msg = args[2];
       lily = test_to_lilypond(str, test);
-      _.warn("✔ Testing " + str + " -> " + expected);
+      _.info("✔ Testing " + str + " -> " + expected);
       return test.ok(lily.indexOf(expected) > -1, "FAILED*** " + msg + ". Expected output of " + str + " to include " + expected + ". Output was \n\n" + lily + "\n\n");
     };
     _.each_slice(test_data, 3, fun);

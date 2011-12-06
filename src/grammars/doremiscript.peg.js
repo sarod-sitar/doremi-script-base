@@ -136,7 +136,7 @@ UPPER_OCTAVE_LINE "can put upper octave dots or semicolons for upper upper octav
 
 
 CHORD_SYMBOL "I IV V. TODO: review"
-  = ! "+" chars:[a-gA-GmiMaIivV0-9+]+
+  = ! [+/] chars:[a-gA-GmiMaIivV0-9+/]+
           {
               source=chars.join('')
               return {
