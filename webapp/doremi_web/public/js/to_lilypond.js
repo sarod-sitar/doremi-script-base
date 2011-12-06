@@ -216,7 +216,6 @@
       if (pitch.dash_to_tie === true) {
         pitch.normalized_pitch = pitch.pitch_to_use_for_tie.normalized_pitch;
         pitch.octave = pitch.pitch_to_use_for_tie.octave;
-        pitch.attributes = [];
       } else {
         return "r" + duration + ending;
       }

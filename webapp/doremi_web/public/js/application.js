@@ -85,7 +85,7 @@
       return reader.readAsText(file, "");
     }, this);
     document.getElementById('file').addEventListener('change', handleFileSelect, false);
-    str = "G7\nS --";
+    str = "C    C7\nS R- --";
     root.debug = true;
     window.timer_is_on = 0;
     window.last_val = str;
