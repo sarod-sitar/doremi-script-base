@@ -1,4 +1,8 @@
- {
+ /* PEG GRAMMAR for DoremiScript. 
+  * Gets compiled into doremi_script_parser.js
+  */
+
+{
   /* Initializer. All the functions in this block are available */
   debug=false
   if (typeof module !== 'undefined' && module.exports) {
@@ -117,14 +121,13 @@ SIMPLE_LINE
 SARGAM_ORNAMENT "in upper line NRSNS"
   = items:SARGAM_ORNAMENT_ITEM+ 
         { 
-            return parse_ornament(items)
+            return parse_ornament("",items,"")
          }
 
-DELIMITED_SARGAM_ORNAMENT "in upper line NRSNS"
-  = "<" items:SARGAM_ORNAMENT_ITEM+  ">"
+DELIMITED_SARGAM_ORNAMENT "in upper line <NRSNS>"
+  = left_delimiter:"<" items:SARGAM_ORNAMENT_ITEM+  right_delimiter:">"
         { 
-            console.log("delimited_SARGAM_ORNAMENT")
-            return parse_ornament(items)
+            return parse_ornament(left_delimiter,items,right_delimiter)
          }
 
 SARGAM_ORNAMENT_ITEM
