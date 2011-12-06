@@ -170,8 +170,8 @@ UPPER_OCTAVE_LINE_ITEM "Things above notes, including talas, octaves,chords, and
      TALA /
      MORDENT /
      UPPER_UPPER_OCTAVE_SYMBOL /
-     CHORD_SYMBOL /
-     SARGAM_ORNAMENT 
+     SARGAM_ORNAMENT / 
+     CHORD_SYMBOL 
 
 
 LOWER_OCTAVE_LINE "can put lower octave dots or semicolons for lower-lower octave (. or :)"
