@@ -148,6 +148,7 @@
         dataType: 'text',
         success: function(data) {
           $('#dom_fixer_for_html_doc').html(data);
+          window.generate_html_doc_ctr--;
           return generate_html_page_aux();
         }
       };
@@ -161,7 +162,8 @@
         dataType: 'text',
         success: function(data) {
           $('#zepto_for_html_doc').html(data);
-          return get_dom_fixer();
+          window.generate_html_doc_ctr--;
+          return generate_html_page_aux();
         }
       };
       return $.ajax(params);
@@ -174,13 +176,17 @@
         dataType: 'text',
         success: function(data) {
           $('#css_for_html_doc').html(data);
-          return get_zepto();
+          window.generate_html_doc_ctr--;
+          return generate_html_page_aux();
         }
       };
       return $.ajax(params);
     };
     generate_html_page_aux = function() {
       var composition, css, full_url, html_str, js, js2, my_data, obj;
+      if (window.generate_html_doc_ctr > 0) {
+        return;
+      }
       css = $('#css_for_html_doc').html();
       js = $('#zepto_for_html_doc').html();
       js2 = $('#dom_fixer_for_html_doc').html();
@@ -210,7 +216,13 @@
     $('#generate_html_page').click(__bind(function() {
       var css;
       if ((css = $('#css_for_html_doc').html()).length < 100) {
+        if ((window.generate_html_doc_ctr != null) && (window.generate_html_doc_ctr > 0)) {
+          return;
+        }
+        window.generate_html_doc_ctr = 3;
         get_css();
+        get_zepto();
+        get_dom_fixer();
         return;
       }
       return generate_html_page_aux();
