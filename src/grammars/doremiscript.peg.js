@@ -120,6 +120,13 @@ SARGAM_ORNAMENT "in upper line NRSNS"
             return parse_ornament(items)
          }
 
+DELIMITED_SARGAM_ORNAMENT "in upper line NRSNS"
+  = "<" items:SARGAM_ORNAMENT_ITEM+  ">"
+        { 
+            console.log("delimited_SARGAM_ORNAMENT")
+            return parse_ornament(items)
+         }
+
 SARGAM_ORNAMENT_ITEM
   = SARGAM_PITCH 
 
@@ -135,8 +142,15 @@ UPPER_OCTAVE_LINE "can put upper octave dots or semicolons for upper upper octav
       }
 
 
-CHORD_SYMBOL "I IV V. TODO: review"
-  = ! [+/] chars:[a-gA-GmiMaIivV0-9+/]+
+FORWARD_SLASH_CHAR  "note that putting forward slash in regex doesn't seem to work"
+  = "\u002F"
+
+CHORD_SYMBOL_CHAR
+  = char:[a-gA-GmiMaIivV0-9+] / char:FORWARD_SLASH_CHAR
+
+CHORD_SYMBOL "I IV V. Put in lookahead for 3 sargam chars. "
+  =  !([SrRgGmMPdDnN] [SrRgGmMPdDnN] [SrRgGmMPdDnN])
+  chars:CHORD_SYMBOL_CHAR+
           {
               source=chars.join('')
               return {
@@ -164,14 +178,15 @@ ALTERNATE_ENDING_INDICATOR "1._______ 2.___ etc. The period is optional. Must ha
 
 UPPER_OCTAVE_LINE_ITEM "Things above notes, including talas, octaves,chords, and 1st and second ending symbols"
   =  
+     DELIMITED_SARGAM_ORNAMENT  / 
      WHITE_SPACE / 
      UPPER_OCTAVE_DOT /
      ALTERNATE_ENDING_INDICATOR /
      TALA /
      MORDENT /
      UPPER_UPPER_OCTAVE_SYMBOL /
-     SARGAM_ORNAMENT / 
-     CHORD_SYMBOL 
+     CHORD_SYMBOL /
+     SARGAM_ORNAMENT  
 
 
 LOWER_OCTAVE_LINE "can put lower octave dots or semicolons for lower-lower octave (. or :)"

@@ -87,6 +87,8 @@
     document.getElementById('file').addEventListener('change', handleFileSelect, false);
     str = "C    C7\nS R- --";
     str = 'mg\n (m--D) |';
+    str = '  A11 A7    Dm  Bb Dm/A       C      F           F\n              C         Gm           1_____      2______\n                *                    *           *           \n| G - G - | D N S- ND | N- -D P N | (S P m G) :| S - - -     ||\n  I said some-thing wrong now I long for  yes-ter-day day ';
+    str = '  Am/D\n| S- - - -   ';
     root.debug = true;
     window.timer_is_on = 0;
     window.last_val = str;

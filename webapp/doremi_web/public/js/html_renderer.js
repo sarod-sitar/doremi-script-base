@@ -154,6 +154,7 @@
   };
   draw_pitch_sign = function(my_source) {
     var simple, snip;
+    snip = "";
     if (my_source.length === 1) {
       snip = "";
     }
@@ -170,7 +171,7 @@
     return [snip, my_source];
   };
   draw_pitch = function(pitch) {
-    var attribute, data1, lower_octave_symbol_html, my_source, pitch_sign, syl_html, title, upper_attributes_html, upper_octave_symbol_html, _ref;
+    var attribute, data1, has_pitch_sign, lower_octave_symbol_html, my_source, pitch_sign, syl_html, title, upper_attributes_html, upper_octave_symbol_html, _ref;
     my_source = pitch.source;
     if (pitch.pitch_source != null) {
       my_source = pitch.pitch_source;
@@ -180,6 +181,7 @@
       title = "" + pitch.numerator + "/" + pitch.denominator + " of a beat";
     }
     _ref = draw_pitch_sign(my_source), pitch_sign = _ref[0], my_source = _ref[1];
+    has_pitch_sign = (pitch_sign !== '' ? "has_pitch_sign" : "");
     upper_octave_symbol_html = draw_upper_octave_symbol(pitch);
     lower_octave_symbol_html = draw_lower_octave_symbol(pitch);
     syl_html = draw_syllable(pitch);
@@ -225,7 +227,7 @@
         return _results;
       }).call(this)).join('');
     }
-    return "<span title=\"" + title + "\" class=\"note_wrapper\" " + data1 + ">" + upper_attributes_html + upper_octave_symbol_html + lower_octave_symbol_html + syl_html + pitch_sign + "<span class=\"note " + pitch.my_type + "\">" + my_source + "</span></span>";
+    return "<span title=\"" + title + "\" class=\"note_wrapper\" " + data1 + ">" + upper_attributes_html + upper_octave_symbol_html + lower_octave_symbol_html + syl_html + pitch_sign + "<span class=\"note " + has_pitch_sign + " " + pitch.my_type + "\">" + my_source + "</span></span>";
   };
   draw_item = function(item) {
     var attribute, data1, fallback, my_source, simple, source2, title, upper_attributes_html;
