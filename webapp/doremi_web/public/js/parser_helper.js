@@ -579,9 +579,7 @@
           s.attributes = [];
         }
         s.attributes.push(ornament);
-        return;
       }
-      return this.warnings.push("ornament " + ornament.my_type + " (" + ornament.source + ") not to right of pitch , column is " + ornament.column);
     },
     check_semantics: function(sargam, sarg_obj, attribute, sargam_nodes) {
       var srgmpdn_in_devanagri;

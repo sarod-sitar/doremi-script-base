@@ -86,6 +86,7 @@
     }, this);
     document.getElementById('file').addEventListener('change', handleFileSelect, false);
     str = "C    C7\nS R- --";
+    str = 'mg\n (m--D) |';
     root.debug = true;
     window.timer_is_on = 0;
     window.last_val = str;
@@ -94,6 +95,7 @@
       cur_val = $('#entry_area').val();
       if (window.last_val !== cur_val) {
         $('#run_parser').trigger('click');
+        window.last_val = cur_val;
       }
       return t = setTimeout("timed_count()", 1000);
     }, this);
