@@ -65,7 +65,7 @@
       return _results;
     },
     parse_line: function(uppers, sargam, lowers, lyrics) {
-      var attribute_lines, ctr, lower, lyric, my_items, my_lowers, my_uppers, upper, _i, _j, _k, _len, _len2, _len3;
+      var attribute_lines, ctr, lower, lyric, my_items, my_line, my_lowers, my_uppers, upper, _i, _j, _k, _l, _len, _len2, _len3, _len4;
       if (lyrics.length === 0) {
         lyrics = '';
       }
@@ -93,10 +93,10 @@
         lyric = lyrics[_k];
         lyric.group_line_no = ctr;
       }
-      _.each(my_items, function(my_line) {
-        _.debug(my_line.my_type);
-        return this.measure_columns(my_line.items, 0);
-      });
+      for (_l = 0, _len4 = my_items.length; _l < _len4; _l++) {
+        my_line = my_items[_l];
+        this.measure_columns(my_line.items, 0);
+      }
       my_uppers = _.flatten(_.compact([uppers]));
       my_lowers = _.flatten(_.compact([lowers]));
       attribute_lines = _.flatten(_.compact([uppers, lowers, lyrics]));
@@ -333,11 +333,13 @@
       return _results;
     },
     measure_pitch_durations: function(line) {
-      var last_pitch;
+      var frac, item, last_pitch, my_funct, _i, _len, _ref, _results;
       this.log("measure_pitch_durations line is", line);
       last_pitch = null;
-      return _.each(all_items(line), __bind(function(item) {
-        var frac, my_funct;
+      _ref = all_items(line);
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        item = _ref[_i];
         this.log("***measure_pitch_durations:item.my_type is", item.my_type);
         if (item.my_type === "measure") {
           this.log("***going into measure");
@@ -351,19 +353,15 @@
           last_pitch = item;
           this.my_inspect(item);
         }
-        if (item.my_type === "dash" && item.dash_to_tie) {
-          frac = new Fraction(item.numerator, item.denominator);
-          last_pitch.fraction_array.push(frac);
-          my_funct = function(memo, frac) {
-            if (!(memo != null)) {
-              return frac;
-            } else {
-              return frac.add(memo);
-            }
-          };
-          return last_pitch.fraction_total = _.reduce(last_pitch.fraction_array, my_funct, null);
-        }
-      }, this));
+        _results.push(item.my_type === "dash" && item.dash_to_tie ? (frac = new Fraction(item.numerator, item.denominator), last_pitch.fraction_array.push(frac), my_funct = function(memo, frac) {
+          if (!(memo != null)) {
+            return frac;
+          } else {
+            return frac.add(memo);
+          }
+        }, last_pitch.fraction_total = _.reduce(last_pitch.fraction_array, my_funct, null)) : void 0);
+      }
+      return _results;
     },
     measure_dashes_at_beginning_of_beats: function(line) {
       var all, beats, beats_with_dashes_at_start_of_beat, item, last_pitch, measures, _i, _len, _ref;
@@ -560,7 +558,9 @@
       return str;
     },
     measure_columns: function(items, pos) {
-      _.each(items, __bind(function(item) {
+      var item, _i, _len;
+      for (_i = 0, _len = items.length; _i < _len; _i++) {
+        item = items[_i];
         item.column = pos;
         if ((item.my_type === "pitch") && (item.source[0] === "(")) {
           item.column = item.column + 1;
@@ -569,9 +569,9 @@
           pos = this.measure_columns(item.items, pos);
         }
         if (!(item.items != null)) {
-          return pos = pos + item.source.length;
+          pos = pos + item.source.length;
         }
-      }, this));
+      }
       return pos;
     },
     handle_ornament: function(sargam, sarg_obj, ornament, sargam_nodes) {
@@ -729,24 +729,28 @@
       return _results;
     },
     collect_nodes: function(obj, ary) {
+      var my_obj, _i, _len, _ref;
       if ((obj.my_type != null) && !(obj.items != null)) {
         ary.push(obj);
       }
       if (obj.items != null) {
-        _.each(obj.items, __bind(function(my_obj) {
+        _ref = obj.items;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          my_obj = _ref[_i];
           if (my_obj.my_type != null) {
             ary.push(my_obj);
           }
           if (my_obj.items != null) {
-            return this.collect_nodes(my_obj, ary);
+            this.collect_nodes(my_obj, ary);
           }
-        }, this));
+        }
       }
       this.my_inspect("leaving collect_nodes, ary is ");
       this.my_inspect(ary);
       return ary;
     },
     map_nodes: function(obj, map) {
+      var my_obj, _i, _len, _ref;
       if (map == null) {
         map = {};
       }
@@ -758,15 +762,17 @@
         map[obj.column] = obj;
       }
       if (obj.items != null) {
-        _.each(obj.items, __bind(function(my_obj) {
+        _ref = obj.items;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          my_obj = _ref[_i];
           this.log("my_obj.column is ");
           if (my_obj.column != null) {
             map[my_obj.column] = my_obj;
           }
           if (my_obj.items != null) {
-            return this.map_nodes(my_obj, map);
+            this.map_nodes(my_obj, map);
           }
-        }, this));
+        }
       }
       return map;
     },
