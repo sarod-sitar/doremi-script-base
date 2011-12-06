@@ -364,7 +364,7 @@
       return _results;
     },
     measure_dashes_at_beginning_of_beats: function(line) {
-      var all, beats, beats_with_dashes_at_start_of_beat, item, last_pitch, measures, _i, _len, _ref;
+      var all, beats, beats_with_dashes_at_start_of_beat, ctr, denominator, done, first_dash, item, last_pitch, m_beats, measure, measures, my_beat, _i, _j, _k, _len, _len2, _len3, _ref;
       this.log("measure_dashes line is", line);
       measures = (function() {
         var _i, _len, _ref, _results;
@@ -380,31 +380,31 @@
       })();
       this.log("measure_dashes measures is", measures);
       beats = [];
-      _.each(measures, __bind(function(measure) {
-        var item, m_beats;
+      for (_i = 0, _len = measures.length; _i < _len; _i++) {
+        measure = measures[_i];
         m_beats = (function() {
-          var _i, _len, _ref, _results;
+          var _j, _len2, _ref, _results;
           _ref = measure.items;
           _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            item = _ref[_i];
+          for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
+            item = _ref[_j];
             if (item.my_type === 'beat') {
               _results.push(item);
             }
           }
           return _results;
         })();
-        return beats = beats.concat(m_beats);
-      }, this));
+        beats = beats.concat(m_beats);
+      }
       this.log("measure_dashes - beasts is", beats);
       beats_with_dashes_at_start_of_beat = _.select(beats, __bind(function(beat) {
         var item, pitch_dashes;
         pitch_dashes = (function() {
-          var _i, _len, _ref, _results;
+          var _j, _len2, _ref, _results;
           _ref = beat.items;
           _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            item = _ref[_i];
+          for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
+            item = _ref[_j];
             if (item.my_type === "dash" || item.my_type === "pitch") {
               _results.push(item);
             }
@@ -420,8 +420,8 @@
         }
       }, this));
       this.log("measure_dashes ;beats_with_dashes_at_start_of_beat =", beats_with_dashes_at_start_of_beat);
-      _.each(beats_with_dashes_at_start_of_beat, __bind(function(my_beat) {
-        var ctr, denominator, done, first_dash;
+      for (_j = 0, _len2 = beats_with_dashes_at_start_of_beat.length; _j < _len2; _j++) {
+        my_beat = beats_with_dashes_at_start_of_beat[_j];
         denominator = my_beat.subdivisions;
         done = false;
         ctr = 0;
@@ -440,14 +440,14 @@
         }, this));
         first_dash.numerator = ctr;
         first_dash.denominator = denominator;
-        return first_dash.dash_to_tie = true;
-      }, this));
+        first_dash.dash_to_tie = true;
+      }
       this.log("looping through items");
       last_pitch = null;
       all = [];
       _ref = this.all_items(line, all);
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        item = _ref[_i];
+      for (_k = 0, _len3 = _ref.length; _k < _len3; _k++) {
+        item = _ref[_k];
         this.log("in loop,item is", item);
         if (item.my_type === "pitch") {
           last_pitch = item;
@@ -547,14 +547,14 @@
       return false;
     },
     get_source_for_items: function(items) {
-      var str;
+      var item, str, _i, _len;
       str = '';
-      _.each(items, __bind(function(item) {
-        if (!(item.source != null)) {
-          return;
+      for (_i = 0, _len = items.length; _i < _len; _i++) {
+        item = items[_i];
+        if (item.source != null) {
+          str = str + item.source;
         }
-        return str = str + item.source;
-      }, this));
+      }
       return str;
     },
     measure_columns: function(items, pos) {
