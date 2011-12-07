@@ -364,7 +364,7 @@
       return _results;
     },
     measure_dashes_at_beginning_of_beats: function(line) {
-      var all, beats, beats_with_dashes_at_start_of_beat, ctr, denominator, done, first_dash, item, last_pitch, m_beats, measure, measures, my_beat, _i, _j, _k, _len, _len2, _len3, _ref;
+      var all, beats, beats_with_dashes_at_start_of_beat, ctr, denominator, done, first_dash, item, last_pitch, m_beats, measure, measures, my_beat, _fn, _i, _j, _k, _l, _len, _len2, _len3, _len4, _ref, _ref2;
       this.log("measure_dashes line is", line);
       measures = (function() {
         var _i, _len, _ref, _results;
@@ -426,7 +426,8 @@
         done = false;
         ctr = 0;
         first_dash = null;
-        _.each(my_beat.items, __bind(function(item) {
+        _ref = my_beat.items;
+        _fn = __bind(function(item) {
           if (done) {
             return;
           }
@@ -437,7 +438,11 @@
               return first_dash = item;
             }
           }
-        }, this));
+        }, this);
+        for (_k = 0, _len3 = _ref.length; _k < _len3; _k++) {
+          item = _ref[_k];
+          _fn(item);
+        }
         first_dash.numerator = ctr;
         first_dash.denominator = denominator;
         first_dash.dash_to_tie = true;
@@ -445,9 +450,9 @@
       this.log("looping through items");
       last_pitch = null;
       all = [];
-      _ref = this.all_items(line, all);
-      for (_k = 0, _len3 = _ref.length; _k < _len3; _k++) {
-        item = _ref[_k];
+      _ref2 = this.all_items(line, all);
+      for (_l = 0, _len4 = _ref2.length; _l < _len4; _l++) {
+        item = _ref2[_l];
         this.log("in loop,item is", item);
         if (item.my_type === "pitch") {
           last_pitch = item;
