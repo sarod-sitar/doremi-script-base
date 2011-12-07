@@ -3,7 +3,7 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   $(document).ready(function() {
-    var Logger, debug, generate_html_page_aux, get_css, get_dom_fixer, get_zepto, handleFileSelect, parser, sample_compositions_click, setup_links, setup_samples_dropdown, str;
+    var Logger, debug, generate_html_page_aux, get_css, get_dom_fixer, get_zepto, handleFileSelect, load_filepath, parser, sample_compositions_click, setup_links, setup_samples_dropdown, str;
     $('.generated_by_lilypond').hide();
     Logger = _console.constructor;
     _console.level = Logger.WARN;
@@ -54,15 +54,11 @@
       }
       return _results;
     };
-    sample_compositions_click = function() {
-      var filename, params;
-      if (this.selectedIndex === 0) {
-        return;
-      }
-      filename = this.value;
+    load_filepath = function(filepath) {
+      var params;
       params = {
         type: 'GET',
-        url: "/samples/" + filename,
+        url: filepath,
         dataType: 'text',
         success: __bind(function(data) {
           $('#entry_area').val(data);
@@ -72,6 +68,12 @@
         }, this)
       };
       return $.ajax(params);
+    };
+    sample_compositions_click = function() {
+      if (this.selectedIndex === 0) {
+        return;
+      }
+      return load_filepath("/samples/" + this.value);
     };
     $('#sample_compositions').change(sample_compositions_click);
     handleFileSelect = __bind(function(evt) {
@@ -93,6 +95,13 @@
     str = '     S\n|(Sr  n)';
     root.debug = true;
     window.timer_is_on = 0;
+    if (window.location.pathname.indexOf("/samples/") > -1) {
+      load_filepath("" + window.location.pathname + ".txt");
+    }
+    if (window.location.pathname.indexOf("/compositions/") > -1) {
+      load_filepath("" + window.location.pathname + ".txt");
+    }
+    $('#entry_area').val(str);
     window.last_val = str;
     window.timed_count = __bind(function() {
       var cur_val, t;
@@ -109,7 +118,6 @@
         return window.timed_count();
       }
     }, this);
-    $('#entry_area').val(str);
     parser = DoremiScriptParser;
     window.parse_errors = "";
     $('#show_parse_tree').click(function() {
