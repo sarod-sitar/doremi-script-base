@@ -351,8 +351,7 @@
     });
   };
   beat_is_all_dashes = function(beat) {
-    var fun, x;
-    x = all_items_in_line(beat);
+    var fun;
     fun = function(item) {
       if (!(item.my_type != null)) {
         return true;
@@ -365,7 +364,7 @@
       }
       return true;
     };
-    return _.all(x, fun);
+    return all_items_in_line(beat).every(fun);
   };
   to_lilypond = function(composition_data) {
     var all, ary, at_beginning_of_first_measure_of_line, beat, composer, composer_snippet, dash, dashes_at_beginning_of_line_array, in_times, item, key_is_valid, key_snippet, last_pitch, lilypond_template, line, measure, mode, notes, src, src1, tied_array, time, title, title_snippet, transpose_snip, x, _i, _j, _k, _len, _len2, _len3, _ref, _ref2, _ref3;

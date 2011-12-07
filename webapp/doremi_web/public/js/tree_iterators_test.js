@@ -3,6 +3,7 @@
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   debug = false;
   util = require('util');
+  all_items = require('./all_items.js').all_items;
   log = function(x) {
     if (!console) {
       return;
@@ -12,7 +13,6 @@
     }
   };
   x = require('./tree_iterators.js');
-  all_items = x.all_items;
   tree_select = x.tree_select;
   my_log = function(obj) {
     return util.inspect(obj, true, null);

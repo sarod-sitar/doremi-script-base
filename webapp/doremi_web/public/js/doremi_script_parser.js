@@ -8302,6 +8302,8 @@ DoremiScriptParser = (function(){
       
       // running under node.js
       
+      zz = require('./shims.js');
+      
       util = require('util');
       
       _ = require("underscore")._;
@@ -8388,9 +8390,9 @@ DoremiScriptParser = (function(){
       
     if (typeof require !== 'undefined') {
       
-      x=require('./tree_iterators.js')
+      // x=require('./tree_iterators.js')
       
-      all_items=x.all_items
+      all_items=require('./all_items.js').all_items
       
     }
       

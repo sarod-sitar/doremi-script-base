@@ -1,8 +1,8 @@
 (function() {
-  var root, tree_each, tree_filter, tree_find, _;
+  var all_items, root, tree_each, tree_filter, tree_find, _;
+  all_items = require('./all_items.js').all_items;
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   if (typeof require !== 'undefined') {
-    global.all_items = require('./all_items.js').all_items;
     _ = require("underscore")._;
   }
   tree_filter = function(tree, my_function) {

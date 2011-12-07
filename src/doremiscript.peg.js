@@ -7,6 +7,7 @@
   debug=false
   if (typeof module !== 'undefined' && module.exports) {
     // running under node.js
+    zz = require('./shims.js');
     util = require('util');
     _ = require("underscore")._;
     ParserHelper= require("./parser_helper.js").ParserHelper
@@ -50,8 +51,8 @@
   check_semantics=Helper.check_semantics
   measure_pitch_durations=Helper.measure_pitch_durations
   if (typeof require !== 'undefined') {
-    x=require('./tree_iterators.js')
-    all_items=x.all_items
+    // x=require('./tree_iterators.js')
+    all_items=require('./all_items.js').all_items
   }
   log = Helper.log
   // end of mixin section
