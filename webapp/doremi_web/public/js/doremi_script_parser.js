@@ -6480,96 +6480,101 @@ DoremiScriptParser = (function(){
         
         var savedReportMatchFailures = reportMatchFailures;
         reportMatchFailures = false;
-        var result21 = parse_SARGAM_SA_FLAT();
-        if (result21 !== null) {
-          var result0 = result21;
+        var result22 = parse_SARGAM_SA_FLAT();
+        if (result22 !== null) {
+          var result0 = result22;
         } else {
-          var result20 = parse_SARGAM_SA_SHARP();
-          if (result20 !== null) {
-            var result0 = result20;
+          var result21 = parse_SARGAM_SA_SHARP();
+          if (result21 !== null) {
+            var result0 = result21;
           } else {
-            var result19 = parse_SARGAM_RE_SHARP();
-            if (result19 !== null) {
-              var result0 = result19;
+            var result20 = parse_SARGAM_RE_SHARP();
+            if (result20 !== null) {
+              var result0 = result20;
             } else {
-              var result18 = parse_SARGAM_GA_SHARP();
-              if (result18 !== null) {
-                var result0 = result18;
+              var result19 = parse_SARGAM_GA_SHARP();
+              if (result19 !== null) {
+                var result0 = result19;
               } else {
-                var result17 = parse_SARGAM_PA_SHARP();
-                if (result17 !== null) {
-                  var result0 = result17;
+                var result18 = parse_SARGAM_PA_SHARP();
+                if (result18 !== null) {
+                  var result0 = result18;
                 } else {
-                  var result16 = parse_SARGAM_DHA_SHARP();
-                  if (result16 !== null) {
-                    var result0 = result16;
+                  var result17 = parse_SARGAM_PA_FLAT();
+                  if (result17 !== null) {
+                    var result0 = result17;
                   } else {
-                    var savedPos0 = pos;
-                    var result14 = parse_SARGAM_NI_SHARP();
-                    if (result14 !== null) {
-                      var result15 = parse_SARGAM_PA_FLAT();
-                      if (result15 !== null) {
-                        var result13 = [result14, result15];
+                    var result16 = parse_SARGAM_DHA_SHARP();
+                    if (result16 !== null) {
+                      var result0 = result16;
+                    } else {
+                      var savedPos0 = pos;
+                      var result14 = parse_SARGAM_NI_SHARP();
+                      if (result14 !== null) {
+                        var result15 = parse_SARGAM_PA_FLAT();
+                        if (result15 !== null) {
+                          var result13 = [result14, result15];
+                        } else {
+                          var result13 = null;
+                          pos = savedPos0;
+                        }
                       } else {
                         var result13 = null;
                         pos = savedPos0;
                       }
-                    } else {
-                      var result13 = null;
-                      pos = savedPos0;
-                    }
-                    if (result13 !== null) {
-                      var result0 = result13;
-                    } else {
-                      var result12 = parse_SARGAM_SA();
-                      if (result12 !== null) {
-                        var result0 = result12;
+                      if (result13 !== null) {
+                        var result0 = result13;
                       } else {
-                        var result11 = parse_SARGAM_RE_FLAT();
-                        if (result11 !== null) {
-                          var result0 = result11;
+                        var result12 = parse_SARGAM_SA();
+                        if (result12 !== null) {
+                          var result0 = result12;
                         } else {
-                          var result10 = parse_SARGAM_RE();
-                          if (result10 !== null) {
-                            var result0 = result10;
+                          var result11 = parse_SARGAM_RE_FLAT();
+                          if (result11 !== null) {
+                            var result0 = result11;
                           } else {
-                            var result9 = parse_SARGAM_GA_FLAT();
-                            if (result9 !== null) {
-                              var result0 = result9;
+                            var result10 = parse_SARGAM_RE();
+                            if (result10 !== null) {
+                              var result0 = result10;
                             } else {
-                              var result8 = parse_SARGAM_GA();
-                              if (result8 !== null) {
-                                var result0 = result8;
+                              var result9 = parse_SARGAM_GA_FLAT();
+                              if (result9 !== null) {
+                                var result0 = result9;
                               } else {
-                                var result7 = parse_SARGAM_MA();
-                                if (result7 !== null) {
-                                  var result0 = result7;
+                                var result8 = parse_SARGAM_GA();
+                                if (result8 !== null) {
+                                  var result0 = result8;
                                 } else {
-                                  var result6 = parse_SARGAM_MA_SHARP();
-                                  if (result6 !== null) {
-                                    var result0 = result6;
+                                  var result7 = parse_SARGAM_MA();
+                                  if (result7 !== null) {
+                                    var result0 = result7;
                                   } else {
-                                    var result5 = parse_SARGAM_PA();
-                                    if (result5 !== null) {
-                                      var result0 = result5;
+                                    var result6 = parse_SARGAM_MA_SHARP();
+                                    if (result6 !== null) {
+                                      var result0 = result6;
                                     } else {
-                                      var result4 = parse_SARGAM_DHA_FLAT();
-                                      if (result4 !== null) {
-                                        var result0 = result4;
+                                      var result5 = parse_SARGAM_PA();
+                                      if (result5 !== null) {
+                                        var result0 = result5;
                                       } else {
-                                        var result3 = parse_SARGAM_DHA();
-                                        if (result3 !== null) {
-                                          var result0 = result3;
+                                        var result4 = parse_SARGAM_DHA_FLAT();
+                                        if (result4 !== null) {
+                                          var result0 = result4;
                                         } else {
-                                          var result2 = parse_SARGAM_NI_FLAT();
-                                          if (result2 !== null) {
-                                            var result0 = result2;
+                                          var result3 = parse_SARGAM_DHA();
+                                          if (result3 !== null) {
+                                            var result0 = result3;
                                           } else {
-                                            var result1 = parse_SARGAM_NI();
-                                            if (result1 !== null) {
-                                              var result0 = result1;
+                                            var result2 = parse_SARGAM_NI_FLAT();
+                                            if (result2 !== null) {
+                                              var result0 = result2;
                                             } else {
-                                              var result0 = null;;
+                                              var result1 = parse_SARGAM_NI();
+                                              if (result1 !== null) {
+                                                var result0 = result1;
+                                              } else {
+                                                var result0 = null;;
+                                              };
                                             };
                                           };
                                         };

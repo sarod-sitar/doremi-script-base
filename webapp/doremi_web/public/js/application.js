@@ -3,7 +3,7 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   $(document).ready(function() {
-    var Logger, debug, generate_html_page_aux, get_css, get_dom_fixer, get_zepto, handleFileSelect, load_filepath, parser, sample_compositions_click, setup_links, setup_samples_dropdown, str;
+    var Logger, debug, generate_html_page_aux, get_css, get_dom_fixer, get_zepto, handleFileSelect, load_filepath, parser, sample_compositions_click, setup_links, setup_samples_dropdown, setup_to_musicxml, str;
     $('.generated_by_lilypond').hide();
     Logger = _console.constructor;
     _console.level = Logger.WARN;
@@ -12,6 +12,19 @@
       _.debug("***Using zepto.js instead of jQuery***");
     }
     debug = false;
+    setup_to_musicxml = function() {
+      var params;
+      params = {
+        type: 'GET',
+        url: '/js/composition.mustache',
+        dataType: 'txt',
+        success: function(data) {
+          return to_musicxml.templates.composition = _.template(data);
+        }
+      };
+      return $.ajax(params);
+    };
+    setup_to_musicxml();
     setup_samples_dropdown = function() {
       var params;
       params = {
@@ -93,6 +106,7 @@
     str = '  Am/D\n| S- - - -   ';
     str = '<SR>\n|  m';
     str = '     S\n|(Sr  n)';
+    str = 'SRG';
     root.debug = true;
     window.timer_is_on = 0;
     if (window.location.pathname.indexOf("/samples/") > -1) {
@@ -262,7 +276,6 @@
         composition_data = parser.parse(src);
         composition_data.source = src;
         composition_data.lilypond = to_lilypond(composition_data);
-        composition_data.musicxml = to_musicxml(composition_data);
         window.the_composition = composition_data;
         $('#parse_tree').text("Parsing completed with no errors \n" + JSON.stringify(composition_data, null, "  "));
         if (composition_data.warnings.length > 0) {
