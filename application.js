@@ -3,7 +3,7 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   $(document).ready(function() {
-    var Logger, debug, generate_html_page_aux, get_css, get_dom_fixer, get_zepto, handleFileSelect, load_filepath, parser, sample_compositions_click, setup_links, setup_samples_dropdown, setup_to_musicxml, str;
+    var Logger, debug, generate_html_page_aux, get_css, get_dom_fixer, get_zepto, handleFileSelect, load_filepath, parser, sample_compositions_click, setup_links, setup_samples_dropdown, str;
     $('.generated_by_lilypond').hide();
     Logger = _console.constructor;
     _console.level = Logger.WARN;
@@ -12,21 +12,6 @@
       _.debug("***Using zepto.js instead of jQuery***");
     }
     debug = false;
-    setup_to_musicxml = function() {
-      var params;
-      params = {
-        type: 'GET',
-        url: '/js/composition.mustache',
-        dataType: 'txt',
-        async: false,
-        success: function(data) {
-          to_musicxml.templates.composition = _.template(data);
-          return $('#run_parser').trigger('click');
-        }
-      };
-      return $.ajax(params);
-    };
-    setup_to_musicxml();
     setup_samples_dropdown = function() {
       var params;
       params = {
@@ -50,9 +35,6 @@
       return $.ajax(params);
     };
     setup_samples_dropdown();
-    if (window.location.host.indexOf('localhost') === -1) {
-      $("#add_to_samples").hide();
-    }
     setup_links = function(filename) {
       var full_path, snip, typ, without_suffix, _i, _len, _ref, _results;
       without_suffix = filename.substr(0, filename.lastIndexOf('.txt')) || filename;
@@ -108,7 +90,6 @@
     str = '  Am/D\n| S- - - -   ';
     str = '<SR>\n|  m';
     str = '     S\n|(Sr  n)';
-    str = 'SRG-';
     root.debug = true;
     window.timer_is_on = 0;
     if (window.location.pathname.indexOf("/samples/") > -1) {
@@ -260,9 +241,6 @@
     $('#show_lilypond_output').click(function() {
       return $('#lilypond_output').toggle();
     });
-    $('#show_musicxml_source').click(function() {
-      return $('#musicxml_source').toggle();
-    });
     $('#show_lilypond_source').click(function() {
       return $('#lilypond_source').toggle();
     });
@@ -281,7 +259,6 @@
         composition_data = parser.parse(src);
         composition_data.source = src;
         composition_data.lilypond = to_lilypond(composition_data);
-        composition_data.musicxml = to_musicxml(composition_data);
         window.the_composition = composition_data;
         $('#parse_tree').text("Parsing completed with no errors \n" + JSON.stringify(composition_data, null, "  "));
         if (composition_data.warnings.length > 0) {
@@ -290,12 +267,10 @@
         }
         $('#parse_tree').hide();
         $('#rendered_doremi_script').html(to_html(composition_data));
-        $('#lilypond_source').text(composition_data.lilypond);
-        $('#musicxml_source').text(composition_data.musicxml);
+        $('#lilypond_source').html(composition_data.lilypond);
         adjust_slurs_in_dom();
         return canvas = $("#rendered_in_staff_notation")[0];
       } catch (err) {
-        console.log("err parsing, err is", err);
         window.parse_errors = window.parse_errors + "\n" + err;
         $('#parse_tree').text(window.parse_errors);
         $('#parse_tree').show();
@@ -305,10 +280,10 @@
         parser.is_parsing = false;
       }
     });
+    $('#run_parser').trigger('click');
     $('#parse_tree').hide();
     $('#lilypond_output').hide();
     $('#lilypond_source').hide();
-    $('#musicxml_source').hide();
     return window.do_timer();
   });
 }).call(this);

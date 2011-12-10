@@ -18,8 +18,10 @@
         type: 'GET',
         url: '/js/composition.mustache',
         dataType: 'txt',
+        async: false,
         success: function(data) {
-          return to_musicxml.templates.composition = _.template(data);
+          to_musicxml.templates.composition = _.template(data);
+          return $('#run_parser').trigger('click');
         }
       };
       return $.ajax(params);
@@ -106,7 +108,7 @@
     str = '  Am/D\n| S- - - -   ';
     str = '<SR>\n|  m';
     str = '     S\n|(Sr  n)';
-    str = 'SRG';
+    str = 'SRG-';
     root.debug = true;
     window.timer_is_on = 0;
     if (window.location.pathname.indexOf("/samples/") > -1) {
@@ -258,6 +260,9 @@
     $('#show_lilypond_output').click(function() {
       return $('#lilypond_output').toggle();
     });
+    $('#show_musicxml_source').click(function() {
+      return $('#musicxml_source').toggle();
+    });
     $('#show_lilypond_source').click(function() {
       return $('#lilypond_source').toggle();
     });
@@ -276,6 +281,7 @@
         composition_data = parser.parse(src);
         composition_data.source = src;
         composition_data.lilypond = to_lilypond(composition_data);
+        composition_data.musicxml = to_musicxml(composition_data);
         window.the_composition = composition_data;
         $('#parse_tree').text("Parsing completed with no errors \n" + JSON.stringify(composition_data, null, "  "));
         if (composition_data.warnings.length > 0) {
@@ -284,10 +290,12 @@
         }
         $('#parse_tree').hide();
         $('#rendered_doremi_script').html(to_html(composition_data));
-        $('#lilypond_source').html(composition_data.lilypond);
+        $('#lilypond_source').text(composition_data.lilypond);
+        $('#musicxml_source').text(composition_data.musicxml);
         adjust_slurs_in_dom();
         return canvas = $("#rendered_in_staff_notation")[0];
       } catch (err) {
+        console.log("err parsing, err is", err);
         window.parse_errors = window.parse_errors + "\n" + err;
         $('#parse_tree').text(window.parse_errors);
         $('#parse_tree').show();
@@ -297,10 +305,10 @@
         parser.is_parsing = false;
       }
     });
-    $('#run_parser').trigger('click');
     $('#parse_tree').hide();
     $('#lilypond_output').hide();
     $('#lilypond_source').hide();
+    $('#musicxml_source').hide();
     return window.do_timer();
   });
 }).call(this);

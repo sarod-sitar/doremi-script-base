@@ -1,5 +1,5 @@
 (function() {
-  var all_items_in_line, beat_is_all_dashes, debug, draw_measure, draw_note, emit_tied_array, extract_lyrics, fraction_to_musicxml_step_and_dots, fs, get_attribute, get_chord, get_ending, get_ornament, has_mordent, is_sargam_line, is_valid_key, lilypond_grace_note_pitch, lilypond_grace_notes, lilypond_octave_map, lilypond_pitch_map, log, lookup_lilypond_barline, lookup_lilypond_pitch, musicxml_alter, musicxml_duration, musicxml_octave, musicxml_step, musicxml_type_and_dots, my_inspect, normalized_pitch_to_lilypond, normalized_pitch_to_musicxml_step, notation_is_in_sargam, note_template_str, root, running_under_node, templates, to_musicxml, x;
+  var all_items_in_line, beat_is_all_dashes, debug, draw_measure, draw_note, emit_tied_array, fraction_to_musicxml_type_and_dots, fs, get_attribute, get_chord, get_ending, get_ornament, has_mordent, is_sargam_line, is_valid_key, lilypond_grace_note_pitch, lilypond_grace_notes, lilypond_octave_map, lilypond_pitch_map, log, lookup_lilypond_barline, lookup_lilypond_pitch, musicxml_alter, musicxml_duration, musicxml_octave, musicxml_step, musicxml_type_and_dots, my_inspect, normalized_pitch_to_lilypond, normalized_pitch_to_musicxml_step, notation_is_in_sargam, note_template_str, root, running_under_node, templates, to_musicxml, x;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   if (typeof require !== "undefined" && require !== null) {
     fs = require('fs');
@@ -13,28 +13,6 @@
   }
   debug = true;
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
-  is_valid_key = function(str) {
-    var ary;
-    ary = ["c", "d", "e", "f", "g", "a", "b", "cs", "df", "ds", "ef", "fs", "gb", "gs", "ab", "as", "bf"];
-    return _.indexOf(ary, str) > -1;
-  };
-  extract_lyrics = function(composition_data) {
-    var ary, item, sargam_line, _i, _j, _len, _len2, _ref, _ref2;
-    ary = [];
-    _ref = composition_data.lines;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      sargam_line = _ref[_i];
-      _ref2 = all_items_in_line(sargam_line, []);
-      for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
-        item = _ref2[_j];
-        this.log("extract_lyrics-item is", item);
-        if (item.syllable) {
-          ary.push(item.syllable);
-        }
-      }
-    }
-    return ary;
-  };
   get_attribute = function(composition_data, key) {
     var att;
     if (!composition_data.attributes) {
@@ -78,61 +56,55 @@
     }
     return console.log(obj);
   };
-  fraction_to_musicxml_step_and_dots = function(frac) {
-    return {
-      "2/1": "<type>half</type>",
-      "3/1": "<type>half</type><dot/>",
-      "4/1": "<type>whole</type>",
-      "5/1": "<type>whole</type><dot/><dot/>",
-      "1/1": "<type>quarter</type>",
-      "1/1": "<type>quarter</type>",
-      "1/1": "<type>quarter</type>",
-      "1/1": "<type>quarter</type>",
-      "1/2": "<type>eighth</type>",
-      "1/3": "<type>eighth</type>",
-      "1/9": "<type>eighth</type>",
-      "1/11": "<type>eighth</type>",
-      "1/13": "<type>eighth</type>",
-      "1/5": "sixteenth",
-      "2/5": "<type>eighth</type>",
-      "3/5": "<type>eighth</type><dot/>",
-      "4/5": "<type>quarter</type>",
-      "5/5": "<type>quarter</type>",
-      "6/6": "<type>quarter</type>",
-      "7/7": "<type>quarter</type>",
-      "8/8": "<type>quarter</type>",
-      "9/9": "<type>quarter</type>",
-      "10/10": "<type>quarter</type>",
-      "11/11": "<type>quarter</type>",
-      "12/12": "<type>quarter</type>",
-      "13/13": "<type>quarter</type>",
-      "1/7": "<type>thirtysecond</type>",
-      "2/7": "<type>sixteenth</type>",
-      "3/7": "<type>sixteenth</type><dot/>",
-      "4/7": "<type>eighth</type>",
-      "5/7": "<type>eighth</type><dot/><dot/>",
-      "6/7": "<type>eighth</type><dot/><dot/>",
-      "6/8": "<type>eighth</type><dot/>",
-      "2/3": "<type>quarter</type>",
-      "2/8": "<type>sixteenth</type>",
-      "3/8": "<type>sixteenth</type><dot/>",
-      "5/8": "<type>eighth</type>",
-      "4/8": "<type>eighth</type>",
-      "7/8": "<type>eighth</type><dot/><dot/>",
-      "1/6": "<type>sixteenth</type>",
-      "2/6": "<type>eighth</type>",
-      "3/6": "<type>quarter</type>",
-      "4/6": "<type>quarter</type>",
-      "5/6": "<type>eighth</type><dot/><dot/>",
-      "2/2": "<type>quarter</type>",
-      "3/3": "<type>quarter</type>",
-      "4/4": "<type>quarter</type>",
-      "8/8": "<type>quarter</type>",
-      "1/4": "<type>sixteenth</type>",
-      "2/4": "<type>eighth</type>",
-      "3/4": "<type>eighth</type><dot/>",
-      "3/8": "<type>sixteenth</type><dot/>"
-    };
+  fraction_to_musicxml_type_and_dots = {
+    "2/1": "<type>half</type>",
+    "3/1": "<type>half</type><dot/>",
+    "4/1": "<type>whole</type>",
+    "5/1": "<type>whole</type><dot/><dot/>",
+    "1/1": "<type>quarter</type>",
+    "1/2": "<type>eighth</type>",
+    "1/3": "<type>eighth</type>",
+    "1/4": "<type>16th</type>",
+    "1/8": "<type>32nd</type>",
+    "1/9": "<type>eighth</type>",
+    "1/11": "<type>eighth</type>",
+    "1/13": "<type>eighth</type>",
+    "1/5": "<type>16th</type>",
+    "2/5": "<type>eighth</type>",
+    "3/5": "<type>eighth</type><dot/>",
+    "4/5": "<type>quarter</type>",
+    "5/5": "<type>quarter</type>",
+    "6/6": "<type>quarter</type>",
+    "7/7": "<type>quarter</type>",
+    "8/8": "<type>quarter</type>",
+    "9/9": "<type>quarter</type>",
+    "10/10": "<type>quarter</type>",
+    "11/11": "<type>quarter</type>",
+    "12/12": "<type>quarter</type>",
+    "13/13": "<type>quarter</type>",
+    "1/7": "<type>thirtysecond</type>",
+    "2/7": "<type>16th</type>",
+    "3/7": "<type>16th</type><dot/>",
+    "4/7": "<type>eighth</type>",
+    "5/7": "<type>eighth</type><dot/><dot/>",
+    "2/8": "<type>16th</type>",
+    "3/8": "<type>16th</type><dot/>",
+    "5/8": "<type>eighth</type>",
+    "4/8": "<type>eighth</type>",
+    "7/8": "<type>eighth</type><dot/><dot/>",
+    "1/6": "<type>16th</type>",
+    "2/6": "<type>eighth</type>",
+    "3/6": "<type>quarter</type>",
+    "4/6": "<type>quarter</type>",
+    "5/6": "<type>eighth</type><dot/><dot/>",
+    "2/2": "<type>quarter</type>",
+    "3/3": "<type>quarter</type>",
+    "4/4": "<type>quarter</type>",
+    "8/8": "<type>quarter</type>",
+    "1/4": "<type>16th</type>",
+    "2/4": "<type>eighth</type>",
+    "3/4": "<type>eighth</type><dot/>",
+    "3/8": "<type>16th</type><dot/>"
   };
   get_ornament = function(pitch) {
     if (!(pitch.attributes != null)) {
@@ -346,6 +318,11 @@
       return is_sargam_line(line);
     });
   };
+  is_valid_key = function(str) {
+    var ary;
+    ary = ["c", "d", "e", "f", "g", "a", "b", "cs", "df", "ds", "ef", "fs", "gb", "gs", "ab", "as", "bf"];
+    return _.indexOf(ary, str) > -1;
+  };
   beat_is_all_dashes = function(beat) {
     var fun;
     fun = function(item) {
@@ -437,19 +414,39 @@
     templates.composition(params);
     return templates.composition(params);
   };
-  note_template_str = '<note>\n    <pitch>\n        <step>{{step}}</step>\n        {{alter}}\n        <octave>{{octave}}</octave>\n        {{type_and_dots}}\n        <duration>{{duration}}</duration>\n    </pitch>\n    <voice>1</voice>\n</note>';
+  "<note default-y=\"-30.00\" default-x=\"108.08\">\n    <pitch>\n        <step>G</step>\n        <octave>4</octave>\n    </pitch>\n    <duration>2</duration>\n    <voice>1</voice>\n    <type>eighth</type>\n    <stem>up</stem>\n    <beam number=\"1\">begin</beam>\n    <lyric number=\"1\">\n        <syllabic>begin</syllabic>\n        <text>Yes</text>\n    </lyric>\n    <lyric number=\"2\">\n        <syllabic>begin</syllabic>\n        <text>Sud</text>\n    </lyric>\n</note>";
+  note_template_str = '        <note>\n          <pitch>\n            <step>{{step}}</step>\n            {{alter}}\n            <octave>{{octave}}</octave>\n          </pitch>\n          <duration>{{duration}}</duration>\n          {{tie}}\n          <voice>1</voice>\n          {{type_and_dots}}\n          {{lyric}}\n          <notations>{{tied}}</notations>\n</note>';
   templates.note = _.template(note_template_str);
-  x = "\ndivisions set to 96 per note\n\nif our note is S-R-\n\nthen sa has fraction 2/4\n\n2/4 * 1/4 = 2/16th, an eighth note\n\nbut divisions is 96 so multiply by\n\n2/16 = x/96\n\nx= 2/16 *96\n\n\n1/2 of a  1/4 is 1/8   1/8=x/24 =3\n\nexample- 2/4\n\n2/4 * 1/4 *24 = 2/4 * 6 = 3\n";
+  x = "\ndivisions set to 96 per note\n\nif our note is S-R-\n\nthen sa has fraction 2/4\n\n2/4 * 1/4 = 2/16th, an eighth note\n\nbut divisions is 96 so multiply by\n\n2/16 = x/96\n\nx= 2/16 *96\n\n\n1/2 of a  1/4 is 1/8   1/8=x/24 =3\n\nexample- 2/4\n\n2/4 * 1/4 *24 = 2/4 * 6 = 3\n                <lyric number=\"1\">\n                    <syllabic>begin</syllabic>\n                    <text>Yes</text>\n                </lyric>\n";
   draw_note = function(pitch) {
-    var divisions_per_quarter, duration, frac2, fraction, params, _ref;
-    if (pitch.fraction_total != null) {
-      fraction = new Fraction(pitch.fraction_total.numerator, pitch.fraction_total.denominator);
-    } else {
-      fraction = new Fraction(pitch.numerator, pitch.denominator);
+    var divisions_per_quarter, duration, f, frac2, fraction, lyric, params, tie, tied, tied2, type_and_dots, _ref;
+    if (!running_under_node()) {
+      console.log("Entering draw_note, pitch is " + pitch);
     }
+    if (pitch.my_type === "dash") {
+      if (!(pitch.pitch_to_use_for_tie != null)) {
+        return "";
+      }
+    }
+    if ((pitch.dash_to_tie != null) && pitch.dash_to_tie === true) {
+      pitch.normalized_pitch = pitch.pitch_to_use_for_tie.normalized_pitch;
+      pitch.octave = pitch.pitch_to_use_for_tie.octave;
+    }
+    if (pitch.my_type === "dash") {
+      if ((pitch.dash_to_tie != null) && pitch.dash_to_tie === false) {
+        return;
+      }
+    }
+    if (!running_under_node()) {
+      console.log("");
+    }
+    fraction = new Fraction(pitch.numerator, pitch.denominator);
     divisions_per_quarter = 24;
     frac2 = fraction.multiply(divisions_per_quarter);
     duration = frac2.numerator;
+    if (!running_under_node()) {
+      console.log("frac2 is", frac2);
+    }
     if ((_ref = pitch.denominator) !== 0 && _ref !== 1 && _ref !== 2 && _ref !== 4 && _ref !== 8 && _ref !== 16 && _ref !== 32 && _ref !== 64 && _ref !== 128) {
       x = 2;
       if (pitch.denominator === 6) {
@@ -458,26 +455,55 @@
       if (pitch.denominator === 5) {
         x = 4;
       }
-      duration = divisions_per_quarter / 2;
+      duration = divisions_per_quarter / x;
+    }
+    if (pitch.fraction_array != null) {
+      f = pitch.fraction_array[0];
+    } else {
+      f = pitch;
+    }
+    if (!running_under_node()) {
+      console.log("numerator,denominator", f.numerator, f.denominator);
+    }
+    type_and_dots = musicxml_type_and_dots(f.numerator, f.denominator);
+    tie = "";
+    tied = "";
+    if (pitch.tied != null) {
+      tie = "<tie type=\"start\"/>";
+      tied = "<tied type=\"start\"/>";
+    }
+    if (pitch.my_type === "dash" && pitch.dash_to_tie === true) {
+      tied2 = "<tied type=\"end\"/>";
+      tied = tied + tied2;
+    }
+    lyric = "";
+    if (pitch.syllable != null) {
+      lyric = "<lyric number=\"1\">\n  <text>" + pitch.syllable + "</text>\n</lyric>";
     }
     params = {
       step: musicxml_step(pitch),
       octave: musicxml_octave(pitch),
-      duration: frac2.numerator,
+      duration: duration,
       alter: musicxml_alter(pitch),
-      type_and_dots: musicxml_type_and_dots(pitch.numerator, pitch.denominator)
+      type_and_dots: type_and_dots,
+      tied: tied,
+      tie: tie,
+      lyric: lyric
     };
     return templates.note(params);
   };
   musicxml_type_and_dots = function(numerator, denominator) {
     var alternate, frac, looked_up_duration;
+    if (!running_under_node()) {
+      console.log("musicxml_type_and_dots(" + numerator + "," + denominator);
+    }
     if (numerator === denominator) {
-      return "<type>eighth</type>";
+      return "<type>quarter</type>";
     }
     frac = "" + numerator + "/" + denominator;
-    looked_up_duration = fraction_to_musicxml_step_and_dots[frac];
+    looked_up_duration = fraction_to_musicxml_type_and_dots[frac];
     if (!(looked_up_duration != null)) {
-      alternate = "<type>sixteenth</type>";
+      alternate = "<type>16th</type>";
       return alternate;
     }
     return looked_up_duration;
@@ -510,6 +536,9 @@
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       item = _ref[_i];
       if (item.my_type === "pitch") {
+        ary.push(draw_note(item));
+      }
+      if (item.my_type === "dash") {
         ary.push(draw_note(item));
       }
     }
