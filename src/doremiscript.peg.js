@@ -25,6 +25,7 @@
   trim=Helper.trim
   handle_ornament=Helper.handle_ornament
   find_ornaments=Helper.find_ornaments
+  running_under_node=Helper.running_under_node
   map_ornaments=Helper.map_ornaments
   parse_ornament=Helper.parse_ornament
   parse_composition=Helper.parse_composition
@@ -124,6 +125,7 @@ SARGAM_ORNAMENT "in upper line NRSNS"
         { 
             return parse_ornament("",items,"")
          }
+
 
 DELIMITED_SARGAM_ORNAMENT "in upper line <NRSNS>"
   = left_delimiter:"<" items:SARGAM_ORNAMENT_ITEM+  right_delimiter:">"

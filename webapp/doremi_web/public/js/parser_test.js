@@ -327,6 +327,21 @@
     test.equal(ma.octave, 2, "" + str + " should have octave 1 for m");
     return test.done();
   };
+  exports.test_recognizes_ornament_to_right_of_pitch2 = function(test) {
+    var composition, item, orn, str;
+    str = ' DSnDn\nn---';
+    composition = test_parses(str, test);
+    item = utils.tree_find(composition.lines[0], function(item) {
+      return item.my_type === "pitch" && item.source === "n";
+    });
+    orn = _.detect(item.attributes, function(attr) {
+      return attr.my_type === "ornament";
+    });
+    _.debug("orn " + orn.my_inspect);
+    test.ok(orn);
+    test.ok(orn.source === "DSnDn");
+    return test.done();
+  };
   exports.test_recognizes_ornament_to_right_of_pitch = function(test) {
     var composition, item, orn, str;
     str = '   NRSNS  \n| S';

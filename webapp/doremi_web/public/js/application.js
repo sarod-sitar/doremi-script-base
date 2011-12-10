@@ -109,7 +109,8 @@
     str = '<SR>\n|  m';
     str = '     S\n|(Sr  n)';
     str = 'mP\n  D-';
-    root.debug = true;
+    str = ' DSnDn\nn---';
+    str = "     GR \n| (GR S)-";
     window.timer_is_on = 0;
     if (window.location.pathname.indexOf("/samples/") > -1) {
       load_filepath("" + window.location.pathname + ".txt");
