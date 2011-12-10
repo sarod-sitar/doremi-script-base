@@ -153,11 +153,11 @@ CHORD_SYMBOL_CHAR
   = char:[a-gA-GmiMaIivV0-9+] / char:FORWARD_SLASH_CHAR
 
 CHORD_SYMBOL_INITIAL_CHAR
- = char:[a-gA-GvViI]
+ = char:[a-gA-GiI]
 
 CHORD_SYMBOL "I IV V. Put in lookahead for 3 sargam chars. "
   =  !([SrRgGmMPdDnN] [SrRgGmMPdDnN] [SrRgGmMPdDnN])
-  initial:CHORD_SYMBOL_INITIAL_CHAR chars:CHORD_SYMBOL_CHAR*
+  initial:CHORD_SYMBOL_INITIAL_CHAR chars:CHORD_SYMBOL_CHAR+
           {
               source=initial + chars.join('')
               return {
