@@ -1,5 +1,5 @@
 (function() {
-  var all_items_in_line, beat_is_all_dashes, debug, draw_measure, draw_note, emit_tied_array, fraction_to_musicxml_type_and_dots, fs, get_attribute, get_chord, get_ending, get_ornament, has_mordent, is_sargam_line, is_valid_key, lilypond_grace_note_pitch, lilypond_grace_notes, lilypond_octave_map, lilypond_pitch_map, log, lookup_lilypond_barline, lookup_lilypond_pitch, musicxml_alter, musicxml_duration, musicxml_octave, musicxml_step, musicxml_type_and_dots, my_inspect, normalized_pitch_to_lilypond, normalized_pitch_to_musicxml_step, notation_is_in_sargam, note_template_str, root, running_under_node, templates, to_musicxml, x;
+  var all_items_in_line, beat_is_all_dashes, debug, draw_grace_note, draw_measure, draw_note, draw_ornaments, emit_tied_array, fraction_to_musicxml_type_and_dots, fs, get_attribute, get_chord, get_ending, get_ornament, grace_note_template_str, has_mordent, is_sargam_line, is_valid_key, lilypond_grace_note_pitch, lilypond_grace_notes, lilypond_octave_map, lilypond_pitch_map, log, lookup_lilypond_barline, lookup_lilypond_pitch, musicxml_alter, musicxml_duration, musicxml_octave, musicxml_step, musicxml_type_and_dots, my_inspect, normalized_pitch_to_lilypond, normalized_pitch_to_musicxml_step, notation_is_in_sargam, note_template_str, root, running_under_node, templates, to_musicxml, x;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   if (typeof require !== "undefined" && require !== null) {
     fs = require('fs');
@@ -418,11 +418,11 @@
     return templates.composition(params);
   };
   "<note default-y=\"-30.00\" default-x=\"108.08\">\n    <pitch>\n        <step>G</step>\n        <octave>4</octave>\n    </pitch>\n    <duration>2</duration>\n    <voice>1</voice>\n    <type>eighth</type>\n    <stem>up</stem>\n    <beam number=\"1\">begin</beam>\n    <lyric number=\"1\">\n        <syllabic>begin</syllabic>\n        <text>Yes</text>\n    </lyric>\n    <lyric number=\"2\">\n        <syllabic>begin</syllabic>\n        <text>Sud</text>\n    </lyric>\n</note>";
-  note_template_str = '        <note>\n          <pitch>\n            <step>{{step}}</step>\n            {{alter}}\n            <octave>{{octave}}</octave>\n          </pitch>\n          <duration>{{duration}}</duration>\n          {{tie}}\n          <voice>1</voice>\n          {{type_and_dots}}\n          {{lyric}}\n          <notations>{{tied}}{{begin_slur}}{{end_slur}}</notations>\n</note>';
+  note_template_str = '        {{before_ornaments}}\n        <note>\n          <pitch>\n            <step>{{step}}</step>\n            {{alter}}\n            <octave>{{octave}}</octave>\n          </pitch>\n          <duration>{{duration}}</duration>\n          {{tie}}\n          <voice>1</voice>\n          {{type_and_dots}}\n          {{lyric}}\n          <notations>{{tied}}{{begin_slur}}{{end_slur}}</notations>\n</note>';
   templates.note = _.template(note_template_str);
   x = "\ndivisions set to 96 per note\n\nif our note is S-R-\n\nthen sa has fraction 2/4\n\n2/4 * 1/4 = 2/16th, an eighth note\n\nbut divisions is 96 so multiply by\n\n2/16 = x/96\n\nx= 2/16 *96\n\n\n1/2 of a  1/4 is 1/8   1/8=x/24 =3\n\nexample- 2/4\n\n2/4 * 1/4 *24 = 2/4 * 6 = 3\n                <lyric number=\"1\">\n                    <syllabic>begin</syllabic>\n                    <text>Yes</text>\n                </lyric>\n";
   draw_note = function(pitch, context) {
-    var begin_slur, divisions_per_quarter, duration, end_slur, f, frac2, fraction, lyric, params, tie, tied, tied2, type_and_dots, _ref;
+    var after_ornaments, before_ornaments, begin_slur, divisions_per_quarter, duration, end_slur, f, frac2, fraction, lyric, params, tie, tied, tied2, type_and_dots, _ref, _ref2;
     if (!running_under_node()) {
       console.log("Entering draw_note, pitch is " + pitch);
     }
@@ -431,6 +431,7 @@
         return "";
       }
     }
+    _ref = draw_ornaments(pitch), before_ornaments = _ref[0], after_ornaments = _ref[1];
     if ((pitch.dash_to_tie != null) && pitch.dash_to_tie === true) {
       pitch.normalized_pitch = pitch.pitch_to_use_for_tie.normalized_pitch;
       pitch.octave = pitch.pitch_to_use_for_tie.octave;
@@ -450,7 +451,7 @@
     if (!running_under_node()) {
       console.log("frac2 is", frac2);
     }
-    if ((_ref = pitch.denominator) !== 0 && _ref !== 1 && _ref !== 2 && _ref !== 4 && _ref !== 8 && _ref !== 16 && _ref !== 32 && _ref !== 64 && _ref !== 128) {
+    if ((_ref2 = pitch.denominator) !== 0 && _ref2 !== 1 && _ref2 !== 2 && _ref2 !== 4 && _ref2 !== 8 && _ref2 !== 16 && _ref2 !== 32 && _ref2 !== 64 && _ref2 !== 128) {
       x = 2;
       if (pitch.denominator === 6) {
         x = 4;
@@ -500,7 +501,9 @@
       tie: tie,
       lyric: lyric,
       begin_slur: begin_slur,
-      end_slur: end_slur
+      end_slur: end_slur,
+      before_ornaments: before_ornaments,
+      after_ornaments: after_ornaments
     };
     return templates.note(params);
   };
@@ -519,6 +522,41 @@
       return alternate;
     }
     return looked_up_duration;
+  };
+  grace_note_template_str = "<note>\n  <grace/>\n  <pitch>\n    <step>{{step}}</step>\n    <octave>{{octave}}</octave>\n  </pitch>\n  <voice>1</voice>\n  <type>{{type}}</type>\n</note>";
+  templates.grace_note = _.template(grace_note_template_str);
+  draw_grace_note = function(ornament_item) {
+    var params;
+    params = {
+      step: "G",
+      octave: "4",
+      type: "16th"
+    };
+    return templates.grace_note(params);
+  };
+  draw_ornaments = function(pitch) {
+    var before_ary, ornament, x;
+    if (!running_under_node()) {
+      console.log("Entering draw_ornaments", pitch);
+    }
+    before_ary = [];
+    ornament = get_ornament(pitch);
+    if (!ornament) {
+      return ['', ''];
+    }
+    if (ornament.placement === "before") {
+      before_ary = (function() {
+        var _i, _len, _ref, _results;
+        _ref = ornament.ornament_items;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          x = _ref[_i];
+          _results.push(draw_grace_note(x));
+        }
+        return _results;
+      })();
+    }
+    return [before_ary.join("/n"), ""];
   };
   musicxml_step = function(pitch) {
     return pitch.normalized_pitch[0];

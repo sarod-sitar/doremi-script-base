@@ -152,11 +152,14 @@ FORWARD_SLASH_CHAR  "note that putting forward slash in regex doesn't seem to wo
 CHORD_SYMBOL_CHAR
   = char:[a-gA-GmiMaIivV0-9+] / char:FORWARD_SLASH_CHAR
 
+CHORD_SYMBOL_INITIAL_CHAR
+ = char:[a-gA-GiI]
+
 CHORD_SYMBOL "I IV V. Put in lookahead for 3 sargam chars. "
   =  !([SrRgGmMPdDnN] [SrRgGmMPdDnN] [SrRgGmMPdDnN])
-  chars:CHORD_SYMBOL_CHAR+
+  initial:CHORD_SYMBOL_INITIAL_CHAR chars:CHORD_SYMBOL_CHAR+
           {
-              source=chars.join('')
+              source=initial + chars.join('')
               return {
                my_type:"chord_symbol",
                source: source, 
