@@ -1,61 +1,25 @@
 (function() {
-  var all_items_in_line, beat_is_all_dashes, debug, draw_grace_note, draw_measure, draw_note, draw_ornaments, emit_tied_array, fraction_to_musicxml_type_and_dots, fs, get_attribute, get_chord, get_ending, get_ornament, grace_note_after_template_str, grace_note_template_str, has_mordent, is_sargam_line, is_valid_key, log, musicxml_alter, musicxml_duration, musicxml_octave, musicxml_step, musicxml_type_and_dots, my_inspect, notation_is_in_sargam, note_template_str, root, running_under_node, templates, to_musicxml;
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var debug, draw_grace_note, draw_measure, draw_note, draw_ornaments, fraction_to_musicxml_type_and_dots, fs, grace_note_after_template_str, grace_note_template_str, load_composition_mustache_from_file_system, musicxml_alter, musicxml_duration, musicxml_lyric, musicxml_octave, musicxml_step, musicxml_type_and_dots, note_template_str, root, shared, templates, to_musicxml;
+  root = typeof exports !== "undefined" && exports !== null ? exports : this;
   if (typeof require !== "undefined" && require !== null) {
     fs = require('fs');
   }
-  templates = {};
-  _.templateSettings = {
+  if (typeof require !== "undefined" && require !== null) {
+    shared = require('./shared.js');
+    root._ = require("underscore")._;
+    root._.extend(root, shared);
+  }
+  root._.templateSettings = {
     interpolate: /\{\{(.+?)\}\}/g
   };
-  if (typeof require !== "undefined" && require !== null) {
-    templates.composition = _.template(fs.readFileSync(__dirname + '/composition.mustache', 'UTF-8'));
-  }
+  templates = {};
+  load_composition_mustache_from_file_system = function() {
+    if (typeof require !== "undefined" && require !== null) {
+      return templates.composition = root._.template(fs.readFileSync(__dirname + '/composition.mustache', 'UTF-8'));
+    }
+  };
+  load_composition_mustache_from_file_system();
   debug = true;
-  root = typeof exports !== "undefined" && exports !== null ? exports : this;
-  get_attribute = function(composition_data, key) {
-    var att;
-    if (!composition_data.attributes) {
-      return null;
-    }
-    att = _.detect(composition_data.attributes.items, function(item) {
-      return item.key === key;
-    });
-    if (!att) {
-      return null;
-    }
-    return att.value;
-  };
-  log = function(x) {
-    if (!(this.debug != null)) {
-      return;
-    }
-    if (!this.debug) {
-      return;
-    }
-    if (console) {
-      return console.log.apply(console, arguments);
-    }
-  };
-  running_under_node = function() {
-    return (typeof module !== "undefined" && module !== null) && module.exports;
-  };
-  my_inspect = function(obj) {
-    if (!(debug != null)) {
-      return;
-    }
-    if (!debug) {
-      return;
-    }
-    if (!(typeof console !== "undefined" && console !== null)) {
-      return;
-    }
-    if (running_under_node()) {
-      console.log(util.inspect(obj, false, null));
-      return;
-    }
-    return console.log(obj);
-  };
   fraction_to_musicxml_type_and_dots = {
     "2/1": "<type>half</type>",
     "3/1": "<type>half</type><dot/>",
@@ -92,169 +56,43 @@
     "3/4": "<type>eighth</type><dot/>",
     "3/8": "<type>16th</type><dot/>"
   };
-  get_ornament = function(pitch) {
-    if (!(pitch.attributes != null)) {
-      return null;
-    }
-    return _.detect(pitch.attributes, function(attribute) {
-      return attribute.my_type === "ornament";
-    });
-  };
-  has_mordent = function(pitch) {
-    if (!(pitch.attributes != null)) {
-      return false;
-    }
-    return _.detect(pitch.attributes, function(attribute) {
-      return attribute.my_type === "mordent";
-    });
-  };
-  get_chord = function(item) {
-    var e;
-    if (e = _.detect(item.attributes, function(x) {
-      return x.my_type === "chord_symbol";
-    })) {
-      return "^\"" + e.source + "\"";
-    }
-    return "";
-  };
-  get_ending = function(item) {
-    var e;
-    if (e = _.detect(item.attributes, function(x) {
-      return x.my_type === "ending";
-    })) {
-      return "^\"" + e.source + "\"";
-    }
-    return "";
-  };
-  emit_tied_array = function(last_pitch, tied_array, ary) {
-    var filter, fraction_total, key, last, my_fun, my_funct, obj;
-    if (!(last_pitch != null)) {
-      return;
-    }
-    if (tied_array.length === 0) {
-      return;
-    }
-    my_funct = function(memo, my_item) {
-      var frac;
-      frac = new Fraction(my_item.numerator, my_item.denominator);
-      if (!(memo != null)) {
-        return frac;
-      } else {
-        return frac.add(memo);
-      }
-    };
-    fraction_total = _.reduce(tied_array, my_funct, null);
-    obj = {};
-    for (key in last_pitch) {
-      obj[key] = last_pitch[key];
-    }
-    filter = function(attr) {
-      return (attr.my_type != null) && attr.my_type === !"mordent";
-    };
-    obj.attributes = _.select(last_pitch.attributes, filter);
-    obj.numerator = fraction_total.numerator;
-    obj.denominator = fraction_total.denominator;
-    obj.fraction_array = null;
-    my_fun = function(attr) {
-      return attr.my_type === !"mordent";
-    };
-    obj.attrs2 = _.select(obj.attributes, my_fun);
-    this.log("emit_tied_array-last is", last);
-    last = tied_array[tied_array.length - 1];
-    obj.tied = last.tied;
-    this.log("leaving emit_tied_array");
-    tied_array.length = 0;
-    return ary.push(normalized_pitch_to_lilypond(obj));
-  };
-  is_sargam_line = function(line) {
-    if (!(line.kind != null)) {
-      return false;
-    }
-    return line.kind.indexOf('sargam') > -1;
-  };
-  notation_is_in_sargam = function(composition_data) {
-    this.log("in notation_is_in_sargam");
-    return _.detect(composition_data.lines, function(line) {
-      return is_sargam_line(line);
-    });
-  };
-  is_valid_key = function(str) {
-    var ary;
-    ary = ["c", "d", "e", "f", "g", "a", "b", "cs", "df", "ds", "ef", "fs", "gb", "gs", "ab", "as", "bf"];
-    return _.indexOf(ary, str) > -1;
-  };
-  beat_is_all_dashes = function(beat) {
-    var fun;
-    fun = function(item) {
-      if (!(item.my_type != null)) {
-        return true;
-      }
-      if (item.my_type === "dash") {
-        return true;
-      }
-      if (item.my_type === "pitch") {
-        return false;
-      }
-      return true;
-    };
-    return all_items_in_line(beat).every(fun);
-  };
-  to_musicxml = function(composition_data) {
-    var all, ary, at_beginning_of_first_measure_of_line, composer, composer_snippet, context, dashes_at_beginning_of_line_array, in_times, item, last_pitch, line, mode, notes, params, tied_array, time, title, x, _i, _j, _len, _len2, _ref;
+  to_musicxml = function(composition) {
+    var ary, composer, context, item, line, params, time, _i, _j, _len, _len2, _ref, _ref2;
     context = {
       in_slur: false,
       slur_number: 0,
       measure_number: 1
     };
     ary = [];
-    in_times = false;
-    at_beginning_of_first_measure_of_line = false;
-    dashes_at_beginning_of_line_array = [];
-    tied_array = [];
-    _ref = composition_data.lines;
+    _ref = composition.lines;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       line = _ref[_i];
-      at_beginning_of_first_measure_of_line = false;
-      in_times = false;
-      this.log("processing " + line.source);
-      all = [];
-      x = all_items_in_line(line, all);
-      this.log("in to_lilypond, all_items_in_line x=", x);
-      last_pitch = null;
-      for (_j = 0, _len2 = all.length; _j < _len2; _j++) {
-        item = all[_j];
+      _ref2 = root.all_items(line);
+      for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+        item = _ref2[_j];
         if (item.my_type === "measure") {
           ary.push(draw_measure(item, context));
           context.measure_number++;
         }
       }
     }
-    mode = get_attribute(composition_data, 'Mode');
-    mode || (mode = "major");
-    composer = get_attribute(composition_data, "Author");
-    composer_snippet = "";
-    if (composer) {
-      composer_snippet = "composer = \"" + composer + "\"";
-    }
-    title = get_attribute(composition_data, "Title");
-    time = get_attribute(composition_data, "TimeSignature");
-    notes = ary.join(" ");
+    composer = root.get_attribute(composition, "Author");
+    time = root.get_time(composition);
     params = {
       body: ary.join(" "),
-      movement_title: title,
-      title: title,
+      movement_title: root.get_title(composition),
+      title: root.get_title(composition),
       composer: "",
       poet: "",
       encoding_date: "",
-      mode: mode
+      mode: root.get_mode(composition)
     };
     return templates.composition(params);
   };
   note_template_str = '{{before_ornaments}}\n<note>\n  <pitch>\n    <step>{{step}}</step>\n    {{alter}}\n    <octave>{{octave}}</octave>\n  </pitch>\n  <duration>{{duration}}</duration>\n  {{tie}}\n  <voice>1</voice>\n  {{type_and_dots}}\n  {{lyric}}\n  <notations>{{tied}}\n  {{end_slur}}{{begin_slur}}</notations>\n </note>\n {{after_ornaments}}';
-  templates.note = _.template(note_template_str);
+  templates.note = root._.template(note_template_str);
   draw_note = function(pitch, context) {
-    var after_ornaments, before_ornaments, begin_slur, divisions_per_quarter, duration, end_slur, f, frac2, fraction, lyric, params, tie, tied, tied2, type_and_dots, x, _ref, _ref2;
-    context.dont_slur_ornament = item_has_attribute(pitch, "begin_slur") || context.in_slur;
+    var after_ornaments, before_ornaments, begin_slur, divisions_per_quarter, duration, end_slur, f, frac2, fraction, params, tie, tied, tied2, type_and_dots, x, _ref, _ref2;
     if (pitch.my_type === "dash") {
       if (!(pitch.pitch_to_use_for_tie != null)) {
         return "";
@@ -298,11 +136,7 @@
     }
     if (pitch.my_type === "dash" && pitch.dash_to_tie === true) {
       tied2 = "<tied type=\"end\"/>";
-      tied = tied + tied2;
-    }
-    lyric = "";
-    if (pitch.syllable != null) {
-      lyric = "<lyric number=\"1\">\n  <text>" + pitch.syllable + "</text>\n</lyric>";
+      tied = tied2 + tied;
     }
     begin_slur = end_slur = "";
     if (item_has_attribute(pitch, "end_slur")) {
@@ -321,13 +155,19 @@
       type_and_dots: type_and_dots,
       tied: tied,
       tie: tie,
-      lyric: lyric,
+      lyric: musicxml_lyric(pitch),
       begin_slur: begin_slur,
       end_slur: end_slur,
       before_ornaments: before_ornaments,
       after_ornaments: after_ornaments
     };
     return templates.note(params);
+  };
+  musicxml_lyric = function(pitch, context) {
+    if (!(pitch.syllable != null) || pitch.syllable === "") {
+      return "";
+    }
+    return "<lyric number=\"1\">\n   <text>" + pitch.syllable + "</text>\n</lyric>";
   };
   musicxml_type_and_dots = function(numerator, denominator) {
     var alternate, frac, looked_up_duration;
@@ -343,9 +183,9 @@
     return looked_up_duration;
   };
   grace_note_template_str = "<note>\n  <grace {{steal_time}} />\n  <pitch>\n    <step>{{step}}</step>\n          {{alter}}\n    <octave>{{octave}}</octave>\n  </pitch>\n  <voice>1</voice>\n  <type>{{type}}</type>\n</note>";
-  templates.grace_note = _.template(grace_note_template_str);
+  templates.grace_note = root._.template(grace_note_template_str);
   grace_note_after_template_str = "  <grace steal-time-previous=\"{{steal_time_percentage}}\"/>\n  <pitch>\n    <step>{{step}}</step>\n          {{alter}}\n    <octave>{{octave}}</octave>\n  </pitch>\n  <voice>1</voice>\n  <type>{{type}}</type>\n</note>";
-  templates.grace_note_after = _.template(grace_note_after_template_str);
+  templates.grace_note_after = root._.template(grace_note_after_template_str);
   draw_grace_note = function(ornament_item, which, len, steal_time, placement, context) {
     var params;
     if (steal_time == null) {
@@ -363,7 +203,7 @@
   draw_ornaments = function(pitch, context) {
     var after_ary, before_ary, ctr, len, num, ornament, steal_time, x;
     before_ary = [];
-    ornament = get_ornament(pitch);
+    ornament = root.get_ornament(pitch);
     if (!ornament) {
       return ['', ''];
     }
@@ -401,6 +241,12 @@
     return ["", ""];
   };
   musicxml_step = function(pitch) {
+    if (!pitch) {
+      return "";
+    }
+    if (!(pitch.normalized_pitch != null)) {
+      return "";
+    }
     return pitch.normalized_pitch[0];
   };
   musicxml_alter = function(pitch) {
@@ -424,7 +270,7 @@
   draw_measure = function(measure, context) {
     var ary, item, _i, _len, _ref;
     ary = [];
-    _ref = all_items(measure);
+    _ref = root.all_items(measure);
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       item = _ref[_i];
       if (item.my_type === "pitch") {
@@ -439,26 +285,6 @@
       measure = "";
     }
     return "" + measure + "\n" + (ary.join(' ')) + "\n</measure>";
-  };
-  all_items_in_line = function(line_or_item, items) {
-    var an_item, _fn, _i, _len, _ref;
-    if (items == null) {
-      items = [];
-    }
-    if (!line_or_item.items) {
-      return [line_or_item];
-    }
-    _ref = line_or_item.items;
-    _fn = __bind(function(an_item) {
-      items.push(an_item);
-      return items.concat(all_items_in_line(an_item, items));
-    }, this);
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      an_item = _ref[_i];
-      _fn(an_item);
-    }
-    this.log('all_items_in_line returns', items);
-    return [line_or_item].concat(items);
   };
   to_musicxml.templates = templates;
   root.to_musicxml = to_musicxml;

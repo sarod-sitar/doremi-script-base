@@ -1,12 +1,16 @@
 (function() {
-  var all_items_in_line, beat_is_all_dashes, calculate_lilypond_duration, debug, emit_tied_array, extract_lyrics, fraction_to_lilypond, get_attribute, get_chord, get_ending, get_ornament, has_mordent, is_sargam_line, is_valid_key, lilypond_grace_note_pitch, lilypond_grace_notes, lilypond_octave_map, lilypond_pitch_map, log, lookup_lilypond_barline, lookup_lilypond_pitch, my_inspect, normalized_pitch_to_lilypond, notation_is_in_sargam, root, running_under_node, to_lilypond;
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var beat_is_all_dashes, calculate_lilypond_duration, debug, emit_tied_array, extract_lyrics, fraction_to_lilypond, get_attribute, get_chord, get_ending, get_ornament, has_mordent, is_sargam_line, is_valid_key, lilypond_grace_note_pitch, lilypond_grace_notes, lilypond_octave_map, lilypond_pitch_map, log, lookup_lilypond_barline, lookup_lilypond_pitch, my_inspect, normalized_pitch_to_lilypond, notation_is_in_sargam, root, running_under_node, shared, to_lilypond;
   debug = true;
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
+  if (typeof require !== "undefined" && require !== null) {
+    shared = require('./shared.js');
+    root._ = require("underscore")._;
+    root._.extend(root, shared);
+  }
   is_valid_key = function(str) {
     var ary;
     ary = ["c", "d", "e", "f", "g", "a", "b", "cs", "df", "ds", "ef", "fs", "gb", "gs", "ab", "as", "bf"];
-    return _.indexOf(ary, str) > -1;
+    return root._.indexOf(ary, str) > -1;
   };
   extract_lyrics = function(composition_data) {
     var ary, item, sargam_line, _i, _j, _len, _len2, _ref, _ref2;
@@ -14,7 +18,7 @@
     _ref = composition_data.lines;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       sargam_line = _ref[_i];
-      _ref2 = all_items_in_line(sargam_line, []);
+      _ref2 = root.all_items(sargam_line, []);
       for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
         item = _ref2[_j];
         this.log("extract_lyrics-item is", item);
@@ -30,7 +34,7 @@
     if (!composition_data.attributes) {
       return null;
     }
-    att = _.detect(composition_data.attributes.items, function(item) {
+    att = root._.detect(composition_data.attributes.items, function(item) {
       return item.key === key;
     });
     if (!att) {
@@ -144,7 +148,7 @@
     if (!(pitch.attributes != null)) {
       return false;
     }
-    return _.detect(pitch.attributes, function(attribute) {
+    return root._.detect(pitch.attributes, function(attribute) {
       return attribute.my_type === "ornament";
     });
   };
@@ -152,7 +156,7 @@
     if (!(pitch.attributes != null)) {
       return false;
     }
-    return _.detect(pitch.attributes, function(attribute) {
+    return root._.detect(pitch.attributes, function(attribute) {
       return attribute.my_type === "mordent";
     });
   };
@@ -197,7 +201,7 @@
   };
   get_chord = function(item) {
     var e;
-    if (e = _.detect(item.attributes, function(x) {
+    if (e = root._.detect(item.attributes, function(x) {
       return x.my_type === "chord_symbol";
     })) {
       return "^\"" + e.source + "\"";
@@ -206,7 +210,7 @@
   };
   get_ending = function(item) {
     var e;
-    if (e = _.detect(item.attributes, function(x) {
+    if (e = root._.detect(item.attributes, function(x) {
       return x.my_type === "ending";
     })) {
       return "^\"" + e.source + "\"";
@@ -346,7 +350,7 @@
   };
   notation_is_in_sargam = function(composition_data) {
     this.log("in notation_is_in_sargam");
-    return _.detect(composition_data.lines, function(line) {
+    return root._.detect(composition_data.lines, function(line) {
       return is_sargam_line(line);
     });
   };
@@ -364,7 +368,7 @@
       }
       return true;
     };
-    return all_items_in_line(beat).every(fun);
+    return root.all_items(beat).every(fun);
   };
   to_lilypond = function(composition_data) {
     var all, ary, at_beginning_of_first_measure_of_line, beat, composer, composer_snippet, dash, dashes_at_beginning_of_line_array, in_times, item, key_is_valid, key_snippet, last_pitch, lilypond_template, line, measure, mode, notes, src, src1, tied_array, time, title, title_snippet, transpose_snip, x, _i, _j, _k, _len, _len2, _len3, _ref, _ref2, _ref3;
@@ -380,8 +384,7 @@
       in_times = false;
       this.log("processing " + line.source);
       all = [];
-      x = all_items_in_line(line, all);
-      this.log("in to_lilypond, all_items_in_line x=", x);
+      x = root.all_items(line, all);
       last_pitch = null;
       for (_j = 0, _len2 = all.length; _j < _len2; _j++) {
         item = all[_j];
@@ -497,26 +500,6 @@
     src = src1.replace(/\{%/gi, "% }");
     lilypond_template = "#(ly:set-option 'midi-extension \"mid\")\n\\version \"2.12.3\"\n\\include \"english.ly\"\n\\header{ " + title_snippet + " " + composer_snippet + " }\n\\include \"english.ly\"\n%{\n" + src + "  \n%}\nmelody = {\n\\clef treble\n" + key_snippet + "\n\\time " + time + "\n\\autoBeamOn  \n" + notes + "\n}\n\ntext = \\lyricmode {\n" + (extract_lyrics(composition_data).join(' ')) + "\n}\n\n\\score{\n" + transpose_snip + "\n<<\n\\new Voice = \"one\" {\n  \\melody\n}\n\\new Lyrics \\lyricsto \"one\" \\text\n>>\n\\layout { }\n\\midi { }\n}";
     return lilypond_template;
-  };
-  all_items_in_line = function(line_or_item, items) {
-    var an_item, _fn, _i, _len, _ref;
-    if (items == null) {
-      items = [];
-    }
-    if (!line_or_item.items) {
-      return [line_or_item];
-    }
-    _ref = line_or_item.items;
-    _fn = __bind(function(an_item) {
-      items.push(an_item);
-      return items.concat(all_items_in_line(an_item, items));
-    }, this);
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      an_item = _ref[_i];
-      _fn(an_item);
-    }
-    this.log('all_items_in_line returns', items);
-    return [line_or_item].concat(items);
   };
   root.to_lilypond = to_lilypond;
 }).call(this);

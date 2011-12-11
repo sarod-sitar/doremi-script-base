@@ -10,6 +10,9 @@
     zz = require('./shims.js');
     util = require('util');
     _ = require("underscore")._;
+    shared=require('./shared.js')
+    _.extend(root,shared)
+    get_attribute=shared.get_attribute
     ParserHelper= require("./parser_helper.js").ParserHelper
     Fraction=require('./third_party/fraction.js').Fraction
   }
@@ -35,13 +38,12 @@
   parse_measure=Helper.parse_measure
   parse_sargam_line=Helper.parse_sargam_line
   extract_lyrics=Helper.extract_lyrics
-  get_attribute=Helper.get_attribute
   mark_partial_measures= Helper.mark_partial_measures
-  all_items_in_line=Helper.all_items_in_line 
   measure_dashes_at_beginning_of_beats= Helper.measure_dashes_at_beginning_of_beats
   measure_note_durations= Helper.measure_note_durations
   count_beat_subdivisions = Helper.count_beat_subdivisions
   parens_unbalanced = Helper.parens_unbalanced
+  //get_attribute=Helper.get_attribute
   get_source_for_items = Helper.get_source_for_items
   measure_columns = Helper.measure_columns
   assign_attributes=Helper.assign_attributes

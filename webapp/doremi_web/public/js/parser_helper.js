@@ -130,13 +130,13 @@
         source: "",
         toString: to_string
       };
-      if (x = get_attribute("Key")) {
+      if (x = get_attribute(this.composition_data, "Key")) {
         this.composition_data.key = x;
       }
-      if (x = get_attribute("Filename")) {
+      if (x = get_attribute(this.composition_data, "Filename")) {
         this.composition_data.filename = x;
       }
-      if (x = get_attribute("Title")) {
+      if (x = get_attribute(this.composition_data, "Title")) {
         this.composition_data.title = x;
       }
       this.mark_partial_measures();
@@ -254,19 +254,6 @@
         source: source,
         items: items
       };
-    },
-    get_attribute: function(key) {
-      var att;
-      if (!this.composition_data.attributes) {
-        return null;
-      }
-      att = _.detect(this.composition_data.attributes.items, function(item) {
-        return item.key === key;
-      });
-      if (!att) {
-        return null;
-      }
-      return att.value;
     },
     extract_lyrics: function() {
       var ary, item, sargam_line, _i, _j, _len, _len2, _ref, _ref2;

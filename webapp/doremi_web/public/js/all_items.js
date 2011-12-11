@@ -14,7 +14,7 @@
     _ref = tree.items;
     _fn = __bind(function(an_item) {
       items.push(an_item);
-      return items.concat(this.all_items(an_item, items));
+      return items.concat(root.all_items(an_item, items));
     }, this);
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       an_item = _ref[_i];
