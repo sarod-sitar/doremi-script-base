@@ -462,6 +462,7 @@
     }
     mode = get_attribute(composition_data, 'Mode');
     mode || (mode = "major");
+    mode = mode.toLowerCase();
     composer = get_attribute(composition_data, "Author");
     composer_snippet = "";
     if (composer) {

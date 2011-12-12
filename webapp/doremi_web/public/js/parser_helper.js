@@ -130,8 +130,14 @@
         source: "",
         toString: to_string
       };
+      if (x = get_attribute(this.composition_data, "TimeSignature")) {
+        this.composition_data.time_signature = x.toLowerCase();
+      }
+      if (x = get_attribute(this.composition_data, "Mode")) {
+        this.composition_data.mode = x.toLowerCase();
+      }
       if (x = get_attribute(this.composition_data, "Key")) {
-        this.composition_data.key = x;
+        this.composition_data.key = x.toLowerCase();
       }
       if (x = get_attribute(this.composition_data, "Filename")) {
         this.composition_data.filename = x;

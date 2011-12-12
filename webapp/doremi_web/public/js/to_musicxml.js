@@ -1,5 +1,5 @@
 (function() {
-  var debug, draw_grace_note, draw_measure, draw_note, draw_ornaments, fraction_to_musicxml_type_and_dots, fs, grace_note_after_template_str, grace_note_template_str, load_composition_mustache_from_file_system, musicxml_alter, musicxml_duration, musicxml_fifths, musicxml_lyric, musicxml_octave, musicxml_step, musicxml_type_and_dots, note_template_str, root, shared, templates, to_musicxml;
+  var debug, directive_template_str, display_mode, draw_grace_note, draw_measure, draw_note, draw_ornaments, fraction_to_musicxml_type_and_dots, fs, grace_note_after_template_str, grace_note_template_str, load_composition_mustache_from_file_system, mode_directive, musicxml_alter, musicxml_beats, musicxml_duration, musicxml_fifths, musicxml_lyric, musicxml_octave, musicxml_step, musicxml_type_and_dots, note_template_str, root, shared, templates, to_musicxml;
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   if (typeof require !== "undefined" && require !== null) {
     fs = require('fs');
@@ -84,14 +84,32 @@
       title: root.get_title(composition),
       composer: "",
       poet: "",
+      beats: musicxml_beats(composition),
       encoding_date: "",
       fifths: musicxml_fifths(composition),
-      mode: root.get_mode(composition)
+      mode_directive: mode_directive(composition),
+      mode: composition.mode
     };
     return templates.composition(params);
   };
   note_template_str = '{{before_ornaments}}\n<note>\n  <pitch>\n    <step>{{step}}</step>\n    {{alter}}\n    <octave>{{octave}}</octave>\n  </pitch>\n  <duration>{{duration}}</duration>\n  {{tie}}\n  <voice>1</voice>\n  {{type_and_dots}}\n  {{lyric}}\n  <notations>{{tied}}\n  {{end_slur}}{{begin_slur}}</notations>\n </note>\n {{after_ornaments}}';
   templates.note = root._.template(note_template_str);
+  musicxml_beats = function(composition) {
+    var result, time_signature;
+    time_signature = composition.time_signature;
+    console.log;
+    if (!time_signature) {
+      return 4;
+    }
+    if (time_signature === "") {
+      return 4;
+    }
+    result = /^([0-9]+)\//.exec(time_signature);
+    if (!(result != null)) {
+      return 4;
+    }
+    return result[1];
+  };
   draw_note = function(pitch, context) {
     var after_ornaments, before_ornaments, begin_slur, divisions_per_quarter, duration, end_slur, f, frac2, fraction, params, tie, tied, tied2, type_and_dots, x, _ref, _ref2;
     if (pitch.my_type === "dash") {
@@ -136,7 +154,7 @@
       tied = "<tied type=\"start\"/>";
     }
     if (pitch.my_type === "dash" && pitch.dash_to_tie === true) {
-      tied2 = "<tied type=\"end\"/>";
+      tied2 = "<tied type=\"stop\"/>";
       tied = tied2 + tied;
     }
     begin_slur = end_slur = "";
@@ -183,6 +201,17 @@
     }
     return looked_up_duration;
   };
+  mode_directive = function(composition) {
+    if (composition.mode === "major") {
+      return "";
+    }
+    return templates.directive({
+      words: composition.mode
+    });
+  };
+  directive_template_str = "<direction placement=\"above\">\n	<direction-type>\n		<words default-x=\"-1\" default-y=\"15\" font-size=\"medium\" font-weight=\"normal\">{{words}} \n		</words>\n	</direction-type>\n</direction>";
+  templates.directive = root._.template(directive_template_str);
+  display_mode = function(composition) {};
   grace_note_template_str = "<note>\n  <grace {{steal_time}} />\n  <pitch>\n    <step>{{step}}</step>\n          {{alter}}\n    <octave>{{octave}}</octave>\n  </pitch>\n  <voice>1</voice>\n  <type>{{type}}</type>\n</note>";
   templates.grace_note = root._.template(grace_note_template_str);
   grace_note_after_template_str = "  <grace steal-time-previous=\"{{steal_time_percentage}}\"/>\n  <pitch>\n    <step>{{step}}</step>\n          {{alter}}\n    <octave>{{octave}}</octave>\n  </pitch>\n  <voice>1</voice>\n  <type>{{type}}</type>\n</note>";
@@ -203,7 +232,7 @@
   };
   musicxml_fifths = function(composition) {
     var hash, mode, result;
-    mode = root.get_mode(composition);
+    mode = composition.mode;
     if (!mode) {
       return 0;
     }
