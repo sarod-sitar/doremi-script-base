@@ -12,7 +12,7 @@
     _ = require("underscore")._;
     shared=require('./shared.js')
     _.extend(root,shared)
-    get_attribute=shared.get_attribute
+    get_composition_attribute=shared.get_attribute
     ParserHelper= require("./parser_helper.js").ParserHelper
     Fraction=require('./third_party/fraction.js').Fraction
   }

@@ -81,7 +81,7 @@
                 </root>
                 <kind text="">major</kind>
             </harmony>
-            <direction placement="below">
+            <direction placement="above">
                 <direction-type>
                     <words>Moderato</words>
                 </direction-type>

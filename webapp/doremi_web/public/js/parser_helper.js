@@ -98,11 +98,10 @@
       return sargam;
     },
     parse_composition: function(attributes, lines) {
-      var title, to_string, x;
+      var to_string, x;
       if (attributes === "") {
         attributes = null;
       }
-      title = "Untitled";
       this.log("in composition, attributes is");
       this.my_inspect(attributes);
       to_string = function() {
@@ -115,29 +114,30 @@
       };
       this.composition_data = {
         my_type: "composition",
-        title: title,
-        filename: "untitled",
+        title: "",
+        filename: "",
         attributes: attributes,
         lines: _.flatten(lines),
         warnings: this.warnings,
         source: "",
         toString: to_string
       };
-      if (x = get_attribute(this.composition_data, "TimeSignature")) {
-        this.composition_data.time_signature = x.toLowerCase();
+      x = get_composition_attribute(this.composition_data, "TimeSignature");
+      this.composition_data.time_signature = x || "4/4";
+      x = get_composition_attribute(this.composition_data, "Mode");
+      if (x != null) {
+        x = x.toLowerCase;
       }
-      if (x = get_attribute(this.composition_data, "Mode")) {
-        this.composition_data.mode = x.toLowerCase();
+      this.composition_data.mode = x || "major";
+      x = get_composition_attribute(this.composition_data, "Key");
+      if (x != null) {
+        x = x.toLowerCase();
       }
-      if (x = get_attribute(this.composition_data, "Key")) {
-        this.composition_data.key = x.toLowerCase();
-      }
-      if (x = get_attribute(this.composition_data, "Filename")) {
-        this.composition_data.filename = x;
-      }
-      if (x = get_attribute(this.composition_data, "Title")) {
-        this.composition_data.title = x;
-      }
+      this.composition_data.key = x || "c";
+      x = get_composition_attribute(this.composition_data, "Filename");
+      this.composition_data.filename = x;
+      x = get_composition_attribute(this.composition_data, "Title");
+      composition_data.title = x || "Untitled";
       this.mark_partial_measures();
       return this.composition_data;
     },
