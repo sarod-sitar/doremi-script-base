@@ -29,6 +29,13 @@
   root.running_under_node = function() {
     return (typeof module !== "undefined" && module !== null) && module.exports;
   };
+  root.trim = function(val) {
+    if (String.prototype.trim != null) {
+      return val.trim();
+    } else {
+      return val.replace(/^\s+|\s+$/g, "");
+    }
+  };
   root.my_inspect = function(obj) {
     if (!(typeof debug !== "undefined" && debug !== null)) {
       return;
@@ -44,6 +51,17 @@
       return;
     }
     return console.log(obj);
+  };
+  root.item_has_attribute = function(item, attr_name) {
+    if (!(item.attributes != null)) {
+      return false;
+    }
+    return _.detect(item.attributes, function(attr) {
+      if (!(attr.my_type != null)) {
+        return false;
+      }
+      return attr.my_type === attr_name;
+    });
   };
   root.my_clone = function(obj) {
     var key, newInstance;

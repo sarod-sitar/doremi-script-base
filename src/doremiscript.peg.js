@@ -24,8 +24,6 @@
   id_ctr=1
   sa_helper=Helper.sa_helper
   parse_line=Helper.parse_line
-  item_has_attribute=Helper.item_has_attribute
-  trim=Helper.trim
   handle_ornament=Helper.handle_ornament
   find_ornaments=Helper.find_ornaments
   running_under_node=Helper.running_under_node
@@ -43,14 +41,12 @@
   measure_note_durations= Helper.measure_note_durations
   count_beat_subdivisions = Helper.count_beat_subdivisions
   parens_unbalanced = Helper.parens_unbalanced
-  //get_attribute=Helper.get_attribute
   get_source_for_items = Helper.get_source_for_items
   measure_columns = Helper.measure_columns
   assign_attributes=Helper.assign_attributes
   assign_lyrics=Helper.assign_lyrics
   collect_nodes = Helper.collect_nodes
   map_nodes = Helper.map_nodes
-  my_inspect = Helper.my_inspect
   check_semantics=Helper.check_semantics
   measure_pitch_durations=Helper.measure_pitch_durations
   if (typeof require !== 'undefined') {

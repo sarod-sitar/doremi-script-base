@@ -8372,10 +8372,6 @@ DoremiScriptParser = (function(){
       
     parse_line=Helper.parse_line
       
-    item_has_attribute=Helper.item_has_attribute
-      
-    trim=Helper.trim
-      
     handle_ornament=Helper.handle_ornament
       
     find_ornaments=Helper.find_ornaments
@@ -8410,8 +8406,6 @@ DoremiScriptParser = (function(){
       
     parens_unbalanced = Helper.parens_unbalanced
       
-    //get_attribute=Helper.get_attribute
-      
     get_source_for_items = Helper.get_source_for_items
       
     measure_columns = Helper.measure_columns
@@ -8423,8 +8417,6 @@ DoremiScriptParser = (function(){
     collect_nodes = Helper.collect_nodes
       
     map_nodes = Helper.map_nodes
-      
-    my_inspect = Helper.my_inspect
       
     check_semantics=Helper.check_semantics
       
