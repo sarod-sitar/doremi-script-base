@@ -136,7 +136,7 @@
       }
       this.composition_data.key = x || "C";
       x = get_composition_attribute(this.composition_data, "Filename");
-      this.composition_data.filename = x;
+      this.composition_data.filename = x || "";
       x = get_composition_attribute(this.composition_data, "Title");
       composition_data.title = x || "Untitled";
       this.mark_partial_measures();
