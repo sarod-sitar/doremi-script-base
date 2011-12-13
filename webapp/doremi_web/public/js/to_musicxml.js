@@ -228,7 +228,6 @@
   transpose_template_str = "<transpose>\n  <diatonic>{{diatonic}}</diatonic>\n  <chromatic>{{chromatic}}</chromatic>\n</transpose>";
   templates.transpose = root._.template(transpose_template_str);
   mode_directive_template_str = "<direction placement=\"above\">\n	<direction-type>\n		<words default-x=\"-1\" default-y=\"15\" font-size=\"medium\" font-weight=\"normal\">{{words}} \n		</words>\n	</direction-type>\n</direction>";
-  templates.directive = root._.template(directive_template_str);
   templates.mode_directive = root._.template(mode_directive_template_str);
   display_mode = function(composition) {};
   grace_note_template_str = "<note>\n  <grace {{steal_time}} />\n  <pitch>\n    <step>{{step}}</step>\n          {{alter}}\n    <octave>{{octave}}</octave>\n  </pitch>\n  <voice>1</voice>\n  <type>{{type}}</type>\n</note>";
@@ -318,8 +317,30 @@
     return ["", ""];
   };
   musicxml_transpose = function(composition) {
-    var orig;
-    orig = "d";
+    var chromatic, diatonic, lookup, _ref;
+    if (composition.key === "C") {
+      return "";
+    }
+    lookup = {
+      "Db": [1, 1],
+      "C#": [0, 1],
+      "D": [1, 2],
+      "Eb": [2, 3],
+      "E": [2, 4],
+      "F": [3, 5],
+      "F#": [3, 6],
+      "G": [4, 7],
+      "G#": [4, 8],
+      "Ab": [5, 8],
+      "A": [5, 9],
+      "Bb": [6, 10],
+      "A#": [5, 10],
+      "B": [6, 11]
+    };
+    _ref = lookup[composition.key] || [0, 0], diatonic = _ref[0], chromatic = _ref[1];
+    if (diatonic === 0) {
+      return "";
+    }
     return templates.transpose({
       diatonic: 1,
       chromatic: 2

@@ -126,14 +126,15 @@
       this.composition_data.time_signature = x || "4/4";
       x = get_composition_attribute(this.composition_data, "Mode");
       if (x != null) {
-        x = x.toLowerCase;
+        x = x.toLowerCase();
       }
       this.composition_data.mode = x || "major";
       x = get_composition_attribute(this.composition_data, "Key");
-      if (x != null) {
-        x = x.toLowerCase();
+      if ((x != null) && !valid_abc_pitch(x)) {
+        warnings.push("Invalid key " + x + ". Valid keys are C,D,Eb,F# etc");
+        x = "C";
       }
-      this.composition_data.key = x || "c";
+      this.composition_data.key = x || "C";
       x = get_composition_attribute(this.composition_data, "Filename");
       this.composition_data.filename = x;
       x = get_composition_attribute(this.composition_data, "Title");

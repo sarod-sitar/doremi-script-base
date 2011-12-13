@@ -41,7 +41,7 @@
     _.debug("test_to_html returned \n" + html + "\n");
     return html;
   };
-  long_sample = "Rag:Bhairavi\nTal:Tintal\nTitle:Bansuri\nAuthor:Traditional\nSource:AAK\nMode: phrygian\nFilename: bansuri.sargam\nTime: 4/4\nKey: d\n\n\n          \n                              i            IV         . \n         3                    +             2        DSnDn\n1)|: (Sr | n) S   (gm <Pd)> | P - P  P   | P - D    n     |\n           .\n      ban-    su-  ri         ba- ja ra-   hi  dhu- na\n\n  0  ~                 3           mgm        +  .     *  *   \n| P  d   P    d    |  (Pm   PmnP)    (g m) | (PdnS) -- g  S |\n  ma-dhu-ra   kan-     nai-           ya      khe-     la-ta\n\n   2               0     \n                   ~\n| (d-Pm  g) P  m | r - S :|\n   ga-      wa-ta  ho- ri\n";
+  long_sample = "Rag:Bhairavi\nTal:Tintal\nTitle:Bansuri\nAuthor:Traditional\nSource:AAK\nMode: phrygian\nFilename: bansuri.sargam\nTime: 4/4\nKey: D\n\n\n          \n                              i            IV         . \n         3                    +             2        DSnDn\n1)|: (Sr | n) S   (gm <Pd)> | P - P  P   | P - D    n     |\n           .\n      ban-    su-  ri         ba- ja ra-   hi  dhu- na\n\n  0  ~                 3           mgm        +  .     *  *   \n| P  d   P    d    |  (Pm   PmnP)    (g m) | (PdnS) -- g  S |\n  ma-dhu-ra   kan-     nai-           ya      khe-     la-ta\n\n   2               0     \n                   ~\n| (d-Pm  g) P  m | r - S :|\n   ga-      wa-ta  ho- ri\n";
   exports.test_long_sample = function(test) {
     var html;
     html = test_to_html(long_sample, test);

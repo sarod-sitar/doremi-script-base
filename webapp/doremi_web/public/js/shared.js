@@ -54,6 +54,9 @@
     }
     return console.log(obj);
   };
+  root.valid_abc_pitch = function(str) {
+    return str === "C" || str === "C#" || str === "Db" || str === "D" || str === "D#" || str === "Eb" || str === "E" || str === "F" || str === "F#" || str === "Gb" || str === "G" || str === "G#" || str === "Ab" || str === "A" || str === "A#" || str === "Bb" || str === "B";
+  };
   root.item_has_attribute = function(item, attr_name) {
     if (!(item.attributes != null)) {
       return false;
