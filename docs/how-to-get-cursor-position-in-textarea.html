@@ -1,0 +1,1245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><script src="how-to-get-cursor-position-in-textarea_files/ga.js" async="" type="text/javascript"></script>
+    
+    <title>javascript - How to get cursor position in textarea? - Stack Overflow</title>
+    <link rel="shortcut icon" href="http://cdn.sstatic.net/stackoverflow/img/favicon.ico">
+    <link rel="apple-touch-icon" href="http://cdn.sstatic.net/stackoverflow/img/apple-touch-icon.png">
+    <link rel="search" type="application/opensearchdescription+xml" title="Stack Overflow" href="http://stackoverflow.com/opensearch.xml">
+    <script src="how-to-get-cursor-position-in-textarea_files/adzerk1_2_4_43adzerk2_2_17_45adzerk3_2_4_44.js" async="" type="text/javascript"></script><script type="text/javascript" src="how-to-get-cursor-position-in-textarea_files/jquery.js"></script>
+    <script type="text/javascript" src="how-to-get-cursor-position-in-textarea_files/stub.js"></script>
+    <link rel="stylesheet" type="text/css" href="how-to-get-cursor-position-in-textarea_files/all.css">
+    
+    <link rel="canonical" href="http://stackoverflow.com/questions/263743/how-to-get-cursor-position-in-textarea">
+    <link rel="alternate" type="application/atom+xml" title="Feed for question 'How to get cursor position in textarea?'" href="http://stackoverflow.com/feeds/question/263743">
+    <meta name="title" content="javascript - How to get cursor position in textarea? - Stack Overflow">
+    <link rel="image_src" href="http://sstatic.net/stackoverflow/img/apple-touch-icon.png">
+    <script type="text/javascript">
+        
+        StackExchange.ready(function () {
+
+            StackExchange.question.init({showAnswerHelp:true,totalCommentCount:0,shownCommentCount:0,highlightColor:'#F4A83D',backgroundColor:'#FFF',questionId:263743});
+
+            styleCode();
+        });
+    </script>
+
+
+    <script type="text/javascript">
+        StackExchange.init({"stackAuthUrl":"http://stackauth.com","serverTime":1323741617,"styleCode":true,"newTagEditor":true,"enableUserHovercards":true,"enableTabCompletion":true,"site":{"name":"Stack Overflow","description":"Q&A for professional and enthusiast programmers"},"user":{"isAnonymous":true,"fkey":"07d3cecdb72f065ed6afc163ac90c349","inboxUnviewedCount":-1}});
+        StackExchange.using.setCacheBreakers({"js/prettify-full.js":"c8f8e85755d7","js/moderator.js":"ec55efe8087c","js/full-anon.js":"891f61873e53","js/full.js":"fe1e158e487f","js/wmd.js":"5a53fab5f2c1","js/third-party/jquery.autocomplete.min.js":"e5f01e97f7c3","js/mobile.js":"97644ef9b7d4","js/help.js":"7f83495f785a","js/tageditor.js":"75954ba7b6f1","js/tageditornew.js":"9d9998359a54","js/inline-tag-editing.js":"364e12111b4b","js/mathjax-editing.js":"a47e02eb0282","js/revisions.js":"63c88065da1f"});
+    </script>
+
+<script src="how-to-get-cursor-position-in-textarea_files/full-anon.js" type="text/javascript" async=""></script><link rel="stylesheet" type="text/css" href="how-to-get-cursor-position-in-textarea_files/sidebar.css"><script src="how-to-get-cursor-position-in-textarea_files/prettify-full.js" type="text/javascript" async=""></script></head>
+<body style="margin-top: 2.5em;" class="question-page">
+    <noscript><div id="noscript-padding"></div></noscript>
+    <div id="notify-container"><div id="notify--1" style=""><span class="notify-close"><a title="dismiss this notification">×</a></span><span class="notify-text">Welcome to Q&amp;A for professional and enthusiast programmers — check out the <a onclick="StackExchange.notify.closeFirstTime(); return false;" href="http://stackoverflow.com/faq">FAQ</a>!</span></div></div>
+    <div id="overlay-header"></div>
+    <div id="custom-header"></div>
+
+    <div class="container">
+        <div id="header">
+            <div id="portalLink">
+                <a class="genu" onclick="StackExchange.ready(function(){genuwine.click();});return false;">Stack Exchange</a>
+            </div>
+            <div id="topbar">
+                <div id="hlinks">
+                    <span id="hlinks-user">
+                  
+                  </span>
+                  <span id="hlinks-nav">
+                  <a href="http://stackoverflow.com/users/login?returnurl=%2fquestions%2f263743%2fhow-to-get-cursor-position-in-textarea">log in</a>
+ <span class="lsep">|</span>
+<a href="http://careers.stackoverflow.com/">careers</a>
+ <span class="lsep">|</span>
+
+                  </span>
+                  <span id="hlinks-custom">
+                  <a href="http://chat.stackoverflow.com/">chat</a>
+ <span class="lsep">|</span>
+<a href="http://meta.stackoverflow.com/">meta</a>
+ <span class="lsep">|</span>
+<a href="http://stackoverflow.com/about">about</a>
+ <span class="lsep">|</span>
+<a href="http://stackoverflow.com/faq">faq</a>
+                  </span>
+                </div>
+                <div id="hsearch">
+                    <form id="search" action="/search" method="get" autocomplete="off">
+                    <div>
+                        <input autocomplete="off" name="q" class="textbox" placeholder="search" tabindex="1" maxlength="140" size="28" type="text">
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <br class="cbt">
+            <div id="hlogo">
+                <a href="http://stackoverflow.com/">Stack Overflow</a>
+            </div>
+            <div id="hmenus">
+                <div class="nav mainnavs">
+                    <ul>
+                        <li class="youarehere"><a id="nav-questions" href="http://stackoverflow.com/questions">Questions</a></li>
+                        <li><a id="nav-tags" href="http://stackoverflow.com/tags">Tags</a></li>
+                        <li><a id="nav-users" href="http://stackoverflow.com/users">Users</a></li>
+                        <li><a id="nav-badges" href="http://stackoverflow.com/badges">Badges</a></li>
+                        <li><a id="nav-unanswered" href="http://stackoverflow.com/unanswered">Unanswered</a></li>
+                    </ul>
+                </div>
+                <div class="nav askquestion">
+                    <ul>
+                        <li>
+                            <a id="nav-askquestion" href="http://stackoverflow.com/questions/ask">Ask Question</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        
+
+
+        <div id="content">
+            
+
+
+
+<div id="question-header">
+    <h1><a href="http://stackoverflow.com/questions/263743/how-to-get-cursor-position-in-textarea" class="question-hyperlink">How to get cursor position in textarea?</a></h1>
+</div>
+<div id="mainbar">
+
+
+<div class="question" id="question">
+
+    <div class="everyonelovesstackoverflow" id="adzerk1"><a href="http://engine.adzerk.net/redirect/0/7491/8350/8277/801163e799d3401e9756accd94133e33/43/1178/11870/634593384301697240?keywords=javascript%2ctextarea%2ccursor" rel="nofollow" target="_blank" title=""><img src="how-to-get-cursor-position-in-textarea_files/bb1f36599da948c6b9bcb87bbf8fc2ed.png" title="" alt="" border="0" height="90" width="728"></a></div>
+
+    
+    <table>
+    <tbody><tr>
+    <td class="votecell">
+        
+<div class="vote">
+    <input value="263743" type="hidden">
+    <a class="vote-up-off" title="This question shows research effort; it is useful and clear (click again to undo)">up vote</a>
+    <span class="vote-count-post">45</span>
+    <a class="vote-down-off" title="This question does not show any research effort; it is unclear or not useful (click again to undo)">down vote</a>
+
+    <a class="star-off" href="#" title="This is a favorite question (click again to undo)">favorite</a>
+    <div class="favoritecount"><b>34</b></div>    
+
+    <script type="text/javascript">
+        StackExchange.ready(function() {
+            var shareUrl = "http%3a%2f%2fstackoverflow.com%2fq%2f263743";
+            var shareMsg = "How+to+get+cursor+position+in+textarea%3f";
+            StackExchange.share.facebook($("#fb-share-263743"), shareUrl, shareMsg);
+            StackExchange.share.twitter($("#twitter-share-263743"), shareUrl, shareMsg);
+        });
+    </script>
+    <a id="fb-share-263743" class="fb-share" title="share link to this question on Facebook">share [fb]</a>
+    <a id="twitter-share-263743" class="twitter-share" title="share link to this question on Twitter">share [tw]</a>    
+
+</div>
+
+    </td>
+<td class="postcell">
+<div>          
+    <div class="post-text">
+        <p>How do you get the cursor position in text area using JavaScript?</p>
+
+<p>For example:<br>
+<code>This is| a text</code></p>
+
+<p>This should return 7.</p>
+
+<p>How would you get it to return the strings surrounding the cursor/selection? eg:</p>
+
+<p><code>'This is', '', ' a text'</code><br>
+If the word "is" is highlighted, then it would return <code>'This ', 'is', ' a text'</code></p>
+
+    </div>            
+    <div class="post-taglist">
+        <a href="http://stackoverflow.com/questions/tagged/javascript" class="post-tag" title="show questions tagged 'javascript'" rel="tag">javascript</a> <a href="http://stackoverflow.com/questions/tagged/textarea" class="post-tag" title="show questions tagged 'textarea'" rel="tag">textarea</a> <a href="http://stackoverflow.com/questions/tagged/cursor" class="post-tag" title="show questions tagged 'cursor'" rel="tag">cursor</a> 
+    </div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+        <div class="post-menu"><a href="http://stackoverflow.com/q/263743" title="short permalink to this question" id="link-post-263743">link</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/263743/edit">improve this question</a></div>
+    </td>
+    <td class="post-signature" align="right">
+<div class="user-info user-hover"><div class="user-action-time">edited <a href="http://stackoverflow.com/posts/263743/revisions" title="show all edits to this post"><span title="2008-11-04 22:57:30Z" class="relativetime">Nov 4 '08 at 22:57</span></a></div><div class="user-gravatar32"><a href="http://stackoverflow.com/users/9021/nickf"><div class=""><img src="how-to-get-cursor-position-in-textarea_files/0a6d284d4e2ce68e1c60871858da800b.jpeg" alt=""></div></a></div><div class="user-details"><a href="http://stackoverflow.com/users/9021/nickf">nickf</a><br><span class="reputation-score" title="reputation score 78529">78.5k</span><span title="31 gold badges"><span class="badge1"></span><span class="badgecount">31</span></span><span title="183 silver badges"><span class="badge2"></span><span class="badgecount">183</span></span><span title="311 bronze badges"><span class="badge3"></span><span class="badgecount">311</span></span></div></div>    </td>
+    <td class="post-signature owner">
+    <div class="user-info"><div class="user-action-time">asked <span title="2008-11-04 22:36:52Z" class="relativetime">Nov 4 '08 at 22:36</span></div><div class="user-gravatar32"><a href="http://stackoverflow.com/users/32941/restless-wanderer"><div class=""><img src="how-to-get-cursor-position-in-textarea_files/a.png" alt=""></div></a></div><div class="user-details"><a href="http://stackoverflow.com/users/32941/restless-wanderer">Restless Wanderer</a><br><span class="reputation-score" title="reputation score">263</span><span title="1 gold badge"><span class="badge1"></span><span class="badgecount">1</span></span><span title="6 silver badges"><span class="badge2"></span><span class="badgecount">6</span></span><span title="7 bronze badges"><span class="badge3"></span><span class="badgecount">7</span></span></div></div>
+    </td>
+    </tr>
+    </tbody></table>
+</div>
+</td>    </tr>
+
+
+<tr>
+<td class="votecell"></td>
+<td>
+    <div id="comments-263743" class="comments dno">
+        <table>
+        <tbody>
+        
+            <tr><td></td><td></td></tr>
+        
+        </tbody>
+    
+        </table>
+    </div>
+    
+    
+    <div style="color: rgb(136, 136, 136);" class="was-this-helpful">
+        feedback
+    </div>
+    
+</td>
+</tr>    </tbody></table>    
+</div>
+
+
+
+<div id="answers">
+
+    <a name="tab-top"></a>
+    <div id="answers-header">
+        <div class="subheader answers-subheader">
+            <h2>7 Answers</h2>
+            <div id="tabs">
+                <a href="http://stackoverflow.com/questions/263743/how-to-get-cursor-position-in-textarea?answertab=active#tab-top" title="Answers with the latest activity first">active</a>
+<a href="http://stackoverflow.com/questions/263743/how-to-get-cursor-position-in-textarea?answertab=oldest#tab-top" title="Answers in the order they were provided">oldest</a>
+<a class="youarehere" href="http://stackoverflow.com/questions/263743/how-to-get-cursor-position-in-textarea?answertab=votes#tab-top" title="Answers with the highest score first">votes</a>
+
+            </div>
+        </div>    
+    </div>    
+
+
+  
+    <a name="263796"></a>
+    <div id="answer-263796" class="answer">
+        <table>
+        <tbody><tr>
+        <td class="votecell">
+            
+<div class="vote">
+    <input value="263796" type="hidden">
+    <a class="vote-up-off" title="This answer is useful (click again to undo)">up vote</a>
+    <span class="vote-count-post">50</span>
+    <a class="vote-down-off" title="This answer is not useful (click again to undo)">down vote</a>
+<span class="vote-accepted-on" title="The question owner accepted this as the best answer Nov 5 '08 at 3:10">accepted</span>
+</div>
+
+        </td>
+
+
+<td class="answercell">
+    <div class="post-text"><p>With Firefox, Safari (and other Gecko 
+based browsers) you can easily use textarea.selectionStart, but for IE 
+that doesn't work, so you will have to do something like this:</p>
+
+<pre class="default prettyprint"><code><span class="kwd">function</span><span class="pln"> getCaret</span><span class="pun">(</span><span class="pln">node</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">node</span><span class="pun">.</span><span class="pln">selectionStart</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">return</span><span class="pln"> node</span><span class="pun">.</span><span class="pln">selectionStart</span><span class="pun">;</span><span class="pln"><br>&nbsp; </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">else</span><span class="pln"> </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(!</span><span class="pln">document</span><span class="pun">.</span><span class="pln">selection</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">return</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"><br>&nbsp; </span><span class="pun">}</span><span class="pln"><br><br>&nbsp; </span><span class="kwd">var</span><span class="pln"> c </span><span class="pun">=</span><span class="pln"> </span><span class="str">"\001"</span><span class="pun">,</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; sel </span><span class="pun">=</span><span class="pln"> document</span><span class="pun">.</span><span class="pln">selection</span><span class="pun">.</span><span class="pln">createRange</span><span class="pun">(),</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; dul </span><span class="pun">=</span><span class="pln"> sel</span><span class="pun">.</span><span class="pln">duplicate</span><span class="pun">(),</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; len </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"><br><br>&nbsp; dul</span><span class="pun">.</span><span class="pln">moveToElementText</span><span class="pun">(</span><span class="pln">node</span><span class="pun">);</span><span class="pln"><br>&nbsp; sel</span><span class="pun">.</span><span class="pln">text </span><span class="pun">=</span><span class="pln"> c</span><span class="pun">;</span><span class="pln"><br>&nbsp; len </span><span class="pun">=</span><span class="pln"> dul</span><span class="pun">.</span><span class="pln">text</span><span class="pun">.</span><span class="pln">indexOf</span><span class="pun">(</span><span class="pln">c</span><span class="pun">);</span><span class="pln"><br>&nbsp; sel</span><span class="pun">.</span><span class="pln">moveStart</span><span class="pun">(</span><span class="str">'character'</span><span class="pun">,-</span><span class="lit">1</span><span class="pun">);</span><span class="pln"><br>&nbsp; sel</span><span class="pun">.</span><span class="pln">text </span><span class="pun">=</span><span class="pln"> </span><span class="str">""</span><span class="pun">;</span><span class="pln"><br>&nbsp; </span><span class="kwd">return</span><span class="pln"> len</span><span class="pun">;</span><span class="pln"><br></span><span class="pun">}</span><span class="pln"><br></span></code></pre>
+
+<p>(<a href="http://web.archive.org/web/20080214051356/http://www.csie.ntu.edu.tw/%7Eb88039/html/jslib/caret.html">complete code here</a>)</p>
+
+<p>I also recommend you to check the jQuery <a href="http://laboratorium.0xab.cd/jquery/fieldselection/0.1.0/test.html">FieldSelection</a> Plugin, it allows you to do that and much more...</p>
+
+<p><strong>Edit:</strong> I actually re-implemented the above code: </p>
+
+<pre class="default prettyprint"><code><span class="kwd">function</span><span class="pln"> getCaret</span><span class="pun">(</span><span class="pln">el</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> <br>&nbsp; </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">el</span><span class="pun">.</span><span class="pln">selectionStart</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> <br>&nbsp; &nbsp; </span><span class="kwd">return</span><span class="pln"> el</span><span class="pun">.</span><span class="pln">selectionStart</span><span class="pun">;</span><span class="pln"> <br>&nbsp; </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">else</span><span class="pln"> </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">document</span><span class="pun">.</span><span class="pln">selection</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> <br>&nbsp; &nbsp; el</span><span class="pun">.</span><span class="pln">focus</span><span class="pun">();</span><span class="pln"> <br><br>&nbsp; &nbsp; </span><span class="kwd">var</span><span class="pln"> r </span><span class="pun">=</span><span class="pln"> document</span><span class="pun">.</span><span class="pln">selection</span><span class="pun">.</span><span class="pln">createRange</span><span class="pun">();</span><span class="pln"> <br>&nbsp; &nbsp; </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">r </span><span class="pun">==</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; </span><span class="kwd">return</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"> <br>&nbsp; &nbsp; </span><span class="pun">}</span><span class="pln"> <br><br>&nbsp; &nbsp; </span><span class="kwd">var</span><span class="pln"> re </span><span class="pun">=</span><span class="pln"> el</span><span class="pun">.</span><span class="pln">createTextRange</span><span class="pun">(),</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; &nbsp; rc </span><span class="pun">=</span><span class="pln"> re</span><span class="pun">.</span><span class="pln">duplicate</span><span class="pun">();</span><span class="pln"> <br>&nbsp; &nbsp; re</span><span class="pun">.</span><span class="pln">moveToBookmark</span><span class="pun">(</span><span class="pln">r</span><span class="pun">.</span><span class="pln">getBookmark</span><span class="pun">());</span><span class="pln"> <br>&nbsp; &nbsp; rc</span><span class="pun">.</span><span class="pln">setEndPoint</span><span class="pun">(</span><span class="str">'EndToStart'</span><span class="pun">,</span><span class="pln"> re</span><span class="pun">);</span><span class="pln"> <br><br>&nbsp; &nbsp; </span><span class="kwd">return</span><span class="pln"> rc</span><span class="pun">.</span><span class="pln">text</span><span class="pun">.</span><span class="pln">length</span><span class="pun">;</span><span class="pln"> <br>&nbsp; </span><span class="pun">}</span><span class="pln"> &nbsp;<br>&nbsp; </span><span class="kwd">return</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"> <br></span><span class="pun">}</span><span class="pln"><br></span></code></pre>
+
+<p>Check an example <a href="http://jsbin.com/iwopa">here</a>.</p>
+</div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+        <div class="post-menu"><a href="http://stackoverflow.com/a/263796" title="short permalink to this answer" id="link-post-263796">link</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/263796/edit">improve this answer</a></div>
+    </td>
+    <td class="post-signature" align="right">
+<div class="user-info user-hover"><div class="user-action-time">edited <a href="http://stackoverflow.com/posts/263796/revisions" title="show all edits to this post"><span title="2011-10-06 04:00:29Z" class="relativetime">Oct 6 at 4:00</span></a></div><div class="user-gravatar32"><a href="http://stackoverflow.com/users/210916/mpelletier"><div class=""><img src="how-to-get-cursor-position-in-textarea_files/e5c7e713b6f536d3fa0c9e1fbbdfb9c1.jpeg" alt=""></div></a></div><div class="user-details"><a href="http://stackoverflow.com/users/210916/mpelletier">MPelletier</a><br><span class="reputation-score" title="reputation score">4,650</span><span title="1 gold badge"><span class="badge1"></span><span class="badgecount">1</span></span><span title="18 silver badges"><span class="badge2"></span><span class="badgecount">18</span></span><span title="30 bronze badges"><span class="badge3"></span><span class="badgecount">30</span></span></div></div>    </td>
+            
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info user-hover"><div class="user-action-time">answered <span title="2008-11-04 22:58:19Z" class="relativetime">Nov 4 '08 at 22:58</span></div><div class="user-gravatar32"><a href="http://stackoverflow.com/users/5445/cms"><div class=""><img src="how-to-get-cursor-position-in-textarea_files/932fb89b9d4049cec5cba357bf0ae388.jpeg" alt=""></div></a></div><div class="user-details"><a href="http://stackoverflow.com/users/5445/cms">CMS</a><br><span class="reputation-score" title="reputation score 147396">147k</span><span title="21 gold badges"><span class="badge1"></span><span class="badgecount">21</span></span><span title="252 silver badges"><span class="badge2"></span><span class="badgecount">252</span></span><span title="393 bronze badges"><span class="badge3"></span><span class="badgecount">393</span></span></div></div>
+    </td>
+    </tr>
+    </tbody></table>
+</td>        </tr>
+
+
+<tr>
+<td class="votecell"></td>
+<td>
+    <div id="comments-263796" class="comments">
+        <table>
+        <tbody>
+                    
+    <tr id="comment-1204148" class="comment">
+        <td></td>
+        <td class="comment-text"><div><span class="comment-copy">@CMS that link appears to be broken</span> –&nbsp;<a href="http://stackoverflow.com/users/17174/sam-saffron" title="26049 reputation" class="comment-user">Sam Saffron<span class="mod-flair" title="moderator">♦</span></a> <span class="comment-date"><span title="2009-09-02 06:11:59Z">Sep 2 '09 at 6:11</span></span></div></td>
+    </tr>
+            
+    <tr id="comment-1204186" class="comment">
+        <td></td>
+        <td class="comment-text"><div><span class="comment-copy">@Sam, fixed link thanks to archive.org ...</span> –&nbsp;<a href="http://stackoverflow.com/users/5445/cms" title="147396 reputation" class="comment-user">CMS</a> <span class="comment-date"><span title="2009-09-02 06:23:08Z">Sep 2 '09 at 6:23</span></span></div></td>
+    </tr>
+            
+    <tr id="comment-3328105" class="comment">
+        <td class="comment-actions"><table><tbody><tr>
+<td class="comment-score">
+<span title="number of 'great comment' votes received" class="cool">1</span>
+</td>
+<td>
+&nbsp;
+</td></tr>
+</tbody></table></td>
+        <td class="comment-text"><div><span class="comment-copy">This doesn't distinguish between caret positions when the caret is placed on an empty line. See <a href="http://stackoverflow.com/questions/3053542/how-to-get-the-start-and-end-points-of-selection-in-text-area/3053640#3053640" title="how to get the start and end points of selection in text area">stackoverflow.com/questions/3053542/…</a></span> –&nbsp;<a href="http://stackoverflow.com/users/96100/tim-down" title="40265 reputation" class="comment-user">Tim Down</a> <span class="comment-date"><span title="2010-07-12 00:07:05Z">Jul 12 '10 at 0:07</span></span></div></td>
+    </tr>
+            
+    <tr id="comment-3578633" class="comment">
+        <td></td>
+        <td class="comment-text"><div><span class="comment-copy">thanks--lots of code samples for inputs but few that work for textareas!</span> –&nbsp;<a href="http://stackoverflow.com/users/280770/joshs" title="70 reputation" class="comment-user">joshs</a> <span class="comment-date"><span title="2010-08-08 17:37:57Z">Aug 8 '10 at 17:37</span></span></div></td>
+    </tr>
+            
+    <tr id="comment-4523425" class="comment">
+        <td class="comment-actions"><table><tbody><tr>
+<td class="comment-score">
+<span title="number of 'great comment' votes received" class="cool">3</span>
+</td>
+<td>
+&nbsp;
+</td></tr>
+</tbody></table></td>
+        <td class="comment-text"><div><span class="comment-copy">For 
+some reason this seems to be the most popular of the many copies of this
+ question on Stack Overflow, which is unfortunate because the accepted 
+answer is imperfect (despite @CMS's excellent track record). Please have
+ a look at my answer, which deals with the empty lines problem.</span> –&nbsp;<a href="http://stackoverflow.com/users/96100/tim-down" title="40265 reputation" class="comment-user">Tim Down</a> <span class="comment-date"><span title="2010-11-15 16:05:32Z">Nov 15 '10 at 16:05</span></span><span class="edited-yes" title="this comment was edited"></span></div></td>
+    </tr>
+
+        </tbody>
+    
+        </table>
+    </div>
+    
+    
+    <div style="color: rgb(136, 136, 136);" class="was-this-helpful">
+        feedback
+    </div>
+    
+</td>
+</tr>    </tbody></table>
+</div>
+
+    <div class="everyonelovesstackoverflow" id="adzerk3"><a href="http://engine.adzerk.net/redirect/0/5916/2444/8277/efaa1f688f2c4adaa760b76af3bec2ea/44/1178/8802/634593384301978490?keywords=javascript%2ctextarea%2ccursor" rel="nofollow" target="_blank" title=""><img src="how-to-get-cursor-position-in-textarea_files/d31c8d7d3cf640a6b29d9ad71788dd4a.png" title="" alt="" border="0" height="90" width="728"></a></div>
+
+    
+  
+    <a name="3373056"></a>
+    <div id="answer-3373056" class="answer">
+        <table>
+        <tbody><tr>
+        <td class="votecell">
+            
+<div class="vote">
+    <input value="3373056" type="hidden">
+    <a class="vote-up-off" title="This answer is useful (click again to undo)">up vote</a>
+    <span class="vote-count-post">20</span>
+    <a class="vote-down-off" title="This answer is not useful (click again to undo)">down vote</a>
+
+</div>
+
+        </td>
+
+
+<td class="answercell">
+    <div class="post-text"><p><strong>Updated 5 September 2010</strong></p>
+
+<p>Seeing as everyone seems to get directed here for this issue, I'm 
+adding my answer to a similar question, which contains the same code as 
+this answer but with full background for those who are interested:</p>
+
+<p><a href="http://stackoverflow.com/questions/3622818/ies-document-selection-createrange-doesnt-include-leading-or-trailing-blank-li">IE's document.selection.createRange doesn't include leading or trailing blank lines</a></p>
+
+<p>To account for trailing line breaks is tricky in IE, and I haven't 
+seen any solution that does this correctly, including any other answers 
+to this question. It is possible, however, using the following function,
+ which will return you the start and end of the selection (which are the
+ same in the case of a caret) within a <code>&lt;textarea&gt;</code> or text <code>&lt;input&gt;</code>.</p>
+
+<p>Note that the textarea must have focus for this function to work properly in IE. If in doubt, call the textarea's <code>focus()</code> method first.</p>
+
+<pre class="default prettyprint"><code><span class="kwd">function</span><span class="pln"> getInputSelection</span><span class="pun">(</span><span class="pln">el</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">var</span><span class="pln"> start </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">end</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln"> normalizedValue</span><span class="pun">,</span><span class="pln"> range</span><span class="pun">,</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; textInputRange</span><span class="pun">,</span><span class="pln"> len</span><span class="pun">,</span><span class="pln"> endRange</span><span class="pun">;</span><span class="pln"><br><br>&nbsp; &nbsp; </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">typeof</span><span class="pln"> el</span><span class="pun">.</span><span class="pln">selectionStart </span><span class="pun">==</span><span class="pln"> </span><span class="str">"number"</span><span class="pln"> </span><span class="pun">&amp;&amp;</span><span class="pln"> </span><span class="kwd">typeof</span><span class="pln"> el</span><span class="pun">.</span><span class="pln">selectionEnd </span><span class="pun">==</span><span class="pln"> </span><span class="str">"number"</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; start </span><span class="pun">=</span><span class="pln"> el</span><span class="pun">.</span><span class="pln">selectionStart</span><span class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">end</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> el</span><span class="pun">.</span><span class="pln">selectionEnd</span><span class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">else</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; range </span><span class="pun">=</span><span class="pln"> document</span><span class="pun">.</span><span class="pln">selection</span><span class="pun">.</span><span class="pln">createRange</span><span class="pun">();</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">range </span><span class="pun">&amp;&amp;</span><span class="pln"> range</span><span class="pun">.</span><span class="pln">parentElement</span><span class="pun">()</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> el</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; len </span><span class="pun">=</span><span class="pln"> el</span><span class="pun">.</span><span class="pln">value</span><span class="pun">.</span><span class="pln">length</span><span class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; normalizedValue </span><span class="pun">=</span><span class="pln"> el</span><span class="pun">.</span><span class="pln">value</span><span class="pun">.</span><span class="pln">replace</span><span class="pun">(</span><span class="str">/\r\n/</span><span class="pln">g</span><span class="pun">,</span><span class="pln"> </span><span class="str">"\n"</span><span class="pun">);</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="com">// Create a working TextRange that lives only in the input</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; textInputRange </span><span class="pun">=</span><span class="pln"> el</span><span class="pun">.</span><span class="pln">createTextRange</span><span class="pun">();</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; textInputRange</span><span class="pun">.</span><span class="pln">moveToBookmark</span><span class="pun">(</span><span class="pln">range</span><span class="pun">.</span><span class="pln">getBookmark</span><span class="pun">());</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="com">// Check if the start and end of the selection are at the very end</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="com">// of the input, since moveStart/moveEnd doesn't return what we want</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="com">// in those cases</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; endRange </span><span class="pun">=</span><span class="pln"> el</span><span class="pun">.</span><span class="pln">createTextRange</span><span class="pun">();</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; endRange</span><span class="pun">.</span><span class="pln">collapse</span><span class="pun">(</span><span class="kwd">false</span><span class="pun">);</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">textInputRange</span><span class="pun">.</span><span class="pln">compareEndPoints</span><span class="pun">(</span><span class="str">"StartToEnd"</span><span class="pun">,</span><span class="pln"> endRange</span><span class="pun">)</span><span class="pln"> </span><span class="pun">&gt;</span><span class="pln"> </span><span class="pun">-</span><span class="lit">1</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; start </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">end</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> len</span><span class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">else</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; start </span><span class="pun">=</span><span class="pln"> </span><span class="pun">-</span><span class="pln">textInputRange</span><span class="pun">.</span><span class="pln">moveStart</span><span class="pun">(</span><span class="str">"character"</span><span class="pun">,</span><span class="pln"> </span><span class="pun">-</span><span class="pln">len</span><span class="pun">);</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; start </span><span class="pun">+=</span><span class="pln"> normalizedValue</span><span class="pun">.</span><span class="pln">slice</span><span class="pun">(</span><span class="lit">0</span><span class="pun">,</span><span class="pln"> start</span><span class="pun">).</span><span class="pln">split</span><span class="pun">(</span><span class="str">"\n"</span><span class="pun">).</span><span class="pln">length </span><span class="pun">-</span><span class="pln"> </span><span class="lit">1</span><span class="pun">;</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">textInputRange</span><span class="pun">.</span><span class="pln">compareEndPoints</span><span class="pun">(</span><span class="str">"EndToEnd"</span><span class="pun">,</span><span class="pln"> endRange</span><span class="pun">)</span><span class="pln"> </span><span class="pun">&gt;</span><span class="pln"> </span><span class="pun">-</span><span class="lit">1</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">end</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> len</span><span class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">else</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">end</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> </span><span class="pun">-</span><span class="pln">textInputRange</span><span class="pun">.</span><span class="pln">moveEnd</span><span class="pun">(</span><span class="str">"character"</span><span class="pun">,</span><span class="pln"> </span><span class="pun">-</span><span class="pln">len</span><span class="pun">);</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">end</span><span class="pln"> </span><span class="pun">+=</span><span class="pln"> normalizedValue</span><span class="pun">.</span><span class="pln">slice</span><span class="pun">(</span><span class="lit">0</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">end</span><span class="pun">).</span><span class="pln">split</span><span class="pun">(</span><span class="str">"\n"</span><span class="pun">).</span><span class="pln">length </span><span class="pun">-</span><span class="pln"> </span><span class="lit">1</span><span class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; </span><span class="pun">}</span><span class="pln"><br><br>&nbsp; &nbsp; </span><span class="kwd">return</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; start</span><span class="pun">:</span><span class="pln"> start</span><span class="pun">,</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">end</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">end</span><span class="pln"><br>&nbsp; &nbsp; </span><span class="pun">};</span><span class="pln"><br></span><span class="pun">}</span><span class="pln"><br></span></code></pre>
+</div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+        <div class="post-menu"><a href="http://stackoverflow.com/a/3373056" title="short permalink to this answer" id="link-post-3373056">link</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/3373056/edit">improve this answer</a></div>
+    </td>
+    <td class="post-signature" align="right">
+<div class="user-info"><div class="user-action-time">edited <a href="http://stackoverflow.com/posts/3373056/revisions" title="show all edits to this post"><span title="2011-10-27 23:21:48Z" class="relativetime">Oct 27 at 23:21</span></a></div><div class="user-gravatar32"></div><div class="user-details"><br></div></div>    </td>
+            
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info user-hover"><div class="user-action-time">answered <span title="2010-07-30 15:38:49Z" class="relativetime">Jul 30 '10 at 15:38</span></div><div class="user-gravatar32"><a href="http://stackoverflow.com/users/96100/tim-down"><div class=""><img src="how-to-get-cursor-position-in-textarea_files/f7b22b86b0da570ddb5d1d4923b0f4f4.png" alt=""></div></a></div><div class="user-details"><a href="http://stackoverflow.com/users/96100/tim-down">Tim Down</a><br><span class="reputation-score" title="reputation score 40265">40.3k</span><span title="3 gold badges"><span class="badge1"></span><span class="badgecount">3</span></span><span title="38 silver badges"><span class="badge2"></span><span class="badgecount">38</span></span><span title="63 bronze badges"><span class="badge3"></span><span class="badgecount">63</span></span></div></div>
+    </td>
+    </tr>
+    </tbody></table>
+</td>        </tr>
+
+
+<tr>
+<td class="votecell"></td>
+<td>
+    <div id="comments-3373056" class="comments">
+        <table>
+        <tbody>
+                    
+    <tr id="comment-7144020" class="comment">
+        <td></td>
+        <td class="comment-text"><div><span class="comment-copy">Great answer!
+Also, to nitpick: you should be declaring variables with <code>var</code> so as not to pollute the global namespace.</span> –&nbsp;<a href="http://stackoverflow.com/users/170344/adurdin" title="691 reputation" class="comment-user">adurdin</a> <span class="comment-date"><span title="2011-05-27 11:02:43Z">May 27 at 11:02</span></span><span class="edited-yes" title="this comment was edited 2 times"></span></div></td>
+    </tr>
+            
+    <tr id="comment-7144164" class="comment">
+        <td class="comment-actions"><table><tbody><tr>
+<td class="comment-score">
+<span title="number of 'great comment' votes received" class="cool">1</span>
+</td>
+<td>
+&nbsp;
+</td></tr>
+</tbody></table></td>
+        <td class="comment-text"><div><span class="comment-copy">@adurdin: Ah, you changed your comment :) All variables are declared with <code>var</code>, at the top.</span> –&nbsp;<a href="http://stackoverflow.com/users/96100/tim-down" title="40265 reputation" class="comment-user">Tim Down</a> <span class="comment-date"><span title="2011-05-27 11:13:41Z">May 27 at 11:13</span></span></div></td>
+    </tr>
+            
+    <tr id="comment-8543215" class="comment">
+        <td></td>
+        <td class="comment-text"><div><span class="comment-copy">Excuse me but what does '<i>range &amp;&amp; range.parentElement()</i>' mean?</span> –&nbsp;<a href="http://stackoverflow.com/users/749288/s-zakharov" title="456 reputation" class="comment-user">s.zakharov</a> <span class="comment-date"><span title="2011-08-19 21:32:40Z">Aug 19 at 21:32</span></span></div></td>
+    </tr>
+            
+    <tr id="comment-8543552" class="comment">
+        <td></td>
+        <td class="comment-text"><div><span class="comment-copy">There is a problem if we want to get position of caret in IE (if selection is empty). In this case it returns <i>0</i> as start and <i>string length</i> as end (if we use <i>true</i> instead of <i>range &amp;&amp; range.parentElement() == el</i>).</span> –&nbsp;<a href="http://stackoverflow.com/users/749288/s-zakharov" title="456 reputation" class="comment-user">s.zakharov</a> <span class="comment-date"><span title="2011-08-19 21:55:37Z">Aug 19 at 21:55</span></span><span class="edited-yes" title="this comment was edited"></span></div></td>
+    </tr>
+            
+    <tr id="comment-8636011" class="comment">
+        <td class="comment-actions"><table><tbody><tr>
+<td class="comment-score">
+<span title="number of 'great comment' votes received" class="cool">2</span>
+</td>
+<td>
+&nbsp;
+</td></tr>
+</tbody></table></td>
+        <td class="comment-text"><div><span class="comment-copy">@Misha:
+ That's not the fault of the function: that's what is actually selected 
+by the time the function executes. You can see it visually after 
+dismissing the alert box. As I mentioned in my answer to your recent 
+question, two possible workarounds are using the <code>mousedown</code> event or adding <code>unselectable="on"</code> to the <code>&lt;div&gt;</code> element.</span> –&nbsp;<a href="http://stackoverflow.com/users/96100/tim-down" title="40265 reputation" class="comment-user">Tim Down</a> <span class="comment-date"><span title="2011-08-25 13:46:20Z">Aug 25 at 13:46</span></span></div></td>
+    </tr>
+
+        </tbody>
+    
+        </table>
+    </div>
+    <a id="comments-link-3373056" class="comments-link" title="expand to show all comments on this post">show <b>6</b> more comments</a>
+    
+    <div style="color: rgb(136, 136, 136);" class="was-this-helpful">
+        feedback
+    </div>
+    
+</td>
+</tr>    </tbody></table>
+</div>
+
+  
+    <a name="4921381"></a>
+    <div id="answer-4921381" class="answer">
+        <table>
+        <tbody><tr>
+        <td class="votecell">
+            
+<div class="vote">
+    <input value="4921381" type="hidden">
+    <a class="vote-up-off" title="This answer is useful (click again to undo)">up vote</a>
+    <span class="vote-count-post">4</span>
+    <a class="vote-down-off" title="This answer is not useful (click again to undo)">down vote</a>
+
+</div>
+
+        </td>
+
+
+<td class="answercell">
+    <div class="post-text"><p>If you are using jQuery you can use jquery caret plugin </p>
+
+<p>$('textarea').getSelection().start</p>
+
+<p><a href="http://plugins.jquery.com/plugin-tags/caret" rel="nofollow">http://plugins.jquery.com/plugin-tags/caret</a></p>
+
+<p>@++</p>
+</div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+        <div class="post-menu"><a href="http://stackoverflow.com/a/4921381" title="short permalink to this answer" id="link-post-4921381">link</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/4921381/edit">improve this answer</a></div>
+    </td>
+            
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info"><div class="user-action-time">answered <span title="2011-02-07 12:39:51Z" class="relativetime">Feb 7 at 12:39</span></div><div class="user-gravatar32"><a href="http://stackoverflow.com/users/353985/redsonic"><div class=""><img src="how-to-get-cursor-position-in-textarea_files/fd3f657177633f92c2959e3fe84a6bb0.png" alt=""></div></a></div><div class="user-details"><a href="http://stackoverflow.com/users/353985/redsonic">redsonic</a><br><span class="reputation-score" title="reputation score">82</span><span title="1 silver badge"><span class="badge2"></span><span class="badgecount">1</span></span><span title="8 bronze badges"><span class="badge3"></span><span class="badgecount">8</span></span></div></div>
+    </td>
+    </tr>
+    </tbody></table>
+</td>        </tr>
+
+
+<tr>
+<td class="votecell"></td>
+<td>
+    <div id="comments-4921381" class="comments">
+        <table>
+        <tbody>
+                    
+    <tr id="comment-9638036" class="comment">
+        <td></td>
+        <td class="comment-text"><div><span class="comment-copy">The plugin takes care of a lot of heavy lifting I didn't want to deal with.</span> –&nbsp;<a href="http://stackoverflow.com/users/122236/metric152" title="142 reputation" class="comment-user">metric152</a> <span class="comment-date"><span title="2011-10-25 20:20:15Z">Oct 25 at 20:20</span></span></div></td>
+    </tr>
+
+        </tbody>
+    
+        </table>
+    </div>
+    
+    
+    <div style="color: rgb(136, 136, 136);" class="was-this-helpful">
+        feedback
+    </div>
+    
+</td>
+</tr>    </tbody></table>
+</div>
+
+  
+    <a name="263788"></a>
+    <div id="answer-263788" class="answer">
+        <table>
+        <tbody><tr>
+        <td class="votecell">
+            
+<div class="vote">
+    <input value="263788" type="hidden">
+    <a class="vote-up-off" title="This answer is useful (click again to undo)">up vote</a>
+    <span class="vote-count-post">2</span>
+    <a class="vote-down-off" title="This answer is not useful (click again to undo)">down vote</a>
+
+</div>
+
+        </td>
+
+
+<td class="answercell">
+    <div class="post-text"><p>See this question:</p>
+
+<p><a href="http://stackoverflow.com/questions/164147/character-offset-in-an-internet-explorer-textrange">http://stackoverflow.com/questions/164147/character-offset-in-an-internet-explorer-textrange</a></p>
+
+<p>and if you will have newlines, also the note about that here:</p>
+
+<p><a href="http://stackoverflow.com/questions/235411/is-there-an-internet-explorer-approved-substitute-for-selectionstart-and-select#235582">http://stackoverflow.com/questions/235411/is-there-an-internet-explorer-approved-substitute-for-selectionstart-and-select#235582</a></p>
+</div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+        <div class="post-menu"><a href="http://stackoverflow.com/a/263788" title="short permalink to this answer" id="link-post-263788">link</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/263788/edit">improve this answer</a></div>
+    </td>
+            
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info user-hover"><div class="user-action-time">answered <span title="2008-11-04 22:52:42Z" class="relativetime">Nov 4 '08 at 22:52</span></div><div class="user-gravatar32"><a href="http://stackoverflow.com/users/18936/bobince"><div class=""><img src="how-to-get-cursor-position-in-textarea_files/3f6f1bea81a68b2f1cfe3efbb9be94bc.jpeg" alt=""></div></a></div><div class="user-details"><a href="http://stackoverflow.com/users/18936/bobince">bobince</a><br><span class="reputation-score" title="reputation score 137029">137k</span><span title="20 gold badges"><span class="badge1"></span><span class="badgecount">20</span></span><span title="131 silver badges"><span class="badge2"></span><span class="badgecount">131</span></span><span title="256 bronze badges"><span class="badge3"></span><span class="badgecount">256</span></span></div></div>
+    </td>
+    </tr>
+    </tbody></table>
+</td>        </tr>
+
+
+<tr>
+<td class="votecell"></td>
+<td>
+    <div id="comments-263788" class="comments dno">
+        <table>
+        <tbody>
+        
+            <tr><td></td><td></td></tr>
+        
+        </tbody>
+    
+        </table>
+    </div>
+    
+    
+    <div class="was-this-helpful">
+        feedback
+    </div>
+    
+</td>
+</tr>    </tbody></table>
+</div>
+
+  
+    <a name="1264394"></a>
+    <div id="answer-1264394" class="answer">
+        <table>
+        <tbody><tr>
+        <td class="votecell">
+            
+<div class="vote">
+    <input value="1264394" type="hidden">
+    <a class="vote-up-off" title="This answer is useful (click again to undo)">up vote</a>
+    <span class="vote-count-post">2</span>
+    <a class="vote-down-off" title="This answer is not useful (click again to undo)">down vote</a>
+
+</div>
+
+        </td>
+
+
+<td class="answercell">
+    <div class="post-text"><p>Small addition to CMS answer. When in IE 7
+ this code returns -1 if the last character is space and the caret is 
+after it. Checking return value does the trick in this case.</p>
+</div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+        <div class="post-menu"><a href="http://stackoverflow.com/a/1264394" title="short permalink to this answer" id="link-post-1264394">link</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/1264394/edit">improve this answer</a></div>
+    </td>
+            
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info"><div class="user-action-time">answered <span title="2009-08-12 05:44:31Z" class="relativetime">Aug 12 '09 at 5:44</span></div><div class="user-gravatar32"><a href="http://stackoverflow.com/users/78344/bybor"><div class=""><img src="how-to-get-cursor-position-in-textarea_files/cbb58304a4f63af160920765b7a29946.png" alt=""></div></a></div><div class="user-details"><a href="http://stackoverflow.com/users/78344/bybor">bybor</a><br><span class="reputation-score" title="reputation score">68</span><span title="7 bronze badges"><span class="badge3"></span><span class="badgecount">7</span></span></div></div>
+    </td>
+    </tr>
+    </tbody></table>
+</td>        </tr>
+
+
+<tr>
+<td class="votecell"></td>
+<td>
+    <div id="comments-1264394" class="comments dno">
+        <table>
+        <tbody>
+        
+            <tr><td></td><td></td></tr>
+        
+        </tbody>
+    
+        </table>
+    </div>
+    
+    
+    <div class="was-this-helpful">
+        feedback
+    </div>
+    
+</td>
+</tr>    </tbody></table>
+</div>
+
+  
+    <a name="2735606"></a>
+    <div id="answer-2735606" class="answer">
+        <table>
+        <tbody><tr>
+        <td class="votecell">
+            
+<div class="vote">
+    <input value="2735606" type="hidden">
+    <a class="vote-up-off" title="This answer is useful (click again to undo)">up vote</a>
+    <span class="vote-count-post">1</span>
+    <a class="vote-down-off" title="This answer is not useful (click again to undo)">down vote</a>
+
+</div>
+
+        </td>
+
+
+<td class="answercell">
+    <div class="post-text"><p>I modified the above function to account 
+for carriage returns in IE. It's untested but I did something similar 
+with it in my code so it should be workable.</p>
+
+<pre class="default prettyprint"><code><span class="kwd">function</span><span class="pln"> getCaret</span><span class="pun">(</span><span class="pln">el</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">el</span><span class="pun">.</span><span class="pln">selectionStart</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> <br>&nbsp; &nbsp; </span><span class="kwd">return</span><span class="pln"> el</span><span class="pun">.</span><span class="pln">selectionStart</span><span class="pun">;</span><span class="pln"> <br>&nbsp; </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">else</span><span class="pln"> </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">document</span><span class="pun">.</span><span class="pln">selection</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> <br>&nbsp; &nbsp; el</span><span class="pun">.</span><span class="pln">focus</span><span class="pun">();</span><span class="pln"> <br><br>&nbsp; &nbsp; </span><span class="kwd">var</span><span class="pln"> r </span><span class="pun">=</span><span class="pln"> document</span><span class="pun">.</span><span class="pln">selection</span><span class="pun">.</span><span class="pln">createRange</span><span class="pun">();</span><span class="pln"> <br>&nbsp; &nbsp; </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">r </span><span class="pun">==</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> <br>&nbsp; &nbsp; &nbsp; </span><span class="kwd">return</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"> <br>&nbsp; &nbsp; </span><span class="pun">}</span><span class="pln"> <br><br>&nbsp; &nbsp; </span><span class="kwd">var</span><span class="pln"> re </span><span class="pun">=</span><span class="pln"> el</span><span class="pun">.</span><span class="pln">createTextRange</span><span class="pun">(),</span><span class="pln"> <br>&nbsp; &nbsp; rc </span><span class="pun">=</span><span class="pln"> re</span><span class="pun">.</span><span class="pln">duplicate</span><span class="pun">();</span><span class="pln"> <br>&nbsp; &nbsp; re</span><span class="pun">.</span><span class="pln">moveToBookmark</span><span class="pun">(</span><span class="pln">r</span><span class="pun">.</span><span class="pln">getBookmark</span><span class="pun">());</span><span class="pln"> <br>&nbsp; &nbsp; rc</span><span class="pun">.</span><span class="pln">setEndPoint</span><span class="pun">(</span><span class="str">'EndToStart'</span><span class="pun">,</span><span class="pln"> re</span><span class="pun">);</span><span class="pln"> <br><br>&nbsp; &nbsp; </span><span class="kwd">var</span><span class="pln"> add_newlines </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> i</span><span class="pun">=</span><span class="lit">0</span><span class="pun">;</span><span class="pln"> i</span><span class="pun">&lt;</span><span class="pln">rc</span><span class="pun">.</span><span class="pln">text</span><span class="pun">.</span><span class="pln">length</span><span class="pun">;</span><span class="pln"> i</span><span class="pun">++)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">rc</span><span class="pun">.</span><span class="pln">text</span><span class="pun">.</span><span class="pln">substr</span><span class="pun">(</span><span class="pln">i</span><span class="pun">,</span><span class="pln"> </span><span class="lit">2</span><span class="pun">)</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> </span><span class="str">'\r\n'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; add_newlines </span><span class="pun">+=</span><span class="pln"> </span><span class="lit">2</span><span class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; i</span><span class="pun">++;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; </span><span class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; </span><span class="pun">}</span><span class="pln"><br><br>&nbsp; &nbsp; </span><span class="kwd">return</span><span class="pln"> rc</span><span class="pun">.</span><span class="pln">text</span><span class="pun">.</span><span class="pln">length </span><span class="pun">+</span><span class="pln"> add_newlines</span><span class="pun">;</span><span class="pln"> <br>&nbsp; </span><span class="pun">}</span><span class="pln"> &nbsp;<br>&nbsp; </span><span class="kwd">return</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"> <br></span><span class="pun">}</span><span class="pln"><br></span></code></pre>
+</div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+        <div class="post-menu"><a href="http://stackoverflow.com/a/2735606" title="short permalink to this answer" id="link-post-2735606">link</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/2735606/edit">improve this answer</a></div>
+    </td>
+            
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info"><div class="user-action-time">answered <span title="2010-04-29 07:58:07Z" class="relativetime">Apr 29 '10 at 7:58</span></div><div class="user-gravatar32"><a href="http://stackoverflow.com/users/328628/mark"><div class=""><img src="how-to-get-cursor-position-in-textarea_files/cb9f448ad986420284987f7264827b3b.png" alt=""></div></a></div><div class="user-details"><a href="http://stackoverflow.com/users/328628/mark">mark</a><br><span class="reputation-score" title="reputation score">11</span><span title="1 bronze badge"><span class="badge3"></span><span class="badgecount">1</span></span></div></div>
+    </td>
+    </tr>
+    </tbody></table>
+</td>        </tr>
+
+
+<tr>
+<td class="votecell"></td>
+<td>
+    <div id="comments-2735606" class="comments dno">
+        <table>
+        <tbody>
+        
+            <tr><td></td><td></td></tr>
+        
+        </tbody>
+    
+        </table>
+    </div>
+    
+    
+    <div class="was-this-helpful">
+        feedback
+    </div>
+    
+</td>
+</tr>    </tbody></table>
+</div>
+
+  
+    <a name="2333148"></a>
+    <div id="answer-2333148" class="answer downvoted-answer">
+        <table>
+        <tbody><tr>
+        <td class="votecell">
+            
+<div class="vote">
+    <input value="2333148" type="hidden">
+    <a class="vote-up-off" title="This answer is useful (click again to undo)">up vote</a>
+    <span class="vote-count-post">-3</span>
+    <a class="vote-down-off" title="This answer is not useful (click again to undo)">down vote</a>
+
+</div>
+
+        </td>
+
+
+<td class="answercell">
+    <div class="post-text"><pre class="default prettyprint"><code><span class="pln">textBox1</span><span class="pun">.</span><span class="typ">Text</span><span class="pun">.</span><span class="typ">Substring</span><span class="pun">(</span><span class="lit">0</span><span class="pun">,</span><span class="pln"> textBox1</span><span class="pun">.</span><span class="typ">SelectionStart</span><span class="pun">).</span><span class="typ">Length</span><span class="pln"><br></span></code></pre>
+
+<p>Hope the above line gives your answer.</p>
+</div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+        <div class="post-menu"><a href="http://stackoverflow.com/a/2333148" title="short permalink to this answer" id="link-post-2333148">link</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/2333148/edit">improve this answer</a></div>
+    </td>
+    <td class="post-signature" align="right">
+<div class="user-info"><div class="user-action-time">edited <a href="http://stackoverflow.com/posts/2333148/revisions" title="show all edits to this post"><span title="2010-02-25 11:43:43Z" class="relativetime">Feb 25 '10 at 11:43</span></a></div><div class="user-gravatar32"></div><div class="user-details"><br></div></div>    </td>
+            
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info"><div class="user-details"><span class="community-wiki" title="This post is community owned as of Feb 25 '10 at 10:06. Votes do not generate reputation, and it can be edited by users with 100 rep">community wiki</span></div><br><div class="user-details"><a id="history-2333148" href="http://stackoverflow.com/posts/2333148/revisions" title="show revision history for this post">2 revs, 2 users 50%<br>Samir</a></div></div>
+    </td>
+    </tr>
+    </tbody></table>
+</td>        </tr>
+
+
+<tr>
+<td class="votecell"></td>
+<td>
+    <div id="comments-2333148" class="comments">
+        <table>
+        <tbody>
+                    
+    <tr id="comment-7739691" class="comment">
+        <td></td>
+        <td class="comment-text"><div><span class="comment-copy">What language is this?</span> –&nbsp;<a href="http://stackoverflow.com/users/514749/pimvdb" title="23872 reputation" class="comment-user">pimvdb</a> <span class="comment-date"><span title="2011-07-03 21:25:37Z">Jul 3 at 21:25</span></span></div></td>
+    </tr>
+
+        </tbody>
+    
+        </table>
+    </div>
+    
+    
+    <div class="was-this-helpful">
+        feedback
+    </div>
+    
+</td>
+</tr>    </tbody></table>
+</div>
+    <a name="new-answer"></a>
+    <form id="post-form" action="/questions/263743/answer/submit" method="post" class="post-form">
+        <h2 class="space">Your Answer</h2>
+       
+
+<script type="text/javascript">
+    StackExchange.ready(function() {
+    
+        initTagRenderer("".split(" "), "".split(" "));
+
+              
+            prepareEditor({
+                
+                heartbeatType: 'answer',
+                bindNavPrevention: true,
+                postfix: "",
+                onDemand: true                ,immediatelyShowMarkdownHelp:true
+            });
+            
+    });  
+</script>
+
+
+<div id="post-editor" class="post-editor">  
+
+    
+    <div class="wmd-container">
+        <div id="wmd-button-bar" class="wmd-button-bar"><ul id="wmd-button-row" class="wmd-button-row"><li style="left: 0px;" class="wmd-button" id="wmd-bold-button"><span style="background-position: 0px -20px;"></span></li><li style="left: 25px;" class="wmd-button" id="wmd-italic-button"><span style="background-position: -20px -20px;"></span></li><li style="left: 50px;" class="wmd-spacer" id="wmd-spacer1"><span style="background-position: -40px -20px;"></span></li><li style="left: 75px;" class="wmd-button" id="wmd-link-button"><span style="background-position: -40px -20px;"></span></li><li style="left: 100px;" class="wmd-button" id="wmd-quote-button"><span style="background-position: -60px -20px;"></span></li><li style="left: 125px;" class="wmd-button" id="wmd-code-button"><span style="background-position: -80px -20px;"></span></li><li style="left: 150px;" class="wmd-button" id="wmd-image-button"><span style="background-position: -100px -20px;"></span></li><li style="left: 175px;" class="wmd-spacer" id="wmd-spacer2"><span style="background-position: -120px -20px;"></span></li><li style="left: 200px;" class="wmd-button" id="wmd-olist-button"><span style="background-position: -120px -20px;"></span></li><li style="left: 225px;" class="wmd-button" id="wmd-ulist-button"><span style="background-position: -140px -20px;"></span></li><li style="left: 250px;" class="wmd-button" id="wmd-heading-button"><span style="background-position: -160px -20px;"></span></li><li style="left: 275px;" class="wmd-button" id="wmd-hr-button"><span style="background-position: -180px -20px;"></span></li><li style="left: 300px;" class="wmd-spacer" id="wmd-spacer3"><span style="background-position: -200px -20px;"></span></li><li style="left: 325px;" class="wmd-button" id="wmd-undo-button"><span style="background-position: -200px -20px;"></span></li><li style="left: 350px;" class="wmd-button" id="wmd-redo-button"><span style="background-position: -220px -20px;"></span></li></ul></div>
+        <textarea id="wmd-input" class="wmd-input" name="post-text" cols="92" rows="15" tabindex="101"></textarea>
+    </div>
+
+    <div class="fl" style="margin-top: 8px; height:24px;">&nbsp;</div>
+    <div id="draft-saved" class="draft-saved community-option fl" style="margin-top: 8px; height:24px; display:none;">draft saved</div>
+
+
+
+    <div id="wmd-preview" class="wmd-preview"></div>
+    <div></div>
+    <div class="edit-block">
+        <input id="fkey" name="fkey" value="07d3cecdb72f065ed6afc163ac90c349" type="hidden">
+        <input id="author" name="author" type="text">
+    </div>
+</div>   
+    <div class="form-item">
+        <table>
+        <tbody><tr>
+        <td class="vm open-id-login">
+            <a id="login-link" style="font-size: 200%; margin-left: 30px;" href="http://stackoverflow.com/users/login?returnurl=%2fquestions%2f263743%2fhow-to-get-cursor-position-in-textarea">log in</a>
+            <script type="text/javascript">
+                StackExchange.ready(function () {
+                    StackExchange.helpers.onClickDraftSave('#login-link');
+                });
+            </script>
+        </td>
+
+    
+        <td class="orcell">
+            <div class="orword">or</div>
+            <div class="orline"></div>
+        </td>
+        <td class="vm">
+            <div>
+                <label for="display-name">Name</label>
+                <input id="display-name" name="display-name" size="30" maxlength="30" tabindex="105" type="text">
+            </div>
+            <div>
+                <label for="m-address">Email</label>
+                <input id="m-address" name="m-address" size="40" maxlength="100" tabindex="106" type="text">
+                <span class="edit-field-overlay">required, but never shown</span>
+            </div>
+            <div>
+                <label for="home-page">Home Page</label>
+                <input id="home-page" name="home-page" size="40" maxlength="200" tabindex="107" type="text">
+            </div>
+        </td>
+    
+        </tr>
+        </tbody></table>
+    </div>
+               
+        <div class="form-submit cbt"><input id="submit-button" value="Post Your Answer" tabindex="110" type="submit"></div>
+    </form>
+
+
+        <h2 class="bottom-notice">
+                Not the answer you're looking for? 
+            Browse other questions tagged <a href="http://stackoverflow.com/questions/tagged/javascript" class="post-tag" title="show questions tagged 'javascript'" rel="tag">javascript</a> <a href="http://stackoverflow.com/questions/tagged/textarea" class="post-tag" title="show questions tagged 'textarea'" rel="tag">textarea</a> <a href="http://stackoverflow.com/questions/tagged/cursor" class="post-tag" title="show questions tagged 'cursor'" rel="tag">cursor</a> 
+                or <a href="http://stackoverflow.com/questions/ask">ask your own question</a>.
+        </h2>
+</div>
+</div>
+<div id="sidebar">
+
+
+
+    <div class="module newuser newuser-greeting" style="">
+        <h4>Hello World!</h4>
+        <div>
+            <p></p><p>This is a collaboratively edited question and answer site for <b>professional and enthusiast programmers</b>. It's 100% free, no registration required.</p><p></p>
+            <p class="ar"><a href="http://stackoverflow.com/about">about »</a>&nbsp;&nbsp;&nbsp;<a href="http://stackoverflow.com/faq">faq »</a>
+            </p>
+        </div>
+    </div>
+    <div class="module">
+        <p class="label-key">tagged</p>
+        <div class="tagged"><a href="http://stackoverflow.com/questions/tagged/javascript" class="post-tag" title="show questions tagged 'javascript'" rel="tag">javascript</a>&nbsp;<span class="item-multiplier">×&nbsp;156246</span><br>
+<a href="http://stackoverflow.com/questions/tagged/cursor" class="post-tag" title="show questions tagged 'cursor'" rel="tag">cursor</a>&nbsp;<span class="item-multiplier">×&nbsp;1424</span><br>
+<a href="http://stackoverflow.com/questions/tagged/textarea" class="post-tag" title="show questions tagged 'textarea'" rel="tag">textarea</a>&nbsp;<span class="item-multiplier">×&nbsp;1285</span><br>
+</div>
+        <table id="qinfo">
+            <tbody><tr>
+                <td><p class="label-key">asked</p></td>
+                <td style="padding-left: 10px;"><p class="label-key" title="2008-11-04 22:36:52Z"><b>3 years ago</b></p></td>
+            </tr>
+            <tr>
+                <td><p class="label-key">viewed</p></td>
+
+                <td style="padding-left: 10px;"><p class="label-key"><b>38,092 times</b></p></td>
+            </tr>
+            <tr>
+                <td><p class="label-key">active</p></td>
+                <td style="padding-left: 10px;"><p class="label-key"><b><a href="http://stackoverflow.com/questions/263743/how-to-get-cursor-position-in-textarea?lastactivity" class="lastactivity-link" title="2011-10-27 23:21:48Z">1 month ago</a></b></p></td>
+            </tr>
+        </tbody></table>
+    </div>
+    
+        <script type="text/javascript">
+            var scriptSrc = "http://engine2.adzerk.net/z/8277/adzerk1_2_4_43,adzerk2_2_17_45,adzerk3_2_4_44?keywords=javascript,textarea,cursor";
+            if (document.referrer) {
+                if (/\?/.test(scriptSrc))
+                    scriptSrc += "&";
+                else
+                    scriptSrc += "?";
+                scriptSrc += "xReferrer=" + document.referrer;
+            }
+            var z = document.createElement("script"); z.type = "text/javascript"; z.async = true; z.src = scriptSrc; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(z, s);
+        </script>
+    
+    <div class="everyonelovesstackoverflow" id="adzerk2"><div id="beta-ad-container" style="height: 250px; width: 220px;">
+<style type="text/css">
+#beta-ad { width: 220px; height: 250px; text-align: center; color: #326ab3; border-top: 1px solid #b4cfea; overflow: hidden; font-family: 'Arial Narrow', Helvetica, Arial, sans-serif !important; }
+#beta-ad a, #beta-ad a:visited, #beta-ad a:active { text-decoration: none; color: #326ab3; }
+#beta-ad { background: url(http://cdn.sstatic.net/stackexchange/Img/bg-ad.png?1) no-repeat bottom center; }
+#beta-ad-inner { height: 190px; padding: 0px 10px 20px 10px; width: 200px; overflow: hidden; }
+#beta-ad-top a { height: 22px; padding: 5px; font-size: 16px; line-height: 22px; display: block; background-color: #113769; color: #FFF !important; }
+#beta-ad-mid { height: 178px; display:table-cell; vertical-align: middle; }
+#beta-ad-mid #beta-ad-que, #beta-ad-mid #beta-ad-que:visited, #beta-ad-mid #beta-ad-que:active { font-size: 22px; line-height: 26px; font-weight: bold; color: #ab2020;  }
+#beta-ad-own { float: right; margin-top: 5px; font-size: 15px; line-height: 15px; }
+#beta-ad-own a { height: 20px; }
+#beta-ad-bot { height: 25px; font-size: 14px; overflow: hidden; }
+#beta-ad-ans { margin-right: 8px; }
+.beta-ad-tag { background-color: #F2F2F2; border-bottom: 1px solid #D0D0D0; border-right: 1px solid #D0D0D0; padding: 2px 4px; margin-left: 2px; line-height: 25px; }
+</style>
+
+<div id="beta-ad">
+    <div id="beta-ad-top"><a href="http://engine.adzerk.net/redirect/0/2663/2841/8277/473cb16e4afd448cba0a1709de5c4d32/45/1178/11718/634593384301910870?keywords=javascript%2ctextarea%2ccursor&amp;url=http%3A%2F%2Fhistory.stackexchange.com%2F">history.stackexchange.com</a></div>
+    <div id="beta-ad-inner">
+        <div id="beta-ad-mid">
+            <a id="beta-ad-que" href="http://engine.adzerk.net/redirect/0/2663/2841/8277/473cb16e4afd448cba0a1709de5c4d32/45/1178/11718/634593384301910870?keywords=javascript%2ctextarea%2ccursor&amp;url=http%3A%2F%2Fhistory.stackexchange.com%2Fquestions%2F951%2Fwhy-and-when-did-agriculture-loose-its-prestige">Why and when did agriculture loose its prestige?</a><br>
+            <div id="beta-ad-own">– <a href="http://engine.adzerk.net/redirect/0/2663/2841/8277/473cb16e4afd448cba0a1709de5c4d32/45/1178/11718/634593384301910870?keywords=javascript%2ctextarea%2ccursor&amp;url=http%3A%2F%2Fhistory.stackexchange.com%2Fusers%2F113%2Fdavid">David</a></div>
+        </div>
+        <div id="beta-ad-bot"><a id="beta-ad-ans" href="http://engine.adzerk.net/redirect/0/2663/2841/8277/473cb16e4afd448cba0a1709de5c4d32/45/1178/11718/634593384301910870?keywords=javascript%2ctextarea%2ccursor&amp;url=http%3A%2F%2Fhistory.stackexchange.com%2Fquestions%2F951%2Fwhy-and-when-did-agriculture-loose-its-prestige%23tab-top">1 answer</a> <a class="beta-ad-tag" href="http://engine.adzerk.net/redirect/0/2663/2841/8277/473cb16e4afd448cba0a1709de5c4d32/45/1178/11718/634593384301910870?keywords=javascript%2ctextarea%2ccursor&amp;url=http%3A%2F%2Fhistory.stackexchange.com%2Fquestions%2Ftagged%2Fordinary-people">ordinary-people</a> </div>
+    </div>
+</div>
+
+
+</div><script type="text/javascript">window._betaAdUrl = "http://engine.adzerk.net/redirect/0/2663/2841/8277/473cb16e4afd448cba0a1709de5c4d32/45/1178/11718/634593384301910870?keywords=javascript%2ctextarea%2ccursor";</script><script src="how-to-get-cursor-position-in-textarea_files/js" type="text/javascript"></script></div>
+
+    
+    <div>
+        <script type="text/javascript">
+            var careers_adurl="http://careers.stackoverflow.com/ad/js",careers_cssurl="http://cdn.sstatic.net/careers/ads/sidebar.min.css?33df70",careers_leaderboardcssurl="http://cdn.sstatic.net/careers/ads/ninja.min.css?33cf39",careers_companycssurl="http://cdn.sstatic.net/careers/ads/company";(function(){var b="min-height:220px;margin:15px 0",c=$("<div>").addClass("hireme").attr("style",b),a=$("<div>").html(c);document.write(a.html());$.ajax({url:"http://cdn.sstatic.net/careers/ads/adloader.min.js?33df70",dataType:"script",cache:true})})();
+        </script>
+    </div>
+
+    
+<div class="module" id="chat-feature">
+
+
+
+<h4><a title="18 users active in 8 rooms the last 60 minutes" href="http://chat.stackoverflow.com/" id="h-chat-link">18 People Chatting</a></h4>
+
+
+<div class="related" id="ad502-rooms"><div class="ad502-room"><h3 class="ad502-room-h3"><span class="ad502-room-title" title="JavaScript"><a href="http://chat.stackoverflow.com/rooms/17">JavaScript</a></span></h3><span title="2011-12-13 01:57:18Z" class="ad502-last-message">3 mins ago - <a href="http://chat.stackoverflow.com/users/419970">Raynos</a></span><br><div class="ad502-users"><img src="how-to-get-cursor-position-in-textarea_files/17.jpeg"></div></div><div class="ad502-room"><h3 class="ad502-room-h3"><span class="ad502-room-title" title="Node.js"><a href="http://chat.stackoverflow.com/rooms/642">Node.js</a></span></h3><span title="2011-12-12 21:49:04Z" class="ad502-last-message">4 hours ago - <a href="http://chat.stackoverflow.com/users/419970">Raynos</a></span><br><div class="ad502-users"><img src="how-to-get-cursor-position-in-textarea_files/642.jpeg"></div></div></div>
+
+<script type="text/javascript">
+// <!--
+    
+    StackExchange.ready(
+    function () {
+        var options = {
+            chatUrl: 'http://chat.stackoverflow.com',
+            reloadUrl: '/api/recent-chat',
+            preloadData: null,tagBased:true
+        };
+
+        StackExchange.chatAd.init(options);
+    });
+// -->
+</script>
+
+
+
+</div>  
+
+    <div class="module">
+    <h4 id="h-linked">Linked</h4>
+    <div class="linked">
+    <div class="spacer">
+<a href="http://stackoverflow.com/questions/2599020/what-are-the-typical-reasons-javascript-developed-on-firefox-fails-on-ie" class="question-hyperlink">What are the typical reasons Javascript developed on Firefox fails on IE?</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/235411/is-there-an-internet-explorer-approved-substitute-for-selectionstart-and-selecti" class="question-hyperlink">Is there an Internet Explorer approved substitute for selectionStart and selectionEnd?</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/6140632/how-to-handle-tab-in-textarea" class="question-hyperlink">How to handle &lt;tab&gt; in textarea?</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/2897155/get-caret-position-within-an-text-input-field" class="question-hyperlink">Get Caret Position within an Text Input field</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/164147/character-offset-in-an-internet-explorer-textrange" class="question-hyperlink">Character offset in an Internet Explorer TextRange</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/3053542/how-to-get-the-start-and-end-points-of-selection-in-text-area" class="question-hyperlink">How to get the start and end points of selection in text area?</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/3622818/ies-document-selection-createrange-doesnt-include-leading-or-trailing-blank-li" class="question-hyperlink">IE's document.selection.createRange doesn't include leading or trailing blank lines</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/6014702/how-do-i-detect-shiftenter-and-generate-a-new-line-in-textarea" class="question-hyperlink">How do I detect “shift+enter” and generate a new line in Textarea?</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/2628323/textarea-selectionstart-in-ie" class="question-hyperlink">textarea.selectionStart in IE</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/4207191/how-to-add-a-prototype-for-a-input-element" class="question-hyperlink">How to add a prototype for a input element?</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/3372449/html-designmode-move-cursor-programmatically-using-default-keypress-handlers" class="question-hyperlink">HTML designMode, move cursor programmatically using default keypress handlers</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/2362575/jquery-inserting-code-under-cursor-by-clicking-on-image" class="question-hyperlink">jQuery inserting code under cursor by clicking on image</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/3274843/get-caret-position-in-textarea-ie" class="question-hyperlink">Get caret position in textarea (IE)</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/3510009/textarea-caret-coordinates-jquery" class="question-hyperlink">TextArea Caret Coordinates jQuery</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/5455104/adding-br-to-the-text-box-when-user-press-enter-key-in-jquery" class="question-hyperlink">adding &lt;br/&gt; to the text-box when user press enter key in jquery</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/4185821/is-it-possible-to-programmatically-detect-the-caret-position-within-a-input-typ" class="question-hyperlink">Is it possible to programmatically detect the caret position within a &lt;input type=text&gt; element?</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/3084708/remove-the-last-n-from-a-textarea" class="question-hyperlink">Remove the last “/n” from a textarea</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/2917074/insert-into-textarea-javascript" class="question-hyperlink">Insert into textarea | JavaScript</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/3828548/ie6-input-box-doesnt-work-how-to-fix" class="question-hyperlink">IE6 input box doesn't work, how to fix?</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/6404986/how-do-i-get-normal-attributes-of-an-element-when-selected-with-jquery" class="question-hyperlink">How do I get normal attributes of an element when selected with jQuery?</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/4280759/how-to-disable-textarea-one-line-not-all-line-using-javascript" class="question-hyperlink">how to disable textarea one line , not all line using javascript</a>
+</div>
+<div class="spacer more">
+<a href="http://stackoverflow.com/search?q=url%3a%22http%3a%2f%2fstackoverflow.com%2fquestions%2f263743%2f*%22">see more linked questions…</a></div>
+
+    </div>
+    </div>
+    <div class="module">
+    <h4 id="h-related">Related</h4>
+    <div class="related">
+    <div class="spacer">
+<a href="http://stackoverflow.com/questions/341233/getting-cursor-position-in-a-textarea" class="question-hyperlink">Getting cursor position in a Textarea</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/637287/how-can-you-move-the-cursor-to-the-last-position-of-a-textarea-in-javascript" class="question-hyperlink">How can you move the cursor to the last position of a textarea in Javascript?</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/787874/how-can-i-find-the-word-in-that-the-cursor-is-located" class="question-hyperlink">how can I find the Word in that the cursor is located</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/1004163/flex-how-to-tell-if-textarea-has-blinking-cursor" class="question-hyperlink">Flex: How to tell if TextArea has blinking cursor</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/1891444/how-can-i-get-cursor-position-in-a-textarea" class="question-hyperlink">how can i get cursor position in a textarea?</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/2570207/how-to-find-absolute-x-y-cursor-potision-in-textarea" class="question-hyperlink">How to find absolute (X,Y) cursor potision in textarea?</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/2575037/how-to-get-the-cursor-position-in-bash" class="question-hyperlink">How to get the cursor position in bash?</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/2646787/why-jquery-animate-on-a-textarea-make-the-blinking-cursor-disapears" class="question-hyperlink">Why jquery.animate on a textarea make the blinking cursor disapears?</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/2830713/set-focus-and-carret-position-in-textarea-according-to-mouse-position-as-if-use" class="question-hyperlink">Set focus and carret position in textarea according to mouse position, as if user had clicked</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/2854643/use-javascript-to-place-cursor-in-a-chrome-text-input-element" class="question-hyperlink">Use JavaScript to place cursor in a Chrome text input element</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/3308292/inserting-text-at-cursor-in-a-textarea-with-javascript" class="question-hyperlink">Inserting text at cursor in a textarea, with Javascript</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/3356770/need-cursor-at-beginning-of-text-in-textarea" class="question-hyperlink">Need cursor at beginning of text in textarea</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/4288272/how-to-get-text-cursor-position-using-javascript" class="question-hyperlink">How to get text cursor position using javascript</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/5140637/javascript-how-to-get-line-col-caret-position-in-textarea" class="question-hyperlink">Javascript: how to get line/col caret position in textarea?</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/5752147/jquery-get-textarea-cursor-caret-x-y-position-and-show-a-div-underneath" class="question-hyperlink">jQuery get textarea cursor/caret X,Y position and show a DIV underneath</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/6003300/how-to-place-cursor-at-end-of-text-in-textarea-when-tabbed-into" class="question-hyperlink">How to place cursor at end of text in textarea when tabbed into</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/6876395/embed-some-text-at-the-point-of-the-cursor-in-an-html-form" class="question-hyperlink">embed some text at the point of the cursor in an html form</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/6899047/why-does-ie-8-make-the-cursor-jump-to-the-end-of-the-textarea-for-this-js" class="question-hyperlink">Why does IE 8 make the cursor jump to the end of the textarea for this JS?</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/6953037/how-can-i-find-the-cursor-location-x-y-not-line-column-in-an-html-textarea" class="question-hyperlink">How can I find the cursor location (X/Y, not line/column) in an HTML textarea?</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/7050460/html-textarea-cursor-starting-in-center-of-textarea-rather-than-top" class="question-hyperlink">HTML Textarea - cursor starting in center of textarea rather than top</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/7552099/javascript-insert-image-tag-at-the-position-of-the-cursor-in-the-textarea" class="question-hyperlink">Javascript - insert image tag at the position of the cursor in the textarea</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/7624290/how-to-get-word-under-current-cursor-position-in-textarea-in-flex-4" class="question-hyperlink">How to get word under current cursor position in textarea in flex 4</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/7745867/how-do-you-get-the-cursor-position-in-a-textarea" class="question-hyperlink">How do you get the cursor position in a textarea?</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/7962360/getting-a-certain-character-closest-from-cursor-in-a-textarea" class="question-hyperlink">Getting a certain character closest from cursor in a textarea</a>
+</div>
+<div class="spacer">
+<a href="http://stackoverflow.com/questions/7996407/asp-net-html-textarea-cursor-position-when-using-cursors" class="question-hyperlink">ASP.NET / HTML - textarea cursor position when using cursors</a>
+</div>
+
+    </div>
+    </div>
+</div>
+
+<div id="feed-link">
+    <div id="feed-link-text"><a href="http://stackoverflow.com/feeds/question/263743" title="feed of this question and its answers"><span class="feed-icon"></span>question feed</a></div>
+</div>
+<script type="text/javascript" src="how-to-get-cursor-position-in-textarea_files/f5a8.asc"></script>
+<noscript>
+    <div><img src="/posts/263743/ivc/f5a8" class="dno" alt=""></div>
+</noscript>
+<div style="display:none" id="prettify-lang">default</div>
+        </div>
+    </div>
+    <div id="footer">
+        <div class="footerwrap">
+            <div id="footer-menu">
+                <a href="http://stackoverflow.com/about">about</a> |
+                <a href="http://stackoverflow.com/faq">faq</a> |
+                
+                    <span onclick="if(window.localStorage){localStorage.setItem('blog-new',1323787709000); $('.new-blog-post').fadeOut();}">
+                        <script type="text/javascript">if(!window.localStorage || new Date(+localStorage.getItem('blog-new'))<new Date())document.write('<span title="Protect intellectual property &amp;#8211; but not like this, by Abby T. Miller - 11 hours ago" class="new-blog-post">new<\/span>');</script><span title="Protect intellectual property &amp;#8211; but not like this, by Abby T. Miller - 11 hours ago" class="new-blog-post">new</span>
+                        <a href="http://blog.stackexchange.com/">blog</a>
+                    </span> |
+                    <a href="http://chat.stackoverflow.com/">chat</a> |
+                <a href="http://data.stackexchange.com/">data</a> |
+                <a href="http://blog.stackoverflow.com/category/podcasts/">podcast</a> |
+                <a href="http://shop.stackexchange.com/">shop</a> |
+                <a href="http://stackexchange.com/legal">legal</a> |
+                <a href="http://engine.adzerk.net/redirect/0/2776/2751/0/4de3c60f719c4dfcb1a57531c7050090/0">advertising info</a> |
+
+                <a onclick="StackExchange.switchMobile('on', '/questions/263743/how-to-get-cursor-position-in-textarea')">mobile</a> |
+
+                <b><a href="mailto:team@stackoverflow.com">contact us</a></b>
+                  | <b><a href="http://meta.stackoverflow.com/">feedback</a></b>
+                <div id="footer-sites">
+                    
+                        <span style="color:#FE7A15;font-size:140%">■</span>&nbsp;<a href="http://stackoverflow.com/">stackoverflow.com</a>&nbsp; 
+                        <span style="color:#FE7A15;font-size:140%">■</span>&nbsp;<a href="http://stackapps.com/">api/apps</a>&nbsp; 
+                        <span style="color:#FE7A15;font-size:140%">■</span>&nbsp;<a href="http://careers.stackoverflow.com/">careers</a>&nbsp; 
+                        <span style="color:#E8272C;font-size:140%">■</span>&nbsp;<a href="http://serverfault.com/">serverfault.com</a>&nbsp; 
+                        <span style="color:#00AFEF;font-size:140%">■</span>&nbsp;<a href="http://superuser.com/">superuser.com</a>&nbsp; 
+                        <span style="color:#969696;font-size:140%">■</span>&nbsp;<a href="http://meta.stackoverflow.com/">meta</a>&nbsp; 
+                        <span style="color:#46937D;font-size:140%">■</span>&nbsp;<a href="http://area51.stackexchange.com/">area&nbsp;51</a>&nbsp; 
+                        <span style="color:#C0D0DC;font-size:140%">■</span>&nbsp;<a href="http://webapps.stackexchange.com/">webapps</a>&nbsp; 
+                        <span style="color:#000000;font-size:140%">■</span>&nbsp;<a href="http://gaming.stackexchange.com/">gaming</a>&nbsp; 
+                        <span style="color:#dd4814;font-size:140%">■</span>&nbsp;<a href="http://askubuntu.com/">ubuntu</a>&nbsp; 
+                        <span style="color:#9ce4fe;font-size:140%">■</span>&nbsp;<a href="http://webmasters.stackexchange.com/">webmasters</a>&nbsp; 
+                        <span style="color:#cf4d3f;font-size:140%">■</span>&nbsp;<a href="http://cooking.stackexchange.com/">cooking</a>&nbsp; 
+                        <span style="color:#f4f28d;font-size:140%">■</span>&nbsp;<a href="http://gamedev.stackexchange.com/">game development</a>&nbsp; 
+                        <span style="color:#0f3559;font-size:140%">■</span>&nbsp;<a href="http://math.stackexchange.com/">math</a>&nbsp; 
+                        <span style="color:#f2f2f2;font-size:140%">■</span>&nbsp;<a href="http://photo.stackexchange.com/">photography</a>&nbsp; 
+                        <span style="color:#037187;font-size:140%">■</span>&nbsp;<a href="http://stats.stackexchange.com/">stats</a>&nbsp; 
+                        <span style="color:#f1e7cc;font-size:140%">■</span>&nbsp;<a href="http://tex.stackexchange.com/">tex</a>&nbsp; 
+                        <span style="color:#e1cdae;font-size:140%">■</span>&nbsp;<a href="http://english.stackexchange.com/">english</a>&nbsp; 
+                        <span style="color:#a2d9f6;font-size:140%">■</span>&nbsp;<a href="http://cstheory.stackexchange.com/">theoretical cs</a>&nbsp; 
+                        <span style="color:#1b3e6c;font-size:140%">■</span>&nbsp;<a href="http://programmers.stackexchange.com/">programmers</a>&nbsp; 
+                        <span style="color:#293a5d;font-size:140%">■</span>&nbsp;<a href="http://unix.stackexchange.com/">unix</a>&nbsp;
+                        <span style="color:#bec0cb;font-size:140%">■</span>&nbsp;<a href="http://apple.stackexchange.com/">apple</a>&nbsp;
+                        <span style="color:#939185;font-size:140%">■</span>&nbsp;<a href="http://wordpress.stackexchange.com/">wordpress</a>&nbsp;
+                        <span style="color:#b5cda4;font-size:140%">■</span>&nbsp;<a href="http://physics.stackexchange.com/">physics</a>&nbsp;
+                        <span style="color:#4176ab;font-size:140%">■</span>&nbsp;<a href="http://diy.stackexchange.com/">home&nbsp;improvement</a>&nbsp;
+                        <span style="color:#d1d8d7;font-size:140%">■</span>&nbsp;<a href="http://gis.stackexchange.com/">gis</a>&nbsp;
+                        <span style="color:#e5e2d3;font-size:140%">■</span>&nbsp;<a href="http://electronics.stackexchange.com/">electronics</a>&nbsp;
+                        <span style="color:#a4c639;font-size:140%">■</span>&nbsp;<a href="http://android.stackexchange.com/">android</a>&nbsp;
+                        <span style="color:#2e4e60;font-size:140%">■</span>&nbsp;<a href="http://security.stackexchange.com/">security</a>&nbsp;
+                        <span style="color:#45bcb5;font-size:140%">■</span>&nbsp;<a href="http://bicycles.stackexchange.com/">bicycles</a>&nbsp;
+                        <span style="color:#00adee;font-size:140%">■</span>&nbsp;<a href="http://dba.stackexchange.com/">dba</a>&nbsp;
+                        <span style="color:#2edaf0;font-size:140%">■</span>&nbsp;<a href="http://drupal.stackexchange.com/">drupal</a>&nbsp;
+                        <span style="color:#213951;font-size:140%">■</span>&nbsp;<a href="http://sharepoint.stackexchange.com/">sharepoint</a>&nbsp;
+                </div>
+            </div>
+            <div id="footer-flair">
+                <a class="peer1" href="http://www.peer1.com/stackoverflow"></a>  
+	            <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="cc-wiki-link"></a>
+                <div id="svnrev">rev 2011.12.13.1</div>
+            </div>
+            <div id="copyright">
+                site design / logo © 2011 stack exchange inc; 
+                user contributions licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license">cc-wiki</a> with <a href="http://blog.stackoverflow.com/2009/06/attribution-required/" rel="license">attribution required</a>
+            </div>
+            
+
+        </div>
+    </div>
+    
+    <noscript>
+        <div id="noscript-warning">Stack Overflow works best with JavaScript enabled<img src="http://pixel.quantserve.com/pixel/p-c1rF4kxgLUzNc.gif" alt="" class="dno"></div>
+    </noscript>
+    
+    <script type="text/javascript">var _gaq=_gaq||[];_gaq.push(['_setAccount','UA-5620270-1']);_gaq.push(['_trackPageview']);(function(){var ga=document.createElement('script');ga.type='text/javascript';ga.async=true;ga.src='http://www.google-analytics.com/ga.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(ga,s);})();_qoptions={qacct:"p-c1rF4kxgLUzNc"};</script>
+    <script type="text/javascript" src="how-to-get-cursor-position-in-textarea_files/quant.js"></script>
+    
+
+
+</body></html>
