@@ -281,7 +281,7 @@
         $('#rendered_doremi_script').html(to_html(composition_data));
         $('#lilypond_source').text(composition_data.lilypond);
         $('#musicxml_source').text(composition_data.musicxml);
-        adjust_slurs_in_dom();
+        dom_fixes();
         return canvas = $("#rendered_in_staff_notation")[0];
       } catch (err) {
         window.parse_errors = window.parse_errors + "\n" + err;
