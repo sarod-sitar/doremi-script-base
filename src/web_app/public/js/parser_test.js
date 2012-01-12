@@ -11,7 +11,7 @@
     _ = require("underscore")._;
   }
   require('./doremi_script_parser.js');
-  sys = require('sys');
+  sys = require('util');
   utils = require('./tree_iterators.js');
   _.mixin(_console.toObject());
   _.mixin({
@@ -217,6 +217,18 @@
     composition = test_parses(str, test);
     return test.done();
   };
+  exports.test_stray_right_slur_doesnt_parse = function(test) {
+    var composition, str;
+    str = '| (S  R  )\n  .\n';
+    composition = should_not_parse(str, test);
+    return test.done();
+  };
+  exports.test_stray_left_slur_doesnt_parse = function(test) {
+    var composition, str;
+    str = '| ( S  R)\n  .\n';
+    composition = should_not_parse(str, test);
+    return test.done();
+  };
   exports.test_recognizes_slurs = function(test) {
     var composition, str;
     str = '| (S  R)\n .\n';
@@ -388,7 +400,7 @@
     composition = test_parses(str, test);
     first_sargam_source = str.split('\n')[6];
     line = first_sargam_line(composition);
-    test.equal(line.source, first_sargam_source, "sanity check, expected first line's source to be " + first_sargam_source);
+    test.ok(line.source.indexOf(first_sargam_source) > -1, "sanity check, expected first line's source to be " + first_sargam_source);
     return test.done();
   };
   exports.test_parses_measure_at_beginning_of_line = function(test) {

@@ -6,7 +6,7 @@
   */
   debug = false;
   if ((typeof module !== "undefined" && module !== null) && (module.exports != null)) {
-    sys = require('sys');
+    sys = require('util');
     Fraction = require('./third_party/fraction.js').Fraction;
   }
   exports.test_fractions_constructor_reduces_improper_fractions = function(test) {

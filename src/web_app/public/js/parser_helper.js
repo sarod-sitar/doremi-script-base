@@ -63,7 +63,7 @@
       return _results;
     },
     parse_line: function(uppers, sargam, lowers, lyrics) {
-      var attribute_lines, ctr, lower, lyric, my_items, my_line, my_lowers, my_uppers, upper, _i, _j, _k, _l, _len, _len2, _len3, _len4;
+      var attribute_lines, ctr, item, lower, lyric, my_items, my_items2, my_line, my_lowers, my_uppers, upper, x, _i, _j, _k, _l, _len, _len2, _len3, _len4;
       if (lyrics.length === 0) {
         lyrics = '';
       }
@@ -74,6 +74,16 @@
         uppers = '';
       }
       my_items = _.flatten(_.compact([uppers, sargam, lowers]));
+      my_items2 = _.flatten(_.compact([uppers, sargam, lowers, lyrics]));
+      sargam.source = (x = (function() {
+        var _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = my_items2.length; _i < _len; _i++) {
+          item = my_items2[_i];
+          _results.push(item.source);
+        }
+        return _results;
+      })()).join("\n");
       ctr = 0;
       for (_i = 0, _len = uppers.length; _i < _len; _i++) {
         upper = uppers[_i];
@@ -103,7 +113,12 @@
       return sargam;
     },
     parse_composition: function(attributes, lines) {
-      var char, hash, lower, split_chars, to_string, valid, x, _i, _len;
+      var char, ctr, hash, line, lower, split_chars, to_string, valid, x, _i, _j, _len, _len2;
+      ctr = 0;
+      for (_i = 0, _len = lines.length; _i < _len; _i++) {
+        line = lines[_i];
+        line.index = ctr++;
+      }
       if (attributes === "") {
         attributes = null;
       }
@@ -137,8 +152,8 @@
       hash = {};
       if (x && valid) {
         split_chars = this.composition_data.force_sargam_chars.split('');
-        for (_i = 0, _len = split_chars.length; _i < _len; _i++) {
-          char = split_chars[_i];
+        for (_j = 0, _len2 = split_chars.length; _j < _len2; _j++) {
+          char = split_chars[_j];
           lower = char.toLowerCase(char);
           if (char === 'S' || char === 'R' || char === 'G' || char === 'M' || char === 'P' || char === 'D' || char === 'N') {
             if ((__indexOf.call(split_chars, lower) < 0)) {
@@ -147,9 +162,15 @@
           }
         }
       }
-      composition_data.force_sargam_chars_hash = hash;
+      this.composition_data.force_sargam_chars_hash = hash;
       x = get_composition_attribute(this.composition_data, "TimeSignature");
       this.composition_data.time_signature = x || "4/4";
+      x = get_composition_attribute(this.composition_data, "id");
+      if (x != null) {
+        this.composition_data.id = x;
+      } else {
+        this.composition_data.id = new Date().getTime();
+      }
       x = get_composition_attribute(this.composition_data, "Mode");
       if (x != null) {
         x = x.toLowerCase();
@@ -170,7 +191,19 @@
       }
       this.composition_data.filename = x || "untitled";
       x = get_composition_attribute(this.composition_data, "Title");
-      composition_data.title = x || "Untitled";
+      this.composition_data.title = x || "Untitled";
+      x = get_composition_attribute(this.composition_data, "Source");
+      this.composition_data.source = x || "";
+      x = get_composition_attribute(this.composition_data, "Author");
+      this.composition_data.author = x || "";
+      x = get_composition_attribute(this.composition_data, "Raga");
+      if (x != null) {
+        this.composition_data.raga = x;
+      }
+      x = get_composition_attribute(this.composition_data, "staff_notation_url");
+      if (x != null) {
+        this.composition_data.staff_notation_url = x;
+      }
       this.mark_partial_measures();
       return this.composition_data;
     },
