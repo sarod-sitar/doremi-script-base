@@ -46,6 +46,7 @@
   measure_columns = Helper.measure_columns
   assign_attributes=Helper.assign_attributes
   assign_lyrics=Helper.assign_lyrics
+  assign_lyrics2=Helper.assign_lyrics2
   collect_nodes = Helper.collect_nodes
   map_nodes = Helper.map_nodes
   check_semantics=Helper.check_semantics
