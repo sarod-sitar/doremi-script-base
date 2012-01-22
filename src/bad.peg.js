@@ -24,6 +24,7 @@
   id_ctr=1
   sa_helper=Helper.sa_helper
   parse_line=Helper.parse_line
+  push_warning=Helper.push_warning
   handle_ornament=Helper.handle_ornament
   find_ornaments=Helper.find_ornaments
   running_under_node=Helper.running_under_node

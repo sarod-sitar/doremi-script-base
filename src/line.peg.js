@@ -23,6 +23,7 @@
   //
   id_ctr=1
   sa_helper=Helper.sa_helper
+  push_warning=Helper.push_warning
   parse_line=Helper.parse_line
   handle_ornament=Helper.handle_ornament
   find_ornaments=Helper.find_ornaments
@@ -49,6 +50,7 @@
   map_nodes = Helper.map_nodes
   check_semantics=Helper.check_semantics
   measure_pitch_durations=Helper.measure_pitch_durations
+  parse_lyrics_section=Helper.parse_lyrics_section
   if (typeof require !== 'undefined') {
     // x=require('./tree_iterators.js')
     all_items=require('./all_items.js').all_items
@@ -60,8 +62,7 @@
 
 
 START "Grammar for AACM/Bhatkande style sargam/letter notation by John Rothfield 707 538-5133, cell 707 331-2700  john@rothfield.com"
-  = LINE 
-  // COMPOSITION
+  = LINE //COMPOSITION
   //= UPPER_OCTAVE_LINE
 
 EMPTY_LINE ""
@@ -76,6 +77,9 @@ HEADER_SECTION "Headers followed by blank lines or a line"
                 }}
 
 COMPOSITION "a musical piece  lines:LINE+ "
+
+// perhaps paragraphs would be better instead of lines, or goupings, or section
+// = LINE_END_CHAR* EMPTY_LINE* attributes:HEADER_SECTION? lines:(LINE / LYRIC_SECTION)*  (EOF / EMPTY_LINE)
 = LINE_END_CHAR* EMPTY_LINE* attributes:HEADER_SECTION? lines:LINE*  (EOF / EMPTY_LINE)
        { 
           return parse_composition(attributes,lines)
@@ -105,13 +109,22 @@ COMPOUND_LINE
         }
 
 LINE "main line of music. multiple lines including syllables etc,delimited by empty line. There is an order, optional upper octave lines followed by main line of sargam followed by optional lyrics line"
-  = line:(COMPOUND_LINE / SIMPLE_LINE) EOF {
-   return line
-  }
+  = COMPOUND_LINE / SIMPLE_LINE / LYRICS_SECTION
+  // = COMPOUND_LINE / SIMPLE_LINE
+
+
+LYRICS_SECTION "AKA verse,chorus,paragraph. Lines of lyrics"
+  =
+    lyrics_lines:LYRICS_LINE+
+    LINE_END 
+    EMPTY_LINE*
+    { 
+         return parse_lyrics_section(lyrics_lines)
+    }
 
 SIMPLE_LINE
   =
-    sargam:(sargam:DEVANAGRI_SARGAM_LINE / sargam:SARGAM_LINE / sargam:ABC_SARGAM_LINE/ sargam:NUMBER_SARGAM_LINE) EOF
+    sargam:(sargam:DEVANAGRI_SARGAM_LINE / sargam:SARGAM_LINE / sargam:ABC_SARGAM_LINE/ sargam:NUMBER_SARGAM_LINE)
     lowers:LOWER_OCTAVE_LINE*
     lyrics:LYRICS_LINE?
     LINE_END 
@@ -259,12 +272,6 @@ TALA "tala markings. ie +203 for tintal. 012 for rupak"
                 source:char
      }
              }
-UNUSED_STRAY_END_SLUR "TODO-a right paren that is not to the right of a pitch. ignore it"
-  = char:")" {
-     return {my_type: "stray_end_slur",
-             source:char
-     }
-  }
 
 END_SLUR "symbol for end of a slur - a right paren"
   = char:")" { return { my_type: "end_slur",
@@ -504,7 +511,7 @@ DEVANAGRI_BEAT_DELIMITED_ITEM "inside of a delimited beat, ie S--R--G-"
   = DEVANAGRI_SARGAM_PITCH / RHYTHMICAL_DASH / WHITE_SPACE
 
 BEAT_DELIMITED_ITEM "inside of a delimited beat, ie S--R--G-"
-  = SARGAM_PITCH / RHYTHMICAL_DASH / WHITE_SPACE  
+  = SARGAM_PITCH / RHYTHMICAL_DASH / WHITE_SPACE
 
 
 WORD "a non-syllable like john"
