@@ -619,11 +619,21 @@
   exports.test_apply_hyphenated_lyrics_attribute = function(test) {
     var composition, str, x;
     debug = true;
-    str = 'ApplyHyphenatedLyrics: true\n\nHello john\n\n| SRG';
+    str = 'ApplyHyphenatedLyrics: true\n\nHello john many zany egos\n\n| SRG';
     composition = test_parses(str, test);
     test.equal(composition.lines[0].my_type, "lyrics_section", "First 'line' should be lyrics_section");
     test.equal(composition[x = "apply_hyphenated_lyrics"], true, "" + x + " attribute of composition should have been set true");
     my_inspect(composition);
+    debug = false;
+    return test.done();
+  };
+  exports.test_id = function(test) {
+    var composition, id, str;
+    debug = true;
+    id = 1234;
+    str = "Title: Happy Birthday to You \nid: " + id + "\n  \n| S |";
+    composition = test_parses(str, test);
+    test.equal(composition.id, id, "expected id to be " + id);
     debug = false;
     return test.done();
   };
