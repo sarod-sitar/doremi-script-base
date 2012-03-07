@@ -1,4 +1,5 @@
- /* PEG GRAMMAR for DoremiScript. 
+ /* doremiscript.peg.js
+  * PEG GRAMMAR for DoremiScript. 
   * Gets compiled into doremi_script_parser.js
   */
 
@@ -64,7 +65,7 @@
 }
 
 
-START "Grammar for AACM/Bhatkande style sargam/letter notation by John Rothfield 707 538-5133, cell 707 331-2700  john@rothfield.com"
+START "Grammar for AACM/Bhatkande style sargam/letter notation by John Rothfield 707 538-5133, cell 707 331-2700  rthfield@sonic.net- "
   = COMPOSITION
   //= UPPER_OCTAVE_LINE
 
