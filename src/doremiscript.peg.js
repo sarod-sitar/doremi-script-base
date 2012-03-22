@@ -103,9 +103,9 @@ LINE_END "ss"
 COMPOUND_LINE 
   =
     uppers:UPPER_OCTAVE_LINE*
-    sargam:(sargam:DEVANAGRI_SARGAM_LINE / sargam:SARGAM_LINE / sargam:ABC_SARGAM_LINE/ sargam:NUMBER_SARGAM_LINE)
+    sargam:(sargam:DEVANAGRI_LINE / sargam:SARGAM_LINE / sargam:ABC_LINE/ sargam:NUMBER_LINE)
     lowers:LOWER_OCTAVE_LINE*
-    lyrics:LYRICS_LINE?
+    lyrics:LYRICS_LINE*
     LINE_END   
     EMPTY_LINE*
     {
@@ -128,7 +128,7 @@ LYRICS_SECTION "AKA verse,chorus,paragraph. Lines of lyrics"
 
 SIMPLE_LINE
   =
-    sargam:(sargam:DEVANAGRI_SARGAM_LINE / sargam:SARGAM_LINE / sargam:ABC_SARGAM_LINE/ sargam:NUMBER_SARGAM_LINE)
+    sargam:(sargam:DEVANAGRI_LINE / sargam:SARGAM_LINE / sargam:ABC_LINE/ sargam:NUMBER_LINE)
     lowers:LOWER_OCTAVE_LINE*
     lyrics:LYRICS_LINE?
     LINE_END 
@@ -153,6 +153,23 @@ DELIMITED_SARGAM_ORNAMENT "in upper line <NRSNS>"
 
 SARGAM_ORNAMENT_ITEM
   = SARGAM_PITCH 
+
+
+NUMBER_ORNAMENT "in upper line NRSNS"
+  = items:NUMBER_ORNAMENT_ITEM+ 
+        { 
+            return parse_ornament("",items,"")
+         }
+
+
+DELIMITED_NUMBER_ORNAMENT "in upper line <NRSNS>"
+  = left_delimiter:"<" items:NUMBER_ORNAMENT_ITEM+  right_delimiter:">"
+        { 
+            return parse_ornament(left_delimiter,items,right_delimiter)
+         }
+
+NUMBER_ORNAMENT_ITEM
+  = NUMBER_PITCH 
 
 UPPER_OCTAVE_LINE "can put upper octave dots or semicolons for upper upper octave (. or :). Also tala symbols +203"
   = begin_white_space:WHITE_SPACE? items:UPPER_OCTAVE_LINE_ITEM+ end_white_space:WHITE_SPACE? LINE_END
@@ -206,6 +223,7 @@ ALTERNATE_ENDING_INDICATOR "1._______ 2.___ etc. The period is optional. Must ha
 UPPER_OCTAVE_LINE_ITEM "Things above notes, including talas, octaves,chords, and 1st and second ending symbols"
   =  
      DELIMITED_SARGAM_ORNAMENT  / 
+     DELIMITED_NUMBER_ORNAMENT  / 
      WHITE_SPACE / 
      UPPER_OCTAVE_DOT /
      ALTERNATE_ENDING_INDICATOR /
@@ -213,7 +231,8 @@ UPPER_OCTAVE_LINE_ITEM "Things above notes, including talas, octaves,chords, and
      MORDENT /
      UPPER_UPPER_OCTAVE_SYMBOL /
      CHORD_SYMBOL /
-     SARGAM_ORNAMENT  
+     SARGAM_ORNAMENT /
+     NUMBER_ORNAMENT
 
 
 LOWER_OCTAVE_LINE "can put lower octave dots or semicolons for lower-lower octave (. or :)"
@@ -329,7 +348,7 @@ ABC_NON_BARLINE
     x:WHITE_SPACE /  
     x:ABC_BEAT_DELIMITED / 
     x:ABC_BEAT_UNDELIMITED / 
-    x:ABC_SARGAM_PITCH / 
+    x:ABC_PITCH / 
     x:RHYTHMICAL_DASH / 
     x:REPEAT_SYMBOL {
             x.attributes=[];
@@ -341,7 +360,7 @@ NUMBER_NON_BARLINE
     x:WHITE_SPACE /  
     x:NUMBER_BEAT_DELIMITED / 
     x:NUMBER_BEAT_UNDELIMITED / 
-    x:NUMBER_SARGAM_PITCH / 
+    x:NUMBER_PITCH / 
     x:RHYTHMICAL_DASH / 
     x:REPEAT_SYMBOL {
             x.attributes=[];
@@ -352,7 +371,7 @@ DEVANAGRI_NON_BARLINE
     x:WHITE_SPACE /  
     x:DEVANAGRI_BEAT_DELIMITED / 
     x:DEVANAGRI_BEAT_UNDELIMITED / 
-    x:DEVANAGRI_SARGAM_PITCH / 
+    x:DEVANAGRI_PITCH / 
     x:RHYTHMICAL_DASH / 
     x:REPEAT_SYMBOL {
             x.attributes=[];
@@ -394,20 +413,20 @@ SARGAM_LINE_ITEM  "an item in the main line"
              }
 
 
-ABC_SARGAM_LINE "consists of optional line# at beginning of line, followed by 1 or more measures followed by line end"
+ABC_LINE "consists of optional line# at beginning of line, followed by 1 or more measures followed by line end"
   = line_number:LINE_NUMBER?  items:ABC_MEASURE+ LINE_END
     {
        return parse_sargam_line(line_number,items,"ABC")
     }
 
 
-DEVANAGRI_SARGAM_LINE "consists of optional line# at beginning of line, followed by 1 or more measures followed by line end"
+DEVANAGRI_LINE "consists of optional line# at beginning of line, followed by 1 or more measures followed by line end"
   = line_number:LINE_NUMBER?  items:DEVANAGRI_MEASURE+ LINE_END
     {
        return parse_sargam_line(line_number,items,"devanagri")
     }
 
-NUMBER_SARGAM_LINE "consists of optional line# at beginning of line, followed by 1 or more measures followed by line end"
+NUMBER_LINE "consists of optional line# at beginning of line, followed by 1 or more measures followed by line end"
   = line_number:LINE_NUMBER?  items:NUMBER_MEASURE+ LINE_END
     {
        return parse_sargam_line(line_number,items,"number")
@@ -441,13 +460,13 @@ DEVANAGRI_BEAT_UNDELIMITED "beats can be indicated by a group of pitches that co
     }
 
 NUMBER_BEAT_UNDELIMITED_ITEM "1--2--3-"
-  = NUMBER_SARGAM_PITCH / RHYTHMICAL_DASH 
+  = NUMBER_PITCH / RHYTHMICAL_DASH 
 
 ABC_BEAT_UNDELIMITED_ITEM "C--D--E-"
-  = ABC_SARGAM_PITCH / RHYTHMICAL_DASH 
+  = ABC_PITCH / RHYTHMICAL_DASH 
 
 DEVANAGRI_BEAT_UNDELIMITED_ITEM "inside of a simple beat, ie S--R--G-"
-  = DEVANAGRI_SARGAM_PITCH / RHYTHMICAL_DASH
+  = DEVANAGRI_PITCH / RHYTHMICAL_DASH
 
 
 
@@ -501,21 +520,21 @@ END_BEAT_SYMBOL  "Symbol to use to indicate end of beat"
              }
 ABC_BEAT_DELIMITED_ITEM "inside of a delimited beat, ie C--D--E-"
   = 
-  ABC_SARGAM_PITCH /
+  ABC_PITCH /
   RHYTHMICAL_DASH /
   WHITE_SPACE
 
 NUMBER_BEAT_DELIMITED_ITEM "inside of a delimited beat, ie 1--3--2-"
   = 
-  NUMBER_SARGAM_PITCH /
+  NUMBER_PITCH /
   RHYTHMICAL_DASH /
   WHITE_SPACE
 
 DEVANAGRI_BEAT_DELIMITED_ITEM "inside of a delimited beat, ie S--R--G-"
-  = DEVANAGRI_SARGAM_PITCH / RHYTHMICAL_DASH / WHITE_SPACE
+  = DEVANAGRI_PITCH / RHYTHMICAL_DASH / WHITE_SPACE
 
 BEAT_DELIMITED_ITEM "inside of a delimited beat, ie S--R--G-"
-  = SARGAM_PITCH / RHYTHMICAL_DASH / WHITE_SPACE
+  = SARGAM_PITCH / RHYTHMICAL_DASH / IGNORED_WHITE_SPACE
 
 
 WORD "a non-syllable like john"
@@ -538,7 +557,7 @@ WORD_TERMINATOR "marks end of word"
   = WHITE_SPACE 
 
 SYLLABLE "for example he- or world"
-  = letters:[a-zA-Z'!]+ optional_dash:'-'? whitespace:_ 
+  = letters:[a-zA-Z'!?\-\,]+ optional_dash:'-'? whitespace:_ 
      { var syl = letters.join('') + optional_dash
        return _.compact([{ my_type:  "syllable",
                 syllable: syl,
@@ -811,7 +830,7 @@ SARGAM_MUSICAL_CHAR  "Letters SrRgGmMPdDnN in latin script"
   SARGAM_NI 
 
 
-ABC_SARGAM_CHAR "ie SrRgG, and possibly the devanagri characters as well"
+ABC_CHAR "ie SrRgG, and possibly the devanagri characters as well"
  = char:[CDEFGAB] {
          return char;
  }
@@ -897,19 +916,19 @@ SARGAM_NI_SHARP
      {return sa_helper(char,"B#")}
 
 
-NUMBER_SARGAM_PITCH "ie 123"
+NUMBER_PITCH "ie 123"
 = slur:BEGIN_SLUR_OF_PITCH? char:NUMBER_MUSICAL_CHAR end_slur:END_SLUR_OF_PITCH?  
        { 
           return parse_sargam_pitch(slur,char,end_slur)
        }
-ABC_SARGAM_PITCH "ie CDE"
+ABC_PITCH "ie CDE"
 = slur:BEGIN_SLUR_OF_PITCH? char:ABC_MUSICAL_CHAR end_slur:END_SLUR_OF_PITCH?  
        { 
           return parse_sargam_pitch(slur,char,end_slur)
        }
 
 
-DEVANAGRI_SARGAM_PITCH "a sargam pitch ie SrR.."
+DEVANAGRI_PITCH "a sargam pitch ie SrR.."
 = slur:BEGIN_SLUR_OF_PITCH? char:DEVANAGRI_MUSICAL_CHAR end_slur:END_SLUR_OF_PITCH?  
        { 
           return parse_sargam_pitch(slur,char,end_slur)
@@ -1001,6 +1020,11 @@ WHITE_SPACE "white space"
                      }
                      }
 
+IGNORED_WHITE_SPACE "white space"
+   = spaces:SPACE+ { return { my_type: "ignored_whitespace",
+                     source: spaces.join("")
+                     }
+                     }
 
 
 
