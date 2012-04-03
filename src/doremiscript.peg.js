@@ -90,9 +90,18 @@ COMPOSITION "a musical piece  lines:LINE+ "
       }
 ATTRIBUTE_LINE "ie Author: John Rothfield"
 = key_chars:[a-zA-Z_\-0-9]+ ""? ":" blanks:_ value_chars:([^\n\r])+ _ (LINE_END_CHAR / &EOF)
-     { return { my_type:"attribute",
+     { 
+       value=this.trim(value_chars.join(''));
+       // true and false get read as boolean ala json
+       if (value ==="true") {
+         value=true;
+       }
+       if (value ==="false") {
+         value=false;
+       }
+       return { my_type:"attribute",
                 key: key_chars.join(''),
-                value:this.trim(value_chars.join('')),
+                value:value,
                 source: "todo"
                 }}
 
@@ -103,7 +112,7 @@ LINE_END "ss"
 COMPOUND_LINE 
   =
     uppers:UPPER_OCTAVE_LINE*
-    sargam:(sargam:DEVANAGRI_LINE / sargam:SARGAM_LINE / sargam:ABC_LINE/ sargam:NUMBER_LINE)
+    sargam:(sargam:SARGAM_LINE / sargam:NUMBER_LINE / sargam:ABC_LINE/ sargam:DEVANAGRI_LINE)
     lowers:LOWER_OCTAVE_LINE*
     lyrics:LYRICS_LINE*
     LINE_END   
@@ -128,7 +137,10 @@ LYRICS_SECTION "AKA verse,chorus,paragraph. Lines of lyrics"
 
 SIMPLE_LINE
   =
-    sargam:(sargam:DEVANAGRI_LINE / sargam:SARGAM_LINE / sargam:ABC_LINE/ sargam:NUMBER_LINE)
+    sargam:(sargam:SARGAM_LINE /
+        sargam:NUMBER_LINE /
+        sargam:ABC_LINE /
+        sargam:DEVANAGRI_LINE)
     lowers:LOWER_OCTAVE_LINE*
     lyrics:LYRICS_LINE?
     LINE_END 
@@ -338,7 +350,7 @@ DEVANAGRI_MEASURE "measures,note that beginning and end of line implicitly demar
           return parse_measure(start_obs,items,end_obs)
              }
 MEASURE "measures,note that beginning and end of line implicitly demarcates a measure"
-  = start_obs:BARLINE? items:NON_BARLINE+ end_obs:(BARLINE / &LINE_END ) 
+  = start_obs:BARLINE? items:SARGAM_NON_BARLINE+ end_obs:(BARLINE / &LINE_END ) 
         {
           return parse_measure(start_obs,items,end_obs)
         }
@@ -377,7 +389,7 @@ DEVANAGRI_NON_BARLINE
             x.attributes=[];
             return x;
     }
-NON_BARLINE 
+SARGAM_NON_BARLINE 
   =
     x:WHITE_SPACE /  
     x:BEAT_DELIMITED / 

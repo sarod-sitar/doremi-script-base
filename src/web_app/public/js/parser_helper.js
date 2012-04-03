@@ -30,6 +30,9 @@
     },
     assign_lyrics: function(sargam, lyrics) {
       var item, slurring_state, syls, _i, _len, _ref, _results;
+      if (debug) {
+        console.log("entering assign_lyrics", sargam, lyrics);
+      }
       if (!(lyrics != null)) {
         return;
       }
@@ -75,6 +78,9 @@
     },
     parse_lyrics_section: function(lyrics_lines) {
       var all_words, ary, hy_ary, hyphenated_line, hyphenated_source, hyphenated_words, hyphenated_words_str, item, line, regex, result, soft_hyphen, source, without_dashes, word;
+      if (debug) {
+        console.log("parse_lyrics_section");
+      }
       if (lyrics_lines === "") {
         source = "";
       } else {
@@ -221,7 +227,9 @@
             return;
           }
           if (!slurring_state) {
-            item.syllable = syls.shift();
+            if (!(item.syllable != null)) {
+              item.syllable = syls.shift();
+            }
           }
           if (item_has_attribute(item, 'begin_slur')) {
             slurring_state = true;
@@ -235,6 +243,9 @@
     },
     assign_syllables_from_lyrics_sections: function(composition) {
       var line, syls, _i, _len, _ref, _results;
+      if (!composition.apply_hyphenated_lyrics) {
+        return;
+      }
       syls = [];
       _ref = composition.lines;
       _results = [];
@@ -271,6 +282,9 @@
         my_type: "composition",
         apply_hyphenated_lyrics: true,
         title: "",
+        notes_used: "",
+        force_notes_used: false,
+        force_notes_used_hash: {},
         filename: "",
         attributes: attributes,
         lines: _.flatten(lines),
@@ -282,13 +296,13 @@
       x = get_composition_attribute(this.composition_data, "NotesUsed");
       valid = true;
       if ((x != null) && (/^[sSrRgGmMpPdDnN]*$/.test(x) === false)) {
-        this.warnings.push("ForceSargamChars should be all sargam characters, for example 'SrGmMdN'");
+        this.warnings.push("NotesUsed should be all pitches/sargam characters, for example 'SrGmMdN'");
         valid = false;
       }
       this.composition_data.notes_used = x || "";
       hash = {};
       if (x && valid) {
-        split_chars = this.composition_data.force_sargam_chars.split('');
+        split_chars = this.composition_data.notes_used.split('');
         for (_j = 0, _len2 = split_chars.length; _j < _len2; _j++) {
           char = split_chars[_j];
           lower = char.toLowerCase(char);
@@ -299,9 +313,11 @@
           }
         }
       }
-      this.composition_data.force_sargam_chars_hash = hash;
+      this.composition_data.force_notes_used_hash = hash;
       x = get_composition_attribute(this.composition_data, "TimeSignature");
       this.composition_data.time_signature = x || "4/4";
+      x = get_composition_attribute(this.composition_data, "ForceNotesUsed");
+      this.composition_data.force_notes_used = x || false;
       x = get_composition_attribute(this.composition_data, "id");
       if (x != null) {
         this.composition_data.id = parseInt(x);
