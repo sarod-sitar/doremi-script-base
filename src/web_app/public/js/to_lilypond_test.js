@@ -1,5 +1,5 @@
 (function() {
-  var Logger, debug, parser, root, sys, test_data, test_to_lilypond, to_lilypond, utils, _;
+  var Logger, debug, line_to_lilypond, parser, root, sys, test_data, test_to_lilypond, to_lilypond, utils, _;
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   debug = false;
   if (typeof global !== "undefined" && global !== null) {
@@ -27,6 +27,7 @@
   }
 });;
   to_lilypond = require('./to_lilypond.js').to_lilypond;
+  line_to_lilypond = require('./to_lilypond.js').line_to_lilypond;
   parser = DoremiScriptParser;
   test_to_lilypond = function(str, test, msg) {
     var composition, lily;
@@ -54,6 +55,19 @@
       return test.ok(lily.indexOf(expected) > -1, "FAILED*** " + msg + ". Expected output of " + str + " to include " + expected + ". Output was \n\n" + lily + "\n\n");
     };
     _.each_slice(test_data, 3, fun);
+    return test.done();
+  };
+  exports.test_after_ornaments_with_untied_note = function(test) {
+    var composition, expected, lily, str;
+    _console.level = Logger.INFO;
+    str = '   R\n| G ';
+    composition = parser.parse(str);
+    _.debug("test_to_lilypond:composition is " + composition);
+    _.debug("test_to_lilypond, str is \n" + str + "\n");
+    lily = line_to_lilypond(composition.lines[0]);
+    _.debug(lily);
+    expected = "\\afterGrace e'4 { d'32 }";
+    test.ok(lily.indexOf(expected) > -1, "FAILED*** Expected output of \n\n" + str + "\n\n to include " + expected + ". Output was\n-------------- \n\n" + lily + "\n\n-----------");
     return test.done();
   };
 }).call(this);

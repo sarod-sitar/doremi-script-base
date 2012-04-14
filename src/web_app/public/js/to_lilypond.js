@@ -1,5 +1,5 @@
 (function() {
-  var beat_is_all_dashes, calculate_lilypond_duration, debug, emit_tied_array, extract_lyrics, fraction_to_lilypond, get_attribute, get_chord, get_ending, get_ornament, has_mordent, is_sargam_line, lilypond_grace_note_pitch, lilypond_grace_notes, lilypond_octave_map, lilypond_pitch_map, lilypond_transpose, log, lookup_lilypond_barline, lookup_lilypond_pitch, my_inspect, normalized_pitch_to_lilypond, notation_is_in_sargam, root, running_under_node, shared, to_lilypond;
+  var beat_is_all_dashes, calculate_lilypond_duration, debug, emit_tied_array, extract_lyrics, fraction_to_lilypond, get_attribute, get_chord, get_ending, get_ornament, has_mordent, is_sargam_line, lilypond_grace_note_pitch, lilypond_grace_notes, lilypond_octave_map, lilypond_pitch_map, lilypond_transpose, line_to_lilypond, line_to_lilypond_array, log, lookup_lilypond_barline, lookup_lilypond_pitch, my_inspect, normalized_pitch_to_lilypond, notation_is_in_sargam, root, running_under_node, shared, to_lilypond;
   debug = true;
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
   if (typeof require !== "undefined" && require !== null) {
@@ -213,7 +213,7 @@
     return "";
   };
   normalized_pitch_to_lilypond = function(pitch) {
-    var begin_slur, chord, duration, end_slur, ending, first_fraction, grace1, grace2, grace_notes, lilypond_octave, lilypond_pitch, lilypond_symbol_for_tie, mordent, ornament;
+    var EXAMPLES, begin_slur, chord, duration, end_slur, ending, first_fraction, grace1, grace2, grace_notes, lilypond_octave, lilypond_pitch, lilypond_symbol_for_tie, mordent, ornament;
     chord = get_chord(pitch);
     ending = get_ending(pitch);
     if (pitch.fraction_array != null) {
@@ -243,6 +243,7 @@
     begin_slur = item_has_attribute(pitch, "begin_slur") ? "(" : "";
     end_slur = item_has_attribute(pitch, "end_slur") ? ")" : "";
     lilypond_symbol_for_tie = pitch.tied != null ? '~' : '';
+    EXAMPLES = '\partial 4*2  | \afterGrace c\'4( { b32[ d\'32 c\'32 b32 c\'32] } c\'8) d\'8 \break\n\partial 4*2  | \afterGrace c\'4~ { b32[ d\'32 c\'32 b32 c\'32] } c\'8 d\'8 \break\n \partial 4*2  | c\'4~ c\'8 d\'8 \break';
     ornament = get_ornament(pitch);
     grace1 = grace2 = grace_notes = "";
     if ((ornament != null ? ornament.placement : void 0) === "after") {
@@ -378,8 +379,14 @@
     fixed = composition_data.key[0].toLowerCase();
     return "\\transpose c' " + lilypond_pitch_map[composition_data.key] + "'";
   };
-  to_lilypond = function(composition_data, options) {
-    var all, ary, at_beginning_of_first_measure_of_line, beat, beats_per_minute, composer, composer_snippet, dash, dashes_at_beginning_of_line_array, in_times, item, key_snippet, last_pitch, lilypond_template, line, measure, mode, notes, src, src1, tied_array, time, title, title_snippet, transpose_snip, x, _i, _j, _k, _len, _len2, _len3, _ref, _ref2, _ref3;
+  line_to_lilypond = function(line, options) {
+    if (options == null) {
+      options = {};
+    }
+    return line_to_lilypond_array(line, options).join(' ');
+  };
+  line_to_lilypond_array = function(line, options) {
+    var all, ary, at_beginning_of_first_measure_of_line, beat, dash, dashes_at_beginning_of_line_array, in_times, item, last_pitch, measure, tied_array, x, _i, _j, _len, _len2, _ref, _ref2;
     if (options == null) {
       options = {};
     }
@@ -388,88 +395,97 @@
     at_beginning_of_first_measure_of_line = false;
     dashes_at_beginning_of_line_array = [];
     tied_array = [];
-    _ref = composition_data.lines;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      line = _ref[_i];
-      at_beginning_of_first_measure_of_line = false;
-      in_times = false;
-      this.log("processing " + line.source);
-      all = [];
-      x = root.all_items(line, all);
-      last_pitch = null;
-      for (_j = 0, _len2 = all.length; _j < _len2; _j++) {
-        item = all[_j];
-        if (((_ref2 = item.my_type) === "pitch" || _ref2 === "barline" || _ref2 === "measure") || item.is_barline) {
-          if (tied_array.length > 0) {
-            emit_tied_array(last_pitch, tied_array, ary);
-          }
-        }
-        if (in_times) {
-          if (item.my_type === "beat" || item.my_type === "barline") {
-            ary.push("}");
-            in_times = false;
-          }
-        }
-        this.log("processing " + item.source + ", my_type is " + item.my_type);
-        if (item.my_type === "pitch") {
-          last_pitch = item;
-          if (dashes_at_beginning_of_line_array.length > 0) {
-            for (_k = 0, _len3 = dashes_at_beginning_of_line_array.length; _k < _len3; _k++) {
-              dash = dashes_at_beginning_of_line_array[_k];
-              ary.push(normalized_pitch_to_lilypond(dash));
-            }
-            dashes_at_beginning_of_line_array = [];
-          }
-          ary.push(normalized_pitch_to_lilypond(item));
-        }
-        if (item.is_barline) {
-          ary.push(lookup_lilypond_barline(item.my_type));
-        }
-        if (item.my_type === "beat") {
-          beat = item;
-          if (((_ref3 = beat.subdivisions) !== 0 && _ref3 !== 1 && _ref3 !== 2 && _ref3 !== 4 && _ref3 !== 8 && _ref3 !== 16 && _ref3 !== 32 && _ref3 !== 64 && _ref3 !== 128) && !beat_is_all_dashes(beat)) {
-            this.log("odd beat.subdivisions=", beat.subdivisions);
-            x = 2;
-            if (beat.subdivisions === 6) {
-              x = 4;
-            }
-            if (beat.subdivisions === 5) {
-              x = 4;
-            }
-            ary.push("\\times " + x + "/" + beat.subdivisions + " { ");
-            in_times = true;
-          }
-        }
-        if (item.my_type === "dash") {
-          if (!item.dash_to_tie && (item.numerator != null)) {
-            this.log("pushing item onto dashes_at_beginning_of_line_array");
-            dashes_at_beginning_of_line_array.push(item);
-          }
-          if (item.dash_to_tie) {
-            ary.push(normalized_pitch_to_lilypond(item));
-            item = null;
-          }
-        }
-        if ((item != null) && item.my_type === "measure") {
-          measure = item;
-          if (measure.is_partial) {
-            ary.push("\\partial 4*" + measure.beat_count + " ");
-          }
-        }
-        if ((item != null) && item.dash_to_tie) {
-          if (item != null) {
-            tied_array.push(item);
-          }
+    at_beginning_of_first_measure_of_line = false;
+    in_times = false;
+    this.log("processing " + line.source);
+    all = [];
+    x = root.all_items(line, all);
+    last_pitch = null;
+    for (_i = 0, _len = all.length; _i < _len; _i++) {
+      item = all[_i];
+      if (((_ref = item.my_type) === "pitch" || _ref === "barline" || _ref === "measure") || item.is_barline) {
+        if (tied_array.length > 0) {
+          emit_tied_array(last_pitch, tied_array, ary);
         }
       }
       if (in_times) {
-        ary.push("}");
-        in_times = false;
+        if (item.my_type === "beat" || item.my_type === "barline") {
+          ary.push("}");
+          in_times = false;
+        }
       }
-      if (tied_array.length > 0) {
-        emit_tied_array(last_pitch, tied_array, ary);
+      this.log("processing " + item.source + ", my_type is " + item.my_type);
+      if (item.my_type === "pitch") {
+        last_pitch = item;
+        if (dashes_at_beginning_of_line_array.length > 0) {
+          for (_j = 0, _len2 = dashes_at_beginning_of_line_array.length; _j < _len2; _j++) {
+            dash = dashes_at_beginning_of_line_array[_j];
+            ary.push(normalized_pitch_to_lilypond(dash));
+          }
+          dashes_at_beginning_of_line_array = [];
+        }
+        ary.push(normalized_pitch_to_lilypond(item));
       }
-      ary.push("\\break\n");
+      if (item.is_barline) {
+        ary.push(lookup_lilypond_barline(item.my_type));
+      }
+      if (item.my_type === "beat") {
+        beat = item;
+        if (((_ref2 = beat.subdivisions) !== 0 && _ref2 !== 1 && _ref2 !== 2 && _ref2 !== 4 && _ref2 !== 8 && _ref2 !== 16 && _ref2 !== 32 && _ref2 !== 64 && _ref2 !== 128) && !beat_is_all_dashes(beat)) {
+          this.log("odd beat.subdivisions=", beat.subdivisions);
+          x = 2;
+          if (beat.subdivisions === 6) {
+            x = 4;
+          }
+          if (beat.subdivisions === 5) {
+            x = 4;
+          }
+          ary.push("\\times " + x + "/" + beat.subdivisions + " { ");
+          in_times = true;
+        }
+      }
+      if (item.my_type === "dash") {
+        if (!item.dash_to_tie && (item.numerator != null)) {
+          this.log("pushing item onto dashes_at_beginning_of_line_array");
+          dashes_at_beginning_of_line_array.push(item);
+        }
+        if (item.dash_to_tie) {
+          ary.push(normalized_pitch_to_lilypond(item));
+          item = null;
+        }
+      }
+      if ((item != null) && item.my_type === "measure") {
+        measure = item;
+        if (measure.is_partial) {
+          ary.push("\\partial 4*" + measure.beat_count + " ");
+        }
+      }
+      if ((item != null) && item.dash_to_tie) {
+        if (item != null) {
+          tied_array.push(item);
+        }
+      }
+    }
+    if (in_times) {
+      ary.push("}");
+      in_times = false;
+    }
+    if (tied_array.length > 0) {
+      emit_tied_array(last_pitch, tied_array, ary);
+    }
+    ary.push("\\break\n");
+    return ary;
+  };
+  to_lilypond = function(composition_data, options) {
+    var ary, beats_per_minute, composer, composer_snippet, key_snippet, lilypond_template, line, mode, notes, src, src1, time, title, title_snippet, transpose_snip, _i, _len, _ref;
+    if (options == null) {
+      options = {};
+    }
+    ary = [];
+    _ref = composition_data.lines;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      line = _ref[_i];
+      ary = ary.concat(line_to_lilypond_array(line, options));
     }
     mode = composition_data.mode;
     mode || (mode = "major");
@@ -510,4 +526,5 @@
     return lilypond_template;
   };
   root.to_lilypond = to_lilypond;
+  root.line_to_lilypond = line_to_lilypond;
 }).call(this);
