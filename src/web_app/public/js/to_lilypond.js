@@ -229,6 +229,9 @@
     }
     special_case = false;
     if (pitch.dash_to_tie && has_after_ornament(context.last_pitch)) {
+      if (false) {
+        console.log("***SPECIAL CASE");
+      }
       special_case = true;
     }
     if (false) {
@@ -302,7 +305,9 @@
       extra_end_slur = ")";
     }
     if (((ornament != null ? ornament.placement : void 0) === "after") && (pitch.tied != null)) {
-      console.log("OMG");
+      if (false) {
+        console.log("OMG");
+      }
       lilypond_symbol_for_tie = "";
     }
     return "" + grace1 + lilypond_pitch + lilypond_octave + duration + lilypond_symbol_for_tie + mordent + begin_slur + extra_end_slur + end_slur + ending + chord + grace2;
@@ -352,7 +357,9 @@
   };
   emit_tied_array = function(last_pitch, tied_array, ary) {
     var filter, fraction_total, key, last, my_fun, my_funct, obj;
-    console.log("********emit_tied_array");
+    if (false) {
+      console.log("********emit_tied_array");
+    }
     if (!(last_pitch != null)) {
       return;
     }
@@ -389,9 +396,13 @@
     obj.tied = last.tied;
     this.log("leaving emit_tied_array");
     tied_array.length = 0;
-    console.log("****", has_after_ornament(last_pitch));
+    if (false) {
+      console.log("****", has_after_ornament(last_pitch));
+    }
     if (has_after_ornament(last_pitch)) {
-      console.log("ADD CODE TO ADD RIGHT PARENT TO THIS PITCH", obj);
+      if (false) {
+        console.log("ADD CODE TO ADD RIGHT PARENT TO THIS PITCH", obj);
+      }
     }
     return ary.push(normalized_pitch_to_lilypond(obj, {
       last_pitch: last_pitch
@@ -442,7 +453,9 @@
     if (options == null) {
       options = {};
     }
-    console.log("line_to_lilypond");
+    if (false) {
+      console.log("line_to_lilypond");
+    }
     return line_to_lilypond_array(line, options).join(' ');
   };
   has_after_ornament = function(pitch) {
@@ -530,8 +543,12 @@
           dashes_at_beginning_of_line_array.push(item);
         }
         if (item.dash_to_tie) {
-          console.log("dash_to_tie case!!***");
-          console.log("dash_to_tie case!!***last_pitch is", last_pitch);
+          if (false) {
+            console.log("dash_to_tie case!!***");
+          }
+          if (false) {
+            console.log("dash_to_tie case!!***last_pitch is", last_pitch);
+          }
           ary.push(normalized_pitch_to_lilypond(item, {
             last_pitch: last_pitch
           }));
@@ -557,7 +574,9 @@
       ary.push("}");
       in_times = false;
     }
-    console.log("tied_array", tied_array.length);
+    if (false) {
+      console.log("tied_array", tied_array.length);
+    }
     if (tied_array.length > 0) {
       emit_tied_array(last_pitch, tied_array, ary);
     }
